@@ -1,7 +1,6 @@
 package model;
 
-public class Map {
-
+public class GameMap {
     private final int height, width;
     private final Tile[][] map;
 
@@ -17,7 +16,7 @@ public class Map {
         return map;
     }
 
-    Map(int height, int width) {
+    GameMap(int height, int width) {
         this.height = height;
         this.width = width;
         map = new Tile[height][width];

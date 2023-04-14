@@ -8,6 +8,7 @@ public class Tile {
         this.type = "plain";
         this.building = null;
     }
+
     public Tile(String type) {
         this.type = type;
         this.building = null;

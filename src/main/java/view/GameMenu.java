@@ -48,4 +48,40 @@ public class GameMenu extends Menu{
     private void showMap(HashMap<String, String> input){
         return;
     }
+
+    private void showPopularityFactors(HashMap<String, String> input){
+        return;
+    }
+
+    private void showPopularity(HashMap<String, String> input){
+        return;
+    }
+
+    private void showFoodList(HashMap<String, String> input){
+        return;
+    }
+
+    private void foodRate(HashMap<String, String> input){
+        return;
+    }
+
+    private void taxRate(HashMap<String, String> input){
+        return;
+    }
+
+    private void fearRate(HashMap<String, String> input){
+        return;
+    }
+
+    private void dropBuilding(HashMap<String, String> input){
+        return;
+    }
+
+    private void selectBuilding(HashMap<String, String> input){
+        return;
+    }
+
+    private void selectUnit(HashMap<String, String> input){
+        return;
+    }
 }

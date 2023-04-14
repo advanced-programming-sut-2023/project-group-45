@@ -81,7 +81,11 @@ public class GameMenu extends Menu{
         return;
     }
 
-    private void selectUnit(HashMap<String, String> input){
+    private void dropUnit(HashMap<String, String> input){
+        return;
+    }
+
+    private void selectUnit (HashMap<String, String> input){
         return;
     }
 }

@@ -3,7 +3,7 @@ package operator;
 import java.util.Map;
 import model.Unit;
 
-public class UnitOperator {
+public final class UnitOperator {
 
     public static Result<Unit> dropUnit(Map<Object, String> req) {
         return null;
@@ -35,5 +35,8 @@ public class UnitOperator {
 
     public static Result<Unit> disbandUnit(Map<Object, String> req) {
         return null;
+    }
+
+    private UnitOperator() {
     }
 }

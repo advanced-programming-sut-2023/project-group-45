@@ -4,7 +4,7 @@ import java.util.Map;
 import model.GameMap;
 import model.Tile;
 
-public class GameMapOperator {
+public final class GameMapOperator {
 
     public static Result<GameMap> getGameMap(Map<Object, String> req) {
         return null;
@@ -24,5 +24,8 @@ public class GameMapOperator {
 
     public static Result<Tile> dropTree(Map<Object, String> req) {
         return null;
+    }
+
+    private GameMapOperator() {
     }
 }

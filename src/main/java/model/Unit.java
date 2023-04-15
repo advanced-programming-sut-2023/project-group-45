@@ -1,9 +1,18 @@
 package model;
 
 public class Unit {
-    private int hitPoints;
+
     private final int maxHitPoints, speed, range, damage;
     private final String type;
+    private int hitPoints;
+
+    Unit(String type, int maxHitPoints, int speed, int range, int damage) {
+        this.maxHitPoints = this.hitPoints = maxHitPoints;
+        this.speed = speed;
+        this.type = type;
+        this.range = range;
+        this.damage = damage;
+    }
 
     public int getHitPoints() {
         return hitPoints;
@@ -31,13 +40,5 @@ public class Unit {
 
     public String getType() {
         return type;
-    }
-
-    Unit(String type, int maxHitPoints, int speed, int range, int damage) {
-        this.maxHitPoints = this.hitPoints = maxHitPoints;
-        this.speed = speed;
-        this.type = type;
-        this.range = range;
-        this.damage = damage;
     }
 }

@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
+
     private final User user;
-    private int happiness, fear;
     private final HashMap<String, Integer> resources;
     private final ArrayList<TradeRequest> tradeRequests;
+    private int happiness, fear;
 
     Player(User user) {
         this.user = user;

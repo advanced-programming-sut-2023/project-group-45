@@ -3,11 +3,11 @@ package view;
 import java.util.HashMap;
 
 public abstract class Utils {
-    public static HashMap<String, String> parseInput(String input){
+
+    public static HashMap<String, String> parseInput(String input) {
         return null;
     }
 
-    public static void Print(){
-        return;
+    public static void Print() {
     }
 }

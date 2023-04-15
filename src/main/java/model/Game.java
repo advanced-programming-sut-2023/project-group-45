@@ -1,9 +1,10 @@
 package model;
 
 public class Game {
+
     private final Player[] players;
-    private int turn, playerTurn;
     private final int playerCount;
+    private int turn, playerTurn;
 
     public Game(Player[] players) {
         this.players = players;

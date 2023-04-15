@@ -1,6 +1,7 @@
 package model;
 
 public class Tile {
+
     private String type;
     private Building building;
 

@@ -1,6 +1,7 @@
 package model;
 
 public class Building {
+
     private final String type;
     private final int maxHitPoints;
     private int hitPoints;

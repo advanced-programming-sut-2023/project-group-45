@@ -1,50 +1,20 @@
 package model;
 
+import lombok.Data;
+import lombok.NonNull;
+
+@Data
 public class User {
 
-    private final String username, nickname, email, slogan, securityQuestion, securityAnswer;
-    private String password;
-
-    public User(String username, String password, String nickname, String email, String slogan,
-            String securityQuestion, String securityAnswer) {
-        this.username = username;
-        this.password = password;
-        this.nickname = nickname;
-        this.email = email;
-        this.slogan = slogan;
-        this.securityQuestion = securityQuestion;
-        this.securityAnswer = securityAnswer;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getSlogan() {
-        return slogan;
-    }
-
-    public String getSecurityQuestion() {
-        return securityQuestion;
-    }
-
-    public String getSecurityAnswer() {
-        return securityAnswer;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @NonNull
+    private String username;
+    @NonNull
+    private String hashedPassword;
+    @NonNull
+    private String nickname;
+    @NonNull
+    private String email;
+    private String slogan;
+    private String securityQuestion;
+    private String securityAnswer;
 }

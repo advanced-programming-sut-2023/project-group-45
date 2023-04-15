@@ -2,16 +2,11 @@ package model;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Data;
 
-public abstract class Market {
+@Data
+public class Market {
 
-    private static final Map<String, Integer> buyPrices = new HashMap<>(), sellPrices = new HashMap<>();
-
-    public static Map<String, Integer> getBuyPrices() {
-        return buyPrices;
-    }
-
-    public static Map<String, Integer> getSellPrices() {
-        return sellPrices;
-    }
+    private final Map<String, Integer> buyPrices = new HashMap<>();
+    private final Map<String, Integer> sellPrices = new HashMap<>();
 }

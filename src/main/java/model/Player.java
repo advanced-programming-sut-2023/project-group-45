@@ -2,12 +2,14 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Player {
 
     private final User user;
-    private final HashMap<String, Integer> resources;
-    private final ArrayList<TradeRequest> tradeRequests;
+    private final Map<String, Integer> resources;
+    private final List<TradeRequest> tradeRequests;
     private int happiness, fear;
 
     Player(User user) {
@@ -38,11 +40,11 @@ public class Player {
         this.fear = fear;
     }
 
-    public HashMap<String, Integer> getResources() {
+    public Map<String, Integer> getResources() {
         return resources;
     }
 
-    public ArrayList<TradeRequest> getTradeRequests() {
+    public List<TradeRequest> getTradeRequests() {
         return tradeRequests;
     }
 }

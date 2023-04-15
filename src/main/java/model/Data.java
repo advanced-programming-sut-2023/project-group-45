@@ -1,12 +1,13 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Data {
 
-    private static final ArrayList<User> users = new ArrayList<>();
+    private static final List<User> users = new ArrayList<>();
 
-    ArrayList<User> getUsers() {
+    List<User> getUsers() {
         return users;
     }
 }

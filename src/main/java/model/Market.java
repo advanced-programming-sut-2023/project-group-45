@@ -1,16 +1,17 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Market {
 
-    private static final HashMap<String, Integer> buyPrices = new HashMap<>(), sellPrices = new HashMap<>();
+    private static final Map<String, Integer> buyPrices = new HashMap<>(), sellPrices = new HashMap<>();
 
-    public static HashMap<String, Integer> getBuyPrices() {
+    public static Map<String, Integer> getBuyPrices() {
         return buyPrices;
     }
 
-    public static HashMap<String, Integer> getSellPrices() {
+    public static Map<String, Integer> getSellPrices() {
         return sellPrices;
     }
 }

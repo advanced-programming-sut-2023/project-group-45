@@ -1,5 +1,6 @@
 package stronghold.model;
 
+import context.HashedString;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,7 +11,7 @@ public class User implements Serializable {
     @NonNull
     private String username;
     @NonNull
-    private String hashedPassword;
+    private HashedString password;
     @NonNull
     private String nickname;
     @NonNull

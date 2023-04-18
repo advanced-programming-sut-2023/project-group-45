@@ -1,5 +1,14 @@
 package model;
 
-public record TradeRequest(String type, int amount, int price, String message) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
+@AllArgsConstructor
+public class TradeRequest {
+
+    private String type;
+    private int amount;
+    private int price;
+    private String message;
 }

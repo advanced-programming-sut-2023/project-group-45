@@ -1,30 +1,28 @@
 package model;
 
+import lombok.Data;
+
+@Data
 public class GameMap {
 
     private final int height, width;
     private final Tile[][] map;
 
-    GameMap(int height, int width) {
-        this.height = height;
+    GameMap(int width, int height) {
         this.width = width;
+        this.height = height;
         map = new Tile[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 map[i][j] = new Tile();
             }
         }
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public Tile[][] getMap() {
-        return map;
+    public Tile getAt(int x, int y) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            return null;
+        }
+        return map[x][y];
     }
 }

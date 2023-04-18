@@ -1,6 +1,6 @@
 package view;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import model.Building;
 
@@ -13,9 +13,9 @@ public class BuildingMenu extends Menu {
         this.building = building;
     }
 
-    private void createUnit(HashMap<String, String> input) {
+    private void createUnit(Map<String, String> input) {
     }
 
-    private void repair(HashMap<String, String> input) {
+    private void repair(Map<String, String> input) {
     }
 }

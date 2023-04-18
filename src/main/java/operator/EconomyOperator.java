@@ -5,7 +5,7 @@ import java.util.Map;
 import model.Market;
 import model.TradeRequest;
 
-public class EconomyOperator {
+public final class EconomyOperator {
 
     public static Result<List<TradeRequest>> getTradeList(Map<Object, String> req) {
         return null;
@@ -29,5 +29,8 @@ public class EconomyOperator {
 
     public static Result<Void> sellMarketItem(Map<Object, String> req) {
         return null;
+    }
+
+    private EconomyOperator() {
     }
 }

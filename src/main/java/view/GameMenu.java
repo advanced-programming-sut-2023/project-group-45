@@ -1,97 +1,101 @@
 package view;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import model.Game;
 
 public class GameMenu extends Menu {
 
-    public GameMenu(Scanner scanner) {
+    private final Game game;
+
+    public GameMenu(Scanner scanner, Game game) {
         super(scanner);
+        this.game = game;
         // TODO: add command
     }
 
-    private void changeUsername(HashMap<String, String> input) {
+    private void changeUsername(Map<String, String> input) {
     }
 
-    private void changeNickname(HashMap<String, String> input) {
+    private void changeNickname(Map<String, String> input) {
     }
 
-    private void changePassword(HashMap<String, String> input) {
+    private void changePassword(Map<String, String> input) {
     }
 
-    private void changeEmail(HashMap<String, String> input) {
+    private void changeEmail(Map<String, String> input) {
     }
 
-    private void changeSlogan(HashMap<String, String> input) {
+    private void changeSlogan(Map<String, String> input) {
     }
 
-    private void displayProfile(HashMap<String, String> input) {
+    private void displayProfile(Map<String, String> input) {
     }
 
-    private void showMap(HashMap<String, String> input) {
+    private void showMap(Map<String, String> input) {
     }
 
-    private void showPopularityFactors(HashMap<String, String> input) {
+    private void showPopularityFactors(Map<String, String> input) {
     }
 
-    private void showPopularity(HashMap<String, String> input) {
+    private void showPopularity(Map<String, String> input) {
     }
 
-    private void showFoodList(HashMap<String, String> input) {
+    private void showFoodList(Map<String, String> input) {
     }
 
-    private void foodRate(HashMap<String, String> input) {
+    private void foodRate(Map<String, String> input) {
     }
 
-    private void taxRate(HashMap<String, String> input) {
+    private void taxRate(Map<String, String> input) {
     }
 
-    private void fearRate(HashMap<String, String> input) {
+    private void fearRate(Map<String, String> input) {
     }
 
-    private void dropBuilding(HashMap<String, String> input) {
+    private void dropBuilding(Map<String, String> input) {
     }
 
-    private void selectBuilding(HashMap<String, String> input) {
+    private void selectBuilding(Map<String, String> input) {
     }
 
-    private void dropUnit(HashMap<String, String> input) {
+    private void dropUnit(Map<String, String> input) {
     }
 
-    private void selectUnit(HashMap<String, String> input) {
+    private void selectUnit(Map<String, String> input) {
     }
 
-    private void setTileTexture(HashMap<String, String> input) {
+    private void setTileTexture(Map<String, String> input) {
     }
 
-    private void clearTile(HashMap<String, String> input) {
+    private void clearTile(Map<String, String> input) {
     }
 
-    private void dropRock(HashMap<String, String> input) {
+    private void dropRock(Map<String, String> input) {
     }
 
-    private void dropTree(HashMap<String, String> input) {
+    private void dropTree(Map<String, String> input) {
     }
 
-    private void trade(HashMap<String, String> input) {
+    private void trade(Map<String, String> input) {
     }
 
-    private void tradeList(HashMap<String, String> input) {
+    private void tradeList(Map<String, String> input) {
     }
 
-    private void tradeAccept(HashMap<String, String> input) {
+    private void tradeAccept(Map<String, String> input) {
     }
 
-    private void tradeHistory(HashMap<String, String> input) {
+    private void tradeHistory(Map<String, String> input) {
     }
 
-    private void showPriceList(HashMap<String, String> input) {
+    private void showPriceList(Map<String, String> input) {
     }
 
-    private void butItem(HashMap<String, String> input) {
+    private void butItem(Map<String, String> input) {
     }
 
-    private void sellItem(HashMap<String, String> input) {
+    private void sellItem(Map<String, String> input) {
     }
 
 }

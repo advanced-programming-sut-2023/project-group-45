@@ -3,7 +3,7 @@ package operator;
 import java.util.Map;
 import model.Building;
 
-public class BuildingOperator {
+public final class BuildingOperator {
 
     public static Result<Building> dropBuilding(Map<Object, String> req) {
         return null;
@@ -16,5 +16,8 @@ public class BuildingOperator {
 
     public static Result<Building> repairBuilding(Map<Object, String> req) {
         return null;
+    }
+
+    private BuildingOperator() {
     }
 }

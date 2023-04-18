@@ -1,12 +1,12 @@
 package view;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MapMenu extends Menu {
 
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
 
     public MapMenu(Scanner scanner, int x, int y) {
         super(scanner);
@@ -14,9 +14,9 @@ public class MapMenu extends Menu {
         this.y = y;
     }
 
-    private void move(HashMap<String, String> input) {
+    private void move(Map<String, String> input) {
     }
 
-    private void showDetails(HashMap<String, String> input) {
+    private void showDetails(Map<String, String> input) {
     }
 }

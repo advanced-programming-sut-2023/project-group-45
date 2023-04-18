@@ -1,6 +1,6 @@
 package view;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AuthMenu extends Menu {
@@ -10,15 +10,15 @@ public class AuthMenu extends Menu {
         // TODO: addCommand
     }
 
-    private void register(HashMap<String, String> input) {
+    private void register(Map<String, String> input) {
     }
 
-    private void questionPick(HashMap<String, String> input) {
+    private void questionPick(Map<String, String> input) {
     }
 
-    private void login(HashMap<String, String> input) {
+    private void login(Map<String, String> input) {
     }
 
-    private void forgotPassword(HashMap<String, String> input) {
+    private void forgotPassword(Map<String, String> input) {
     }
 }

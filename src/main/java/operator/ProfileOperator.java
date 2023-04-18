@@ -2,7 +2,7 @@ package operator;
 
 import java.util.Map;
 
-public class ProfileOperator {
+public final class ProfileOperator {
 
     public static Result<String> changePassword(Map<String, Object> req) {
         return null;
@@ -22,5 +22,8 @@ public class ProfileOperator {
 
     public static Result<String> changeSlogan(Map<String, Object> req) {
         return null;
+    }
+
+    private ProfileOperator() {
     }
 }

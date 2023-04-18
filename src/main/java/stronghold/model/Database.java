@@ -1,18 +1,18 @@
 package stronghold.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
+import lombok.Data;
 
-public final class Database {
+@Data
+public class Database implements Serializable {
+    private static Database ACTIVE_DB = null;
 
-    @Getter
-    private static final List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
+    private final Market market = new Market();
 
-    @Getter
-    private static final Market market = new Market();
-
-    // no instance creation for this class
-    private Database() {
+    public static Database getActive() {
+        return ACTIVE_DB;
     }
 }

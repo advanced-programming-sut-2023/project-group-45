@@ -1,10 +1,11 @@
 package stronghold.model;
 
+import java.io.Serializable;
 import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class User {
+public class User implements Serializable {
 
     @NonNull
     private String username;

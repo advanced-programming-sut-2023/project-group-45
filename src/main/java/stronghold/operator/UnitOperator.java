@@ -1,7 +1,7 @@
-package operator;
+package stronghold.operator;
 
 import java.util.Map;
-import model.Unit;
+import stronghold.model.Unit;
 
 public final class UnitOperator {
 

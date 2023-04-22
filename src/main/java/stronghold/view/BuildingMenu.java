@@ -1,8 +1,8 @@
-package view;
+package stronghold.view;
 
 import java.util.Map;
 import java.util.Scanner;
-import model.Building;
+import stronghold.model.Building;
 
 public class BuildingMenu extends Menu {
 

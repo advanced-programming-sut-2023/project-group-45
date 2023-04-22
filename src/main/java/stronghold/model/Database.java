@@ -1,4 +1,4 @@
-package model;
+package stronghold.model;
 
 import java.util.ArrayList;
 import java.util.List;

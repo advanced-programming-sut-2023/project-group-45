@@ -1,4 +1,4 @@
-package model;
+package stronghold.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

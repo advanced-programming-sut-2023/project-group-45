@@ -1,4 +1,4 @@
-package model;
+package stronghold.model;
 
 import java.util.HashMap;
 import java.util.Map;

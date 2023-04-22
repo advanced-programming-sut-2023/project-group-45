@@ -1,4 +1,4 @@
-package operator;
+package stronghold.operator;
 
 import java.util.Map;
 

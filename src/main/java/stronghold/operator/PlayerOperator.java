@@ -1,7 +1,7 @@
-package operator;
+package stronghold.operator;
 
 import java.util.Map;
-import model.Player;
+import stronghold.model.Player;
 
 public final class PlayerOperator {
 

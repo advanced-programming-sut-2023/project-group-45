@@ -1,7 +1,7 @@
-package operator;
+package stronghold.operator;
 
 import java.util.Map;
-import model.User;
+import stronghold.model.User;
 
 public final class AuthOperator {
 

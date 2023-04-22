@@ -1,8 +1,8 @@
-package operator;
+package stronghold.operator;
 
 import java.util.Map;
-import model.GameMap;
-import model.Tile;
+import stronghold.model.GameMap;
+import stronghold.model.Tile;
 
 public final class GameMapOperator {
 

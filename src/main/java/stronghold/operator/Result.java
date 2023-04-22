@@ -1,4 +1,4 @@
-package operator;
+package stronghold.operator;
 
 public class Result<T> {
 

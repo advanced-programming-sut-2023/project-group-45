@@ -1,9 +1,9 @@
-package operator;
+package stronghold.operator;
 
 import java.util.List;
 import java.util.Map;
-import model.Market;
-import model.TradeRequest;
+import stronghold.model.Market;
+import stronghold.model.TradeRequest;
 
 public final class EconomyOperator {
 

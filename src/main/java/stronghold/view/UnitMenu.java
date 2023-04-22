@@ -1,8 +1,8 @@
-package view;
+package stronghold.view;
 
 import java.util.Map;
 import java.util.Scanner;
-import model.Unit;
+import stronghold.model.Unit;
 
 public class UnitMenu extends Menu {
 

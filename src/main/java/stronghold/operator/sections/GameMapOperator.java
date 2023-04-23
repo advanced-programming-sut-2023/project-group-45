@@ -1,10 +1,11 @@
-package stronghold.operator;
+package stronghold.operator.sections;
 
 import java.util.Map;
 import lombok.Data;
 import stronghold.model.Database;
 import stronghold.model.GameMap;
 import stronghold.model.Tile;
+import stronghold.operator.Result;
 
 @Data
 public final class GameMapOperator {

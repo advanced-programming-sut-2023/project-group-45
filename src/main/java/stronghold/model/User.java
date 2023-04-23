@@ -1,11 +1,13 @@
 package stronghold.model;
 
+import lombok.Builder;
 import stronghold.context.HashedString;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.NonNull;
 
 @Data
+@Builder(toBuilder = true)
 public class User implements Serializable {
 
     @NonNull

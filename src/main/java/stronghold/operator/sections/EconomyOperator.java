@@ -1,4 +1,4 @@
-package stronghold.operator;
+package stronghold.operator.sections;
 
 import java.util.List;
 import java.util.Map;
@@ -6,6 +6,7 @@ import lombok.Data;
 import stronghold.model.Market;
 import stronghold.model.TradeRequest;
 import stronghold.model.Database;
+import stronghold.operator.Result;
 
 @Data
 public final class EconomyOperator {

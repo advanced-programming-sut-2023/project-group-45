@@ -1,9 +1,10 @@
-package stronghold.operator;
+package stronghold.operator.sections;
 
 import java.util.Map;
 import lombok.Data;
 import stronghold.model.Database;
 import stronghold.model.Unit;
+import stronghold.operator.Result;
 
 @Data
 public final class UnitOperator {

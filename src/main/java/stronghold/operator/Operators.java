@@ -1,6 +1,13 @@
 package stronghold.operator;
 
 import stronghold.model.Database;
+import stronghold.operator.sections.AuthOperator;
+import stronghold.operator.sections.BuildingOperator;
+import stronghold.operator.sections.EconomyOperator;
+import stronghold.operator.sections.GameMapOperator;
+import stronghold.operator.sections.PlayerOperator;
+import stronghold.operator.sections.ProfileOperator;
+import stronghold.operator.sections.UnitOperator;
 
 /* singleton interface for operators */
 public class Operators {

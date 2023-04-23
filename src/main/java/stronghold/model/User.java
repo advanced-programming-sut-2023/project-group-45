@@ -1,6 +1,6 @@
 package stronghold.model;
 
-import context.HashedString;
+import stronghold.context.HashedString;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.NonNull;

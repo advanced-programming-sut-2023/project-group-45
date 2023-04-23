@@ -1,9 +1,13 @@
 package stronghold.operator;
 
 import java.util.Map;
+import lombok.Data;
+import stronghold.model.Database;
 import stronghold.model.Player;
 
+@Data
 public final class PlayerOperator {
+    private final Database database;
 
     public static Result<Player> getPlayer(Map<Object, String> req) {
         return null;
@@ -19,8 +23,5 @@ public final class PlayerOperator {
 
     public static Result<Integer> changeFearRate(Map<Object, String> req) {
         return null;
-    }
-
-    private PlayerOperator() {
     }
 }

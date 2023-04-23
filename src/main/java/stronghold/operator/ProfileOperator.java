@@ -1,8 +1,12 @@
 package stronghold.operator;
 
 import java.util.Map;
+import lombok.Data;
+import stronghold.model.Database;
 
+@Data
 public final class ProfileOperator {
+    private final Database database;
 
     public static Result<String> changePassword(Map<String, Object> req) {
         return null;
@@ -22,8 +26,5 @@ public final class ProfileOperator {
 
     public static Result<String> changeSlogan(Map<String, Object> req) {
         return null;
-    }
-
-    private ProfileOperator() {
     }
 }

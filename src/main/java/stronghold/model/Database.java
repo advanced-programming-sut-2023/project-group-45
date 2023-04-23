@@ -17,10 +17,6 @@ import lombok.Setter;
 @Data
 public class Database implements Serializable {
 
-    @Getter
-    @Setter
-    private static Database active = null;
-
     private final List<User> users = new ArrayList<>();
     private final Market market = new Market();
 

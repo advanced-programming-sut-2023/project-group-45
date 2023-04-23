@@ -1,18 +1,28 @@
 package stronghold.context;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
+import lombok.Data;
 
-public record HashedString(HashMode mode, String content) implements Serializable {
+@Data
+public class HashedString implements Serializable {
+    private final HashMode mode;
+    private final String hashedContent;
+
+    private HashedString(HashMode mode, String hashedContent) {
+        this.mode = mode;
+        this.hashedContent = hashedContent;
+    }
+
+    public static HashedString fromPlain(String plainContent) {
+        return new HashedString(HashMode.PLAIN, plainContent);
+    }
+
     public HashedString withMode(HashMode newMode) {
         if (mode.equals(newMode))
             return this;
         if (!mode.equals(HashMode.PLAIN))
             return null;
-        String hashedContent = HashMode.toStringFunction.get(newMode).hashString(content);
+        String hashedContent = HashMode.toStringFunction.get(newMode).hashString(this.hashedContent);
         return new HashedString(newMode, hashedContent);
     }
 
@@ -26,7 +36,7 @@ public record HashedString(HashMode mode, String content) implements Serializabl
         }
         HashedString that = (HashedString) o;
         if (mode.equals(that.mode))
-            return content.equals(that.content);
+            return hashedContent.equals(that.hashedContent);
         if (mode.equals(HashMode.PLAIN))
             return withMode(that.mode).equals(that);
         if (that.mode.equals(HashMode.PLAIN))

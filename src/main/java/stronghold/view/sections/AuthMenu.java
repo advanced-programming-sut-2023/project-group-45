@@ -27,6 +27,8 @@ public class AuthMenu extends Menu {
             "What is my mother’s last name?"
     };
 
+    private int timeout, timeoutLevel = -2;
+
     public AuthMenu(Scanner scanner) {
         super(scanner);
         addCommand("login", this::login);
@@ -105,6 +107,11 @@ public class AuthMenu extends Menu {
     }
 
     private void login(Map<String, String> input) {
+        int time = (int) (System.currentTimeMillis() / 1000);
+        if(time < timeout) {
+            System.out.println("You have been blocked for " + (timeout - time) + " seconds");
+            return;
+        }
         HashMap<String, Object> req = new HashMap<>();
         req.put("username", input.get("username"));
         req.put("password",
@@ -115,7 +122,12 @@ public class AuthMenu extends Menu {
         try {
             User user = Operators.auth.login(req);
             new ProfileMenu(scanner, user).run();
+            timeoutLevel = -2;
         } catch (OperatorException e) {
+            timeoutLevel++;
+            if(timeoutLevel > 0) {
+                timeout = time + timeoutLevel * 5;
+            }
             System.out.println(e.getMessage());
         }
     }

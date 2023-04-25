@@ -27,7 +27,7 @@ public class Tokenizer {
                 escaped = true;
             } else if (c == '"') {
                 inQuotes = !inQuotes;
-            } else if (c == ' ' && !inQuotes) {
+            } else if (Character.isWhitespace(c) && !inQuotes) {
                 if (currentWord.length() > 0) {
                     tokens.add(currentWord.toString());
                     currentWord = new StringBuilder();

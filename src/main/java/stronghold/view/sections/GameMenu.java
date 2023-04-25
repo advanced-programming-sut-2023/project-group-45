@@ -15,24 +15,6 @@ public class GameMenu extends Menu {
         // TODO: add command
     }
 
-    private void changeUsername(Map<String, String> input) {
-    }
-
-    private void changeNickname(Map<String, String> input) {
-    }
-
-    private void changePassword(Map<String, String> input) {
-    }
-
-    private void changeEmail(Map<String, String> input) {
-    }
-
-    private void changeSlogan(Map<String, String> input) {
-    }
-
-    private void displayProfile(Map<String, String> input) {
-    }
-
     private void showMap(Map<String, String> input) {
     }
 

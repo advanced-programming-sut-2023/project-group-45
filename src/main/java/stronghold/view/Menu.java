@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class Menu {
 
-    private final Scanner scanner;
+    protected final Scanner scanner;
     private final Map<String, Consumer<Map<String, String>>> commands = new HashMap<>();
 
     protected final void addCommand(String commandName,

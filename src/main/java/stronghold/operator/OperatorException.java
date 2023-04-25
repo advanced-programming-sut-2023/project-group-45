@@ -14,6 +14,8 @@ public class OperatorException extends Exception {
         NOT_UNIQUE_EMAIL,
         USER_NOT_FOUND,
         INCORRECT_PASSWORD,
-        INCORRECT_SECURITY_QA
+        INCORRECT_SECURITY_QA,
+        INVALID_USERNAME,
+        INVALID_EMAIL
     }
 }

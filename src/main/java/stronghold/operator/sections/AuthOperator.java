@@ -46,6 +46,9 @@ public class AuthOperator {
         String nickname = checkNotNullString(req.get("nickname"));
         String email = checkNotNullString(req.get("email"));
         // TODO: check for username and email format
+        checkExpression(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
+        checkExpression(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
+                Type.INVALID_EMAIL);
         // check for unique username and email
         checkExpression(getUserFromUsername(username).isEmpty(), Type.NOT_UNIQUE_USERNAME);
         checkExpression(getUserFromEmail(email).isEmpty(), Type.NOT_UNIQUE_EMAIL);
@@ -69,7 +72,7 @@ public class AuthOperator {
         return user;
     }
 
-    public void forgetPassword(Map<String, Object> req) throws OperatorException {
+    public void forgotPassword(Map<String, Object> req) throws OperatorException {
         String username = checkNotNullString(req.get("username"));
         HashedString newPassword = checkNotNullCastable(req.get("newPassword"), HashedString.class);
         String securityQuestion = checkNotNullString(req.get("securityQuestion"));

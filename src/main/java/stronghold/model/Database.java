@@ -16,7 +16,6 @@ import lombok.Data;
 public class Database implements Serializable {
 
     private final List<User> users = new ArrayList<>();
-    private final Market market = new Market();
 
     public static Database fromFile(File file) throws IOException, ClassNotFoundException {
         @Cleanup FileInputStream inputStream = new FileInputStream(file);

@@ -39,8 +39,9 @@ public abstract class Menu {
     public void run() {
         while (true) {
             String line = scanner.nextLine().trim();
-            if (line.equals("back"))
+            if (line.equals("back")) {
                 return;
+            }
             processLine(line);
         }
     }

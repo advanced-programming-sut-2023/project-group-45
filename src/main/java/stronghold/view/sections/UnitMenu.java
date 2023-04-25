@@ -7,7 +7,7 @@ import stronghold.view.Menu;
 
 public class UnitMenu extends Menu {
 
-    private Unit unit;
+    private final Unit unit;
 
     public UnitMenu(Scanner scanner, Unit unit) {
         super(scanner);

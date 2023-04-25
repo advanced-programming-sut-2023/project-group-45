@@ -6,8 +6,8 @@ import stronghold.view.Menu;
 
 public class MapMenu extends Menu {
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public MapMenu(Scanner scanner, int x, int y) {
         super(scanner);

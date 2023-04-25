@@ -8,6 +8,7 @@ import stronghold.operator.Result;
 
 @Data
 public final class BuildingOperator {
+
     private final Database database;
 
     public static Result<Building> dropBuilding(Map<Object, String> req) {

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Cleanup;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class Database implements Serializable {

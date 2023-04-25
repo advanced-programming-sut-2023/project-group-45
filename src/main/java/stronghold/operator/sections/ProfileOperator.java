@@ -7,6 +7,7 @@ import stronghold.operator.Result;
 
 @Data
 public final class ProfileOperator {
+
     private final Database database;
 
     public static Result<String> changePassword(Map<String, Object> req) {

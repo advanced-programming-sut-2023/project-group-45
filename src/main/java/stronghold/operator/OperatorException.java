@@ -6,13 +6,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class OperatorException extends Exception {
-    public static enum Type {
+
+    private final Type type;
+
+    public enum Type {
         NOT_UNIQUE_USERNAME,
         NOT_UNIQUE_EMAIL,
         USER_NOT_FOUND,
         INCORRECT_PASSWORD,
         INCORRECT_SECURITY_QA
     }
-
-    private final Type type;
 }

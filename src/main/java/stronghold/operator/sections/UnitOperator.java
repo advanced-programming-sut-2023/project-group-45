@@ -8,6 +8,7 @@ import stronghold.operator.Result;
 
 @Data
 public final class UnitOperator {
+
     private final Database database;
 
     public static Result<Unit> dropUnit(Map<Object, String> req) {

@@ -1,10 +1,10 @@
 package stronghold.model;
 
-import lombok.Builder;
-import stronghold.context.HashedString;
 import java.io.Serializable;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import stronghold.context.HashedString;
 
 @Data
 @Builder(toBuilder = true)

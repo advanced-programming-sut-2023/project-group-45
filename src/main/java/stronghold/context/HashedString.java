@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class HashedString implements Serializable {
+
     private final HashMode mode;
     private final String hashedContent;
 
@@ -18,11 +19,14 @@ public class HashedString implements Serializable {
     }
 
     public HashedString withMode(HashMode newMode) {
-        if (mode.equals(newMode))
+        if (mode.equals(newMode)) {
             return this;
-        if (!mode.equals(HashMode.PLAIN))
+        }
+        if (!mode.equals(HashMode.PLAIN)) {
             return null;
-        String hashedContent = HashMode.toStringFunction.get(newMode).hashString(this.hashedContent);
+        }
+        String hashedContent = HashMode.toStringFunction.get(newMode)
+                .hashString(this.hashedContent);
         return new HashedString(newMode, hashedContent);
     }
 
@@ -35,12 +39,15 @@ public class HashedString implements Serializable {
             return false;
         }
         HashedString that = (HashedString) o;
-        if (mode.equals(that.mode))
+        if (mode.equals(that.mode)) {
             return hashedContent.equals(that.hashedContent);
-        if (mode.equals(HashMode.PLAIN))
+        }
+        if (mode.equals(HashMode.PLAIN)) {
             return withMode(that.mode).equals(that);
-        if (that.mode.equals(HashMode.PLAIN))
+        }
+        if (that.mode.equals(HashMode.PLAIN)) {
             return that.withMode(mode).equals(this);
+        }
         return false; // no way to compare different hash modes
     }
 }

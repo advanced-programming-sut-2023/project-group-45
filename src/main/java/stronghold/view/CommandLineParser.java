@@ -27,6 +27,7 @@ public class CommandLineParser {
             if (token.startsWith("--")) {
                 String[] option = token.substring(2).split("=", 2);
                 checkArgument(option.length == 2, "Invalid option: %s", token);
+                checkArgument(!options.containsKey(option[0]), "Duplicate option: %s", token);
                 options.put(option[0], option[1]);
             } else {
                 checkArgument(!options.containsKey("subcommand"), "Invalid option: %s", token);

@@ -1,7 +1,8 @@
-package stronghold.view;
+package stronghold.view.sections;
 
 import java.util.Map;
 import java.util.Scanner;
+import stronghold.view.Menu;
 
 public class AuthMenu extends Menu {
 

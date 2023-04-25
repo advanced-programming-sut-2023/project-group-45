@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import lombok.Getter;
 
 public class CommandLineParser {
@@ -26,9 +27,11 @@ public class CommandLineParser {
             String token = tokens.get(i);
             if (token.startsWith("--")) {
                 String[] option = token.substring(2).split("=", 2);
-                checkArgument(option.length == 2, "Invalid option: %s", token);
-                checkArgument(!options.containsKey(option[0]), "Duplicate option: %s", token);
-                options.put(option[0], option[1]);
+                if (option.length == 1) {
+                    options.put(option[0], "true");
+                } else {
+                    options.put(option[0], option[1]);
+                }
             } else {
                 checkArgument(!options.containsKey("subcommand"), "Invalid option: %s", token);
                 options.put("subcommand", token);

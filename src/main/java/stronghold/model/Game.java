@@ -10,6 +10,7 @@ public class Game implements Serializable {
     private final List<Player> players;
     private int turn = 1;
     private int playerTurn = 0;
+    private Market market;
 
     public int getPlayerCount() {
         return players.size();

@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class TokenizerTest {
+
     @Test
     void testMultiword() {
         Tokenizer tokenizer = new Tokenizer("do this then that");
@@ -20,7 +21,9 @@ class TokenizerTest {
 
     @Test
     void testEscape() {
-        Tokenizer tokenizer = new Tokenizer("\"big word\" \"in a \\\"small\\\" word\" \"escape \\\\ from reality\"");
-        assertEquals(List.of("big word", "in a \"small\" word", "escape \\ from reality"), tokenizer.getTokens());
+        Tokenizer tokenizer = new Tokenizer(
+                "\"big word\" \"in a \\\"small\\\" word\" \"escape \\\\ from reality\"");
+        assertEquals(List.of("big word", "in a \"small\" word", "escape \\ from reality"),
+                tokenizer.getTokens());
     }
 }

@@ -8,6 +8,7 @@ import stronghold.operator.Result;
 
 @Data
 public final class PlayerOperator {
+
     private final Database database;
 
     public static Result<Player> getPlayer(Map<Object, String> req) {

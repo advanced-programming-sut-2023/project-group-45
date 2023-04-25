@@ -9,6 +9,7 @@ import stronghold.operator.Result;
 
 @Data
 public final class GameMapOperator {
+
     private final Database database;
 
     public static Result<GameMap> getGameMap(Map<Object, String> req) {

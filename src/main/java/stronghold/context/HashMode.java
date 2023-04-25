@@ -11,22 +11,21 @@ public enum HashMode implements Serializable {
     SHA256,
     SHA512;
 
-    @FunctionalInterface
-    public interface HashStringFunction {
-
-        String hashString(String plain);
-    }
-
     private static final HashStringFunction plainHashStringFunction = plain -> plain;
-
-    private static HashStringFunction fromHashFunction(final HashFunction function) {
-        return plain -> function.hashString(plain, StandardCharsets.UTF_8).toString();
-    }
-
     public static final ImmutableMap<HashMode, HashStringFunction> toStringFunction
             = ImmutableMap.of(
             PLAIN, plainHashStringFunction,
             SHA256, fromHashFunction(Hashing.sha256()),
             SHA512, fromHashFunction(Hashing.sha512())
     );
+
+    private static HashStringFunction fromHashFunction(final HashFunction function) {
+        return plain -> function.hashString(plain, StandardCharsets.UTF_8).toString();
+    }
+
+    @FunctionalInterface
+    public interface HashStringFunction {
+
+        String hashString(String plain);
+    }
 }

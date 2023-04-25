@@ -1,8 +1,9 @@
-package stronghold.view;
+package stronghold.view.sections;
 
 import java.util.Map;
 import java.util.Scanner;
 import stronghold.model.Game;
+import stronghold.view.Menu;
 
 public class GameMenu extends Menu {
 

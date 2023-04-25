@@ -1,15 +1,19 @@
 package stronghold.model;
 
+import lombok.Builder;
+import stronghold.context.HashedString;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class User {
+@Builder(toBuilder = true)
+public class User implements Serializable {
 
     @NonNull
     private String username;
     @NonNull
-    private String hashedPassword;
+    private HashedString password;
     @NonNull
     private String nickname;
     @NonNull

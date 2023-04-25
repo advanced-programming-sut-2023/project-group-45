@@ -1,9 +1,10 @@
 package stronghold.model;
 
+import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class GameMap {
+public class GameMap implements Serializable {
 
     private final int height, width;
     private final Tile[][] map;

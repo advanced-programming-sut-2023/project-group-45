@@ -9,6 +9,11 @@ public class OperatorException extends Exception {
 
     private final Type type;
 
+    @Override
+    public String getMessage() {
+        return toString();
+    }
+
     public enum Type {
         NOT_UNIQUE_USERNAME,
         NOT_UNIQUE_EMAIL,

@@ -120,9 +120,8 @@ public class AuthMenu extends Menu {
 
     private void forgotPassword(Map<String, String> input) {
         Map<String, Object> req = new HashMap<>();
-        req.put("username", input.get("username"));
-        req.put("security-question", input.get("security-question"));
-        req.put("security-answer", input.get("security-answer"));
+        copyOptTo(input, req, "username", "security-question", "security-answer");
+        req.put("new-password", hashPassword(getOpt(input, "new-password")));
         try {
             Operators.auth.forgotPassword(req);
             System.out.println("Password reset successfully");

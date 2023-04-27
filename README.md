@@ -1,21 +1,12 @@
-# پروژه‌ی برنامه‌سازی پیشرفته
+# Stronghold Crusader
 
-لطفا نام و نام‌خانوادگی و شماره‌ی دانشجووی اعضای گروه خود را این‌جا وارد کنید:
+## Contributors
 
-شماره‌ی تیم: `45`
+Group 45:
+1. Parsa Alizadeh (Student ID: 401110494)
+2. Alireza Samimi (Student ID: 401110501)
+3. Alireza Kaviani (Student ID: 401110512)
 
-نام عضو اول: **پارسا علیزاده**
+## UML
 
-شماره دانشجویی عضو اول: `401110494`
-
-نام عضو دوم: **علیرضا صمیمی**
-
-شماره دانشجویی عضو دوم: `401110501`
-
-نام عضو سوم: **علیرضا کاویانی**
-
-شماره دانشجویی عضو سوم: `401110512`
-
-## Phase 0 UML
-
-![project-uml.png](project-uml.png)
+![assets/project-uml.png](assets/project-uml.png)

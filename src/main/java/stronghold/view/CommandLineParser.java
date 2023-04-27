@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.Getter;
 
 public class CommandLineParser {
@@ -33,6 +32,7 @@ public class CommandLineParser {
                     options.put(option[0], option[1]);
                 }
             } else {
+                checkArgument(!token.startsWith("-"), "Invalid option: %s", token);
                 checkArgument(!options.containsKey("subcommand"), "Invalid option: %s", token);
                 options.put("subcommand", token);
             }

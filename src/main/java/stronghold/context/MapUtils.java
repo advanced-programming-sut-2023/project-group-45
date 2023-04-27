@@ -27,4 +27,20 @@ public class MapUtils {
         throw new IllegalArgumentException(
                 "Invalid boolean value for --" + key + ", got " + getOpt(map, key));
     }
+
+    public static Object getReq(Map<String, Object> map, String key) {
+        return checkNotNull(map.get(key));
+    }
+
+    public static <T> T getReqAs(Map<String, Object> map, String key, Class<T> clazz) {
+        Object obj = getReq(map, key);
+        if (clazz.isInstance(obj)) {
+            return clazz.cast(obj);
+        }
+        throw new IllegalArgumentException("Object is not castable to " + clazz.getName());
+    }
+
+    public static String getReqString(Map<String, Object> map, String key) {
+        return getReqAs(map, key, String.class);
+    }
 }

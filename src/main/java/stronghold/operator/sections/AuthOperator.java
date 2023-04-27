@@ -1,11 +1,12 @@
 package stronghold.operator.sections;
 
+import static stronghold.context.MapUtils.getReqAs;
+import static stronghold.context.MapUtils.getReqString;
 import static stronghold.operator.OperatorPreconditions.checkExpression;
-import static stronghold.operator.OperatorPreconditions.checkNotNullCastable;
-import static stronghold.operator.OperatorPreconditions.checkNotNullString;
+import static stronghold.operator.OperatorPreconditions.checkIsNull;
+import static stronghold.operator.OperatorPreconditions.checkUsername;
 
 import java.util.Map;
-import java.util.Optional;
 import lombok.Data;
 import stronghold.context.HashedString;
 import stronghold.model.Database;
@@ -18,40 +19,17 @@ public class AuthOperator {
 
     private final Database database;
 
-    public Optional<User> getUserFromUsername(String username) {
-        return database.getUsers().stream()
-                .filter(user -> user.getUsername().equals(username))
-                .findFirst();
-    }
-
-    public User getUserFromUsernameOrThrow(String username) throws OperatorException {
-        return getUserFromUsername(username)
-                .orElseThrow(() -> new OperatorException(Type.USER_NOT_FOUND));
-    }
-
-    public Optional<User> getUserFromEmail(String email) {
-        return database.getUsers().stream()
-                .filter(user -> user.getEmail().equals(email))
-                .findFirst();
-    }
-
-    public Optional<User> findUser(Map<String, Object> req) {
-        String username = checkNotNullString(req.get("username"));
-        return getUserFromUsername(username);
-    }
-
     public User register(Map<String, Object> req) throws OperatorException {
-        String username = checkNotNullString(req.get("username"));
-        HashedString password = checkNotNullCastable(req.get("password"), HashedString.class);
-        String nickname = checkNotNullString(req.get("nickname"));
-        String email = checkNotNullString(req.get("email"));
+        String username = getReqString(req, "username");
+        HashedString password = getReqAs(req, "password", HashedString.class);
+        String nickname = getReqString(req, "nickname");
+        String email = getReqString(req, "email");
         // TODO: check for username and email format
         checkExpression(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
         checkExpression(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
                 Type.INVALID_EMAIL);
-        // check for unique username and email
-        checkExpression(getUserFromUsername(username).isEmpty(), Type.NOT_UNIQUE_USERNAME);
-        checkExpression(getUserFromEmail(email).isEmpty(), Type.NOT_UNIQUE_EMAIL);
+        checkIsNull(database.getUserFromUsername(username), Type.NOT_UNIQUE_USERNAME);
+        checkIsNull(database.getUserFromEmail(email), Type.NOT_UNIQUE_EMAIL);
         User user = User.builder()
                 .username(username)
                 .password(password)
@@ -63,23 +41,19 @@ public class AuthOperator {
     }
 
     public User login(Map<String, Object> req) throws OperatorException {
-        String username = checkNotNullString(req.get("username"));
-        HashedString password = checkNotNullCastable(req.get("password"), HashedString.class);
-        // check user exists
-        User user = getUserFromUsernameOrThrow(username);
-        // check password matches
+        String username = getReqString(req, "username");
+        HashedString password = getReqAs(req, "password", HashedString.class);
+        User user = checkUsername(database, username);
         checkExpression(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);
         return user;
     }
 
     public void forgotPassword(Map<String, Object> req) throws OperatorException {
-        String username = checkNotNullString(req.get("username"));
-        HashedString newPassword = checkNotNullCastable(req.get("newPassword"), HashedString.class);
-        String securityQuestion = checkNotNullString(req.get("securityQuestion"));
-        String securityAnswer = checkNotNullString(req.get("securityAnswer"));
-        // check user exists
-        User user = getUserFromUsernameOrThrow(username);
-        // check security question and answer matches
+        String username = getReqString(req, "username");
+        HashedString newPassword = getReqAs(req, "new-password", HashedString.class);
+        String securityQuestion = getReqString(req, "security-question");
+        String securityAnswer = getReqString(req, "security-answer");
+        User user = checkUsername(database, username);
         checkExpression(
                 securityQuestion.equals(user.getSecurityQuestion()) &&
                         securityAnswer.equals(user.getSecurityAnswer()),

@@ -22,7 +22,17 @@ public class OperatorPreconditions {
         return t;
     }
 
-    public static User checkUsername(Database database, String username) throws OperatorException {
+    public static User checkUserExists(Database database, String username)
+            throws OperatorException {
         return checkNotNull(database.getUserFromUsername(username), Type.USER_NOT_FOUND);
+    }
+
+    public static void checkUsernameFormat(String username) throws OperatorException {
+        checkExpression(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
+    }
+
+    public static void checkEmailFormat(String email) throws OperatorException {
+        checkExpression(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
+                Type.INVALID_EMAIL);
     }
 }

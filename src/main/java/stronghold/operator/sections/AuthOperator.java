@@ -2,9 +2,11 @@ package stronghold.operator.sections;
 
 import static stronghold.context.MapUtils.getReqAs;
 import static stronghold.context.MapUtils.getReqString;
+import static stronghold.operator.OperatorPreconditions.checkEmailFormat;
 import static stronghold.operator.OperatorPreconditions.checkExpression;
 import static stronghold.operator.OperatorPreconditions.checkIsNull;
-import static stronghold.operator.OperatorPreconditions.checkUsername;
+import static stronghold.operator.OperatorPreconditions.checkUserExists;
+import static stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
 import java.util.Map;
 import lombok.Data;
@@ -24,10 +26,8 @@ public class AuthOperator {
         HashedString password = getReqAs(req, "password", HashedString.class);
         String nickname = getReqString(req, "nickname");
         String email = getReqString(req, "email");
-        // TODO: check for username and email format
-        checkExpression(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
-        checkExpression(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
-                Type.INVALID_EMAIL);
+        checkUsernameFormat(username);
+        checkEmailFormat(email);
         checkIsNull(database.getUserFromUsername(username), Type.NOT_UNIQUE_USERNAME);
         checkIsNull(database.getUserFromEmail(email), Type.NOT_UNIQUE_EMAIL);
         User user = User.builder()
@@ -43,7 +43,7 @@ public class AuthOperator {
     public User login(Map<String, Object> req) throws OperatorException {
         String username = getReqString(req, "username");
         HashedString password = getReqAs(req, "password", HashedString.class);
-        User user = checkUsername(database, username);
+        User user = checkUserExists(database, username);
         checkExpression(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);
         return user;
     }
@@ -53,7 +53,7 @@ public class AuthOperator {
         HashedString newPassword = getReqAs(req, "new-password", HashedString.class);
         String securityQuestion = getReqString(req, "security-question");
         String securityAnswer = getReqString(req, "security-answer");
-        User user = checkUsername(database, username);
+        User user = checkUserExists(database, username);
         checkExpression(
                 securityQuestion.equals(user.getSecurityQuestion()) &&
                         securityAnswer.equals(user.getSecurityAnswer()),

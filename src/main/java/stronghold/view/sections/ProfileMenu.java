@@ -137,12 +137,15 @@ public class ProfileMenu extends Menu {
     private void changeSecurityQA(Map<String, String> input) {
         Map<String, Object> req = new HashMap<>();
         req.put("user", user);
-        if (!input.containsKey("security-answer")) {
-            System.out.print("Your answer: ");
-            input.put("security-answer", scanner.nextLine().trim());
+        String securityQuestion = getOpt(input, "security-question");
+        req.put("new-security-question", securityQuestion);
+        if (!securityQuestion.isEmpty()) {
+            if (!input.containsKey("security-answer")) {
+                System.out.print("Your answer: ");
+                input.put("security-answer", scanner.nextLine().trim());
+            }
+            req.put("new-security-answer", getOpt(input, "security-answer"));
         }
-        req.put("new-security-question", getOpt(input, "security-question"));
-        req.put("new-security-answer", getOpt(input, "security-answer"));
         try {
             Operators.profile.changeSecurityQA(req);
             System.out.println("Change security question and answer successfully");

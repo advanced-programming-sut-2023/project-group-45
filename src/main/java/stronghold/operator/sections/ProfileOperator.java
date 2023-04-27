@@ -53,12 +53,17 @@ public final class ProfileOperator {
     public void changeSlogan(Map<String, Object> req) {
         User user = getReqAs(req, "user", User.class);
         String newSlogan = getReqString(req, "new-slogan");
-        user.setSlogan(newSlogan);
+        user.setSlogan(newSlogan.isEmpty() ? null : newSlogan);
     }
 
     public void changeSecurityQA(Map<String, Object> req) throws OperatorException {
         User user = getReqAs(req, "user", User.class);
         String newSecurityQuestion = getReqString(req, "new-security-question");
+        if (newSecurityQuestion.isEmpty()) {
+            user.setSecurityQuestion(null);
+            user.setSecurityAnswer(null);
+            return;
+        }
         String newSecurityAnswer = getReqString(req, "new-security-answer");
         user.setSecurityQuestion(newSecurityQuestion);
         user.setSecurityAnswer(newSecurityAnswer);

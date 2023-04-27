@@ -17,6 +17,9 @@ public class MapUtils {
     }
 
     public static boolean getBoolOpt(Map<String, String> map, String key) {
+        if (!map.containsKey(key)) {
+            return false;
+        }
         String value = getOpt(map, key).toLowerCase();
         if (value.equals("true") || value.equals("yes")) {
             return true;

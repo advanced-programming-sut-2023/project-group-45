@@ -1,5 +1,6 @@
 package stronghold.view.sections;
 
+import static stronghold.context.MapUtils.getBoolOpt;
 import static stronghold.context.MapUtils.getOpt;
 
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class ProfileMenu extends Menu {
         this.user = user;
         addCommand("print-security-questions", this::printSecurityQuestions);
         addCommand("change", this::changeProfile);
+        addCommand("display", this::displayProfile);
     }
 
     private static String generateSlogan() {
@@ -155,6 +157,16 @@ public class ProfileMenu extends Menu {
     }
 
     private void displayProfile(Map<String, String> input) {
+        System.out.println("Username: " + user.getUsername());
+        System.out.println("Nickname: " + user.getNickname());
+        System.out.println("Email: " + user.getEmail());
+        if (getBoolOpt(input, "slogan")) {
+            if (user.getSlogan() == null) {
+                System.out.println("Slogan is empty!");
+            } else {
+                System.out.println("Slogan: " + user.getSlogan());
+            }
+        }
     }
 
 }

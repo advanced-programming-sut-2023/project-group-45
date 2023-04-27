@@ -60,7 +60,7 @@ public abstract class Menu {
     }
 
     private void help(Map<String, String> input) {
-        System.out.println("Available commands:");
+        System.out.println("Available commands (" + getMenuName() + "):");
         System.out.println("\tback");
         commands.keySet().forEach(x -> System.out.println("\t" + x));
     }

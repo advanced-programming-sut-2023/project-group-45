@@ -26,7 +26,7 @@ public class AuthMenu extends Menu {
         addCommand("forgot-password", this::forgotPassword);
     }
 
-    private String generatePassword() {
+    public static String generatePassword() {
         // Generate random password with at least 6 characters which contains at least one
         // lowercase letter, one uppercase letter, one digit and one special character
         Random random = new Random();
@@ -54,12 +54,12 @@ public class AuthMenu extends Menu {
         return password.toString();
     }
 
-    private boolean isPasswordStrong(String password) {
-        return password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={};':\"|,.<>?]).{6,}$");
+    public static boolean isPasswordWeak(String password) {
+        return !password.matches(
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={};':\"|,.<>?/]).{6,}$");
     }
 
-    public HashedString hashPassword(String plainPassword) {
+    public static HashedString hashPassword(String plainPassword) {
         return HashedString.fromPlain(plainPassword).withMode(HashMode.SHA512);
     }
 
@@ -76,7 +76,7 @@ public class AuthMenu extends Menu {
             System.out.println("Password mismatch");
             return;
         }
-        if (!isPasswordStrong(getOpt(input, "password"))) {
+        if (isPasswordWeak(getOpt(input, "password"))) {
             System.out.println(
                     "Password must contain at least one lowercase letter, one uppercase letter, one digit and one special character");
             return;

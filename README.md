@@ -1,4 +1,4 @@
-# Stronghold Crusader: The Replica
+# Stronghold Crusader
 
 ## Contributors
 

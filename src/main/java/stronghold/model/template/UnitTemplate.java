@@ -1,11 +1,10 @@
 package stronghold.model.template;
 
-import java.io.Serializable;
 import lombok.Data;
 import stronghold.model.Unit;
 
 @Data
-public class UnitTemplate implements Serializable {
+public class UnitTemplate {
 
     private int maxHitPoints, speed, range, damage;
     private String type;

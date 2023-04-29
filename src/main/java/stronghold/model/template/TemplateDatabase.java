@@ -17,6 +17,7 @@ import lombok.Data;
 public class TemplateDatabase {
 
     private final Map<String, UnitTemplate> unitTemplates = new HashMap<>();
+    private final Map<String, BuildingTemplate> buildingTemplates = new HashMap<>();
 
     private static <T> T fromFile(File file, Class<T> clazz) throws IOException {
         @Cleanup FileReader fileReader = new FileReader(file);
@@ -30,15 +31,19 @@ public class TemplateDatabase {
 
     public void updateFromPath(File root) throws IOException {
         populate(unitTemplates, root, "units", UnitTemplate.class);
+        populate(buildingTemplates, root, "buildings", BuildingTemplate.class);
     }
 
     public void saveToPath(File root) throws IOException {
         depopulate(unitTemplates, root, "units");
+        depopulate(buildingTemplates, root, "buildings");
     }
 
     private <T> void populate(Map<String, T> templates, File root, String subPath, Class<T> clazz)
             throws IOException {
         File path = new File(root, subPath);
+        if (!path.exists()) // same as empty directory
+            return;
         for (File file : checkNotNull(path.listFiles())) {
             String templateName = file.getName().replace(".json", "");
             T template = fromFile(file, clazz);
@@ -51,6 +56,7 @@ public class TemplateDatabase {
         File path = new File(root, subpath);
         for (String templateName : templates.keySet()) {
             File file = new File(path, templateName + ".json");
+            file.getParentFile().mkdirs();
             toFile(file, templates.get(templateName));
         }
     }

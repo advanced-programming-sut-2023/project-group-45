@@ -6,15 +6,15 @@ import stronghold.model.Unit;
 @Data
 public class UnitTemplate {
 
-    private int maxHitPoints, speed, range, damage;
     private String type;
+    private int maxHitPoints, speed, range, damage;
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()
+                .type(type)
                 .maxHitPoints(maxHitPoints)
                 .speed(speed)
                 .range(range)
-                .damage(damage)
-                .type(type);
+                .damage(damage);
     }
 }

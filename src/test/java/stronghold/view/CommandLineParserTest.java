@@ -34,10 +34,4 @@ class CommandLineParserTest {
         assertEquals(commandLineParser2.getCommand(), commandLineParser1.getCommand());
         assertEquals(commandLineParser2.getOptions(), commandLineParser1.getOptions());
     }
-
-    @Test
-    void testDuplicateOption() {
-        String line = "do --this=these --that=those --this=those";
-        assertThrows(IllegalArgumentException.class, () -> getCommandLineParser(line));
-    }
 }

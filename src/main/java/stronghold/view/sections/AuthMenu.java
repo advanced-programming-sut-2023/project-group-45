@@ -102,10 +102,10 @@ public class AuthMenu extends Menu {
         }
         Map<String, Object> req = new HashMap<>();
         copyOptTo(input, req, "username");
-        req.put("password", hashPassword(getOpt(input, "password")));
-        if (req.containsKey("stay-logged-in")) {
+        if (input.containsKey("password"))
+            req.put("password", hashPassword(getOpt(input, "password")));
+        if (input.containsKey("stay-logged-in"))
             req.put("stay-logged-in", getBoolOpt(input, "stay-logged-in"));
-        }
         new CaptchaChecker().check(scanner);
         try {
             User user = Operators.auth.login(req);

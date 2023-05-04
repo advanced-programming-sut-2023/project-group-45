@@ -32,7 +32,7 @@ public class MapUtils {
     }
 
     public static Object getReq(Map<String, Object> map, String key) {
-        return checkNotNull(map.get(key));
+        return checkNotNull(map.get(key), "Missing key in operator request: %s", key);
     }
 
     public static <T> T getReqAs(Map<String, Object> map, String key, Class<T> clazz) {

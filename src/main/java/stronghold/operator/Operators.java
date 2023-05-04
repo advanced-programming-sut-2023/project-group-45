@@ -1,6 +1,7 @@
 package stronghold.operator;
 
 import stronghold.model.Database;
+import stronghold.model.template.TemplateDatabase;
 import stronghold.operator.sections.AuthOperator;
 import stronghold.operator.sections.BuildingOperator;
 import stronghold.operator.sections.EconomyOperator;
@@ -20,7 +21,7 @@ public class Operators {
     public static ProfileOperator profile;
     public static UnitOperator unit;
 
-    public static void initDatabase(Database database) {
+    public static void initDatabase(Database database, TemplateDatabase templateDatabase) {
         auth = new AuthOperator(database);
         building = new BuildingOperator(database);
         economy = new EconomyOperator(database);

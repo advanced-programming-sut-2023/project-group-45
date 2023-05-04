@@ -13,6 +13,7 @@ import stronghold.context.HashedString;
 import stronghold.model.User;
 import stronghold.operator.OperatorException;
 import stronghold.operator.Operators;
+import stronghold.view.CaptchaChecker;
 import stronghold.view.Menu;
 
 public class AuthMenu extends Menu {
@@ -83,6 +84,7 @@ public class AuthMenu extends Menu {
         }
         copyOptTo(input, req, "username", "email", "nickname");
         req.put("password", hashPassword(getOpt(input, "password")));
+        new CaptchaChecker().check(scanner);
         try {
             User user = Operators.auth.register(req);
             System.out.println("Register successful");
@@ -104,6 +106,7 @@ public class AuthMenu extends Menu {
         if (req.containsKey("stay-logged-in")) {
             req.put("stay-logged-in", getBoolOpt(input, "stay-logged-in"));
         }
+        new CaptchaChecker().check(scanner);
         try {
             User user = Operators.auth.login(req);
             System.out.println("Login successful");
@@ -122,6 +125,7 @@ public class AuthMenu extends Menu {
         Map<String, Object> req = new HashMap<>();
         copyOptTo(input, req, "username", "security-question", "security-answer");
         req.put("new-password", hashPassword(getOpt(input, "new-password")));
+        new CaptchaChecker().check(scanner);
         try {
             Operators.auth.forgotPassword(req);
             System.out.println("Password reset successfully");

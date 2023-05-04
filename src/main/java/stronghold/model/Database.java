@@ -16,6 +16,7 @@ import lombok.Data;
 public class Database implements Serializable {
 
     private final List<User> users = new ArrayList<>();
+    private User stayLoggedInUser = null;
 
     public static Database fromFile(File file) throws IOException, ClassNotFoundException {
         @Cleanup FileInputStream inputStream = new FileInputStream(file);
@@ -29,6 +30,12 @@ public class Database implements Serializable {
         } catch (IOException | ClassNotFoundException e) {
             return new Database();
         }
+    }
+
+    public void toFile(File file) throws IOException {
+        @Cleanup FileOutputStream outputStream = new FileOutputStream(file);
+        @Cleanup ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
+        objectStream.writeObject(this);
     }
 
     public User getUserFromUsername(String username) {
@@ -45,9 +52,7 @@ public class Database implements Serializable {
                 .orElse(null);
     }
 
-    public void toFile(File file) throws IOException {
-        @Cleanup FileOutputStream outputStream = new FileOutputStream(file);
-        @Cleanup ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
-        objectStream.writeObject(this);
+    public boolean isStayLoggedInUsername(String username) {
+        return stayLoggedInUser != null && username.equals(stayLoggedInUser.getUsername());
     }
 }

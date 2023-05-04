@@ -19,7 +19,7 @@ class UnitTemplateTest {
 
     @Test
     void testInitializedFields() {
-        UnitTemplate unitTemplate = templateDatabase.getUnitTemplates().get("test");
+        UnitTemplate unitTemplate = templateDatabase.getUnitTemplates().get("Archer");
         Unit unit = unitTemplate.getBuilder().build();
         assertEquals(unit.getMaxHitPoints(), unit.getHitPoints());
     }

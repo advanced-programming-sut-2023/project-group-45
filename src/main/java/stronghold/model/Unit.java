@@ -9,6 +9,7 @@ public class Unit implements Serializable {
 
     private final String type;
     private final int maxHitPoints, speed, range, damage;
+    private final boolean canClimb, canDig;
     private int hitPoints;
 
     /* I couldn't find a way to use lombok-generated constructor.
@@ -17,12 +18,14 @@ public class Unit implements Serializable {
      * auto-generate the constructor
      */
     @Builder(toBuilder = true)
-    public Unit(String type, int maxHitPoints, int speed, int range, int damage) {
+    public Unit(String type, int maxHitPoints, int speed, int range, int damage, boolean canClimb, boolean canDig) {
         this.maxHitPoints = maxHitPoints;
         this.speed = speed;
         this.range = range;
         this.damage = damage;
         this.type = type;
+        this.canClimb = canClimb;
+        this.canDig = canDig;
         this.hitPoints = maxHitPoints;
     }
 }

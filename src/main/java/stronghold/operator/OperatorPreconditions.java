@@ -1,36 +1,38 @@
 package stronghold.operator;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
+import stronghold.model.Database;
+import stronghold.model.User;
 import stronghold.operator.OperatorException.Type;
 
 public class OperatorPreconditions {
-
-    /*
-     * checkCastable throws RuntimeException. If it used in body of a function, say foo,
-     * caller of foo should have checked for sanity of arguments. Other exceptions such as format
-     * of specific strings, must be an OperatorException not a RuntimeException.
-     */
-    public static <T> T checkCastable(Object obj, Class<T> clazz) {
-        if (clazz.isInstance(obj)) {
-            return clazz.cast(obj);
-        } else {
-            throw new IllegalArgumentException("Object is not castable to " + clazz.getName());
-        }
-    }
-
-    public static <T> T checkNotNullCastable(Object obj, Class<T> clazz) {
-        return checkNotNull(checkCastable(obj, clazz));
-    }
-
-    public static String checkNotNullString(Object obj) {
-        return checkNotNullCastable(obj, String.class);
-    }
 
     public static void checkExpression(boolean expression, Type exceptionType)
             throws OperatorException {
         if (!expression) {
             throw new OperatorException(exceptionType);
         }
+    }
+
+    public static void checkIsNull(Object obj, Type exceptionType) throws OperatorException {
+        checkExpression(obj == null, exceptionType);
+    }
+
+    public static <T> T checkNotNull(T t, Type exceptionType) throws OperatorException {
+        checkExpression(t != null, exceptionType);
+        return t;
+    }
+
+    public static User checkUserExists(Database database, String username)
+            throws OperatorException {
+        return checkNotNull(database.getUserFromUsername(username), Type.USER_NOT_FOUND);
+    }
+
+    public static void checkUsernameFormat(String username) throws OperatorException {
+        checkExpression(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
+    }
+
+    public static void checkEmailFormat(String email) throws OperatorException {
+        checkExpression(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
+                Type.INVALID_EMAIL);
     }
 }

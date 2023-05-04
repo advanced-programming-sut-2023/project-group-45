@@ -31,6 +31,20 @@ public class Database implements Serializable {
         }
     }
 
+    public User getUserFromUsername(String username) {
+        return users.stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public User getUserFromEmail(String email) {
+        return users.stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
+    }
+
     public void toFile(File file) throws IOException {
         @Cleanup FileOutputStream outputStream = new FileOutputStream(file);
         @Cleanup ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);

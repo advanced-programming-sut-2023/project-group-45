@@ -6,8 +6,9 @@ import stronghold.model.Unit;
 @Data
 public class UnitTemplate {
 
-    private String type;
-    private int maxHitPoints, speed, range, damage;
+    private final String type;
+    private final int maxHitPoints, speed, range, damage;
+    private final boolean canClimb, canDig;
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()
@@ -15,6 +16,8 @@ public class UnitTemplate {
                 .maxHitPoints(maxHitPoints)
                 .speed(speed)
                 .range(range)
-                .damage(damage);
+                .damage(damage)
+                .canClimb(canClimb)
+                .canDig(canDig);
     }
 }

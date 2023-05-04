@@ -36,7 +36,7 @@ public abstract class Menu {
             CommandLineParser parser = new CommandLineParser(tokenizer.getTokens());
             processCommand(parser);
         } catch (RuntimeException e) {
-            System.out.println("Illegal input: " + e.getMessage());
+            System.out.println("Command failed: " + e.getMessage());
         }
     }
 

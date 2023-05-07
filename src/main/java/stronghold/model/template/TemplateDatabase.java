@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,17 +17,18 @@ import lombok.Data;
 @Data
 public class TemplateDatabase {
 
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String, UnitTemplate> unitTemplates = new HashMap<>();
     private final Map<String, BuildingTemplate> buildingTemplates = new HashMap<>();
 
     private static <T> T fromFile(File file, Class<T> clazz) throws IOException {
         @Cleanup FileReader fileReader = new FileReader(file);
-        return new Gson().fromJson(fileReader, clazz);
+        return GSON.fromJson(fileReader, clazz);
     }
 
     private static void toFile(File file, Object obj) throws IOException {
         @Cleanup FileWriter fileWriter = new FileWriter(file);
-        new Gson().toJson(obj, obj.getClass(), fileWriter);
+        GSON.toJson(obj, obj.getClass(), fileWriter);
     }
 
     public void updateFromPath(File root) throws IOException {

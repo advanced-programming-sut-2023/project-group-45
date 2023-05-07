@@ -58,6 +58,6 @@ public class TemplateDatabaseEditor {
             }
             input = scanner.nextLine();
         }
-        templateDatabase.saveToPath(templateDatabaseRoot);
+        templateDatabase.saveToPath(templateDatabaseRoot, true);
     }
 }

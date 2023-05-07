@@ -37,8 +37,12 @@ public class TemplateDatabase {
     }
 
     public void saveToPath(File root) throws IOException {
-        depopulate(unitTemplates, root, "units");
-        depopulate(buildingTemplates, root, "buildings");
+        saveToPath(root, false);
+    }
+
+    public void saveToPath(File root, boolean overwrite) throws IOException {
+        depopulate(unitTemplates, root, "units", overwrite);
+        depopulate(buildingTemplates, root, "buildings", overwrite);
     }
 
     private <T> void populate(Map<String, T> templates, File root, String subPath, Class<T> clazz)
@@ -53,13 +57,15 @@ public class TemplateDatabase {
         }
     }
 
-    private <T> void depopulate(Map<String, T> templates, File root, String subpath)
+    private <T> void depopulate(Map<String, T> templates, File root, String subpath, boolean overwrite)
             throws IOException {
         File path = new File(root, subpath);
         for (String templateName : templates.keySet()) {
             File file = new File(path, templateName + ".json");
-            file.getParentFile().mkdirs();
-            toFile(file, templates.get(templateName));
+            if (!file.exists() || overwrite) {
+                file.getParentFile().mkdirs();
+                toFile(file, templates.get(templateName));
+            }
         }
     }
 }

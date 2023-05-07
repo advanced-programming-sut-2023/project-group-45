@@ -1,1 +1,7 @@
-{"type":"Swordsman","maxHitPoints":10,"speed":1,"range":1,"damage":5,"canClimb":false,"canDig":false}
+{
+  "type": "Swordsman",
+  "maxHitPoints": 10,
+  "speed": 1,
+  "range": 1,
+  "damage": 5
+}

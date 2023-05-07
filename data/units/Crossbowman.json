@@ -1,1 +1,7 @@
-{"type":"Crossbowman","maxHitPoints":30,"speed":2,"range":10,"damage":2,"canClimb":false,"canDig":false}
+{
+  "type": "Crossbowman",
+  "maxHitPoints": 30,
+  "speed": 2,
+  "range": 10,
+  "damage": 2
+}

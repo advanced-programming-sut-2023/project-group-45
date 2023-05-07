@@ -1,1 +1,7 @@
-{"type":"Assassin","maxHitPoints":30,"speed":3,"range":1,"damage":3,"canClimb":false,"canDig":false}
+{
+  "type": "Assassin",
+  "maxHitPoints": 30,
+  "speed": 3,
+  "range": 1,
+  "damage": 3
+}

@@ -1,1 +1,8 @@
-{"type":"Engineer","maxHitPoints":10,"speed":3,"range":1,"damage":0,"canClimb":false,"canDig":true}
+{
+  "type": "Engineer",
+  "maxHitPoints": 10,
+  "speed": 3,
+  "range": 1,
+  "damage": 0,
+  "canDig": true
+}

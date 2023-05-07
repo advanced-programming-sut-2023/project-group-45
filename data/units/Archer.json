@@ -1,1 +1,9 @@
-{"type":"Archer","maxHitPoints":20,"speed":4,"range":10,"damage":2,"canClimb":true,"canDig":true}
+{
+  "type": "Archer",
+  "maxHitPoints": 20,
+  "speed": 4,
+  "range": 10,
+  "damage": 2,
+  "canClimb": true,
+  "canDig": true
+}

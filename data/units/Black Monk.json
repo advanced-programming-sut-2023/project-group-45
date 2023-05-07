@@ -1,1 +1,7 @@
-{"type":"Black Monk","maxHitPoints":30,"speed":2,"range":2,"damage":3,"canClimb":false,"canDig":false}
+{
+  "type": "Black Monk",
+  "maxHitPoints": 30,
+  "speed": 2,
+  "range": 2,
+  "damage": 3
+}

@@ -1,1 +1,8 @@
-{"type":"Archer Bow","maxHitPoints":20,"speed":4,"range":10,"damage":2,"canClimb":false,"canDig":true}
+{
+  "type": "Archer Bow",
+  "maxHitPoints": 20,
+  "speed": 4,
+  "range": 10,
+  "damage": 2,
+  "canDig": true
+}

@@ -1,6 +1,8 @@
 package stronghold.view.sections;
 
+import static stronghold.context.MapUtils.copyOptTo;
 import static stronghold.context.MapUtils.getBoolOpt;
+import static stronghold.context.MapUtils.getIntOpt;
 import static stronghold.context.MapUtils.getOpt;
 
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import stronghold.model.User;
+import stronghold.model.template.GameMapTemplate;
 import stronghold.operator.OperatorException;
 import stronghold.operator.Operators;
 import stronghold.view.Menu;
@@ -37,6 +40,7 @@ public class ProfileMenu extends Menu {
         addCommand("print-security-questions", this::printSecurityQuestions);
         addCommand("change", this::changeProfile);
         addCommand("display", this::displayProfile);
+        addCommand("map-editor", this::mapEditor);
     }
 
     private static String generateSlogan() {
@@ -169,4 +173,26 @@ public class ProfileMenu extends Menu {
         }
     }
 
+    private void mapEditor(Map<String, String> input) {
+        Map<String, Object> req = new HashMap<>();
+        GameMapTemplate gameMap;
+        if (getBoolOpt(input, "new")) {
+            gameMap = new GameMapTemplate(
+                    getOpt(input, "name"),
+                    getIntOpt(input, "width"),
+                    getIntOpt(input, "height")
+            );
+        } else {
+            try {
+                gameMap = Operators.mapEditor.getGameMap(new HashMap<>() {{
+                    copyOptTo(input, this, "name");
+                }});
+            } catch (OperatorException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
+        }
+        System.out.println("Switched to map editor");
+        new MapEditorMenu(scanner, gameMap).run();
+    }
 }

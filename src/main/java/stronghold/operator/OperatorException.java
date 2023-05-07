@@ -21,6 +21,7 @@ public class OperatorException extends Exception {
         INCORRECT_PASSWORD,
         INCORRECT_SECURITY_QA,
         INVALID_USERNAME,
-        INVALID_EMAIL
+        INVALID_EMAIL,
+        MAP_NOT_FOUND
     }
 }

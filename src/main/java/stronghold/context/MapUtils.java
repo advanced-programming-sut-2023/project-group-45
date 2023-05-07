@@ -31,6 +31,10 @@ public class MapUtils {
                 "Invalid boolean value for --" + key + ", got " + getOpt(map, key));
     }
 
+    public static int getIntOpt(Map<String, String> map, String key) {
+        return Integer.parseInt(getOpt(map, key));
+    }
+
     public static Object getReq(Map<String, Object> map, String key) {
         return checkNotNull(map.get(key), "Missing key in operator request: %s", key);
     }

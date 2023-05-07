@@ -20,6 +20,7 @@ public class TemplateDatabase {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String, UnitTemplate> unitTemplates = new HashMap<>();
     private final Map<String, BuildingTemplate> buildingTemplates = new HashMap<>();
+    private final Map<String, GameMapTemplate> gameMapTemplates = new HashMap<>();
 
     private static <T> T fromFile(File file, Class<T> clazz) throws IOException {
         @Cleanup FileReader fileReader = new FileReader(file);
@@ -34,6 +35,7 @@ public class TemplateDatabase {
     public void updateFromPath(File root) throws IOException {
         populate(unitTemplates, root, "units", UnitTemplate.class);
         populate(buildingTemplates, root, "buildings", BuildingTemplate.class);
+        populate(gameMapTemplates, root, "maps", GameMapTemplate.class);
     }
 
     public void saveToPath(File root) throws IOException {
@@ -43,6 +45,8 @@ public class TemplateDatabase {
     public void saveToPath(File root, boolean overwrite) throws IOException {
         depopulate(unitTemplates, root, "units", overwrite);
         depopulate(buildingTemplates, root, "buildings", overwrite);
+        // always overwrite maps, since they can be modified through the menus
+        depopulate(gameMapTemplates, root, "maps", true);
     }
 
     private <T> void populate(Map<String, T> templates, File root, String subPath, Class<T> clazz)

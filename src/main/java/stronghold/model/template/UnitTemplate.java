@@ -8,7 +8,7 @@ public class UnitTemplate {
 
     private final String type;
     private final int maxHitPoints, speed, range, damage;
-    private final boolean canClimb, canDig;
+    private final boolean canClimb = false, canDig = false;
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()

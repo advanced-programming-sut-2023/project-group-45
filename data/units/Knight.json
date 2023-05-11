@@ -1,1 +1,7 @@
-{"type":"Knight","maxHitPoints":40,"speed":5,"range":1,"damage":5,"canClimb":false,"canDig":false}
+{
+  "type": "Knight",
+  "maxHitPoints": 40,
+  "speed": 5,
+  "range": 1,
+  "damage": 5
+}

@@ -1,1 +1,7 @@
-{"type":"Ladderman","maxHitPoints":10,"speed":4,"range":1,"damage":0,"canClimb":false,"canDig":false}
+{
+  "type": "Ladderman",
+  "maxHitPoints": 10,
+  "speed": 4,
+  "range": 1,
+  "damage": 0
+}

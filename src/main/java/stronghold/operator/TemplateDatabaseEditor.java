@@ -28,7 +28,7 @@ public class TemplateDatabaseEditor {
                     int speed = Integer.parseInt(tokens[4]);
                     int damage = Integer.parseInt(tokens[2]);
                     UnitTemplate unitTemplate = new UnitTemplate(type, maxHitPoints * 10,
-                            speed, 1, damage, false, false);
+                            speed, 1, damage);
                     unitTemplates.put(type, unitTemplate);
                 }
                 case "removeUnit" -> {
@@ -58,6 +58,6 @@ public class TemplateDatabaseEditor {
             }
             input = scanner.nextLine();
         }
-        templateDatabase.saveToPath(templateDatabaseRoot);
+        templateDatabase.saveToPath(templateDatabaseRoot, true);
     }
 }

@@ -6,13 +6,22 @@ import lombok.Data;
 @Data
 public class GameMap implements Serializable {
 
-    private final int height, width;
+    private final int width, height;
     private final Tile[][] map;
 
-    GameMap(int width, int height) {
+    /*
+     * let's assume this convention:
+     * (0,0) -----------------> (w-1,0)
+     *   |
+     *   |
+     *   |
+     *   v
+     * (0,h-1)
+     */
+    public GameMap(int width, int height) {
         this.width = width;
         this.height = height;
-        map = new Tile[height][width];
+        map = new Tile[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 map[i][j] = new Tile();

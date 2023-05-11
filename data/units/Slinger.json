@@ -1,1 +1,7 @@
-{"type":"Slinger","maxHitPoints":10,"speed":4,"range":8,"damage":2,"canClimb":false,"canDig":false}
+{
+  "type": "Slinger",
+  "maxHitPoints": 10,
+  "speed": 4,
+  "range": 8,
+  "damage": 2
+}

@@ -9,11 +9,13 @@ public class BuildingTemplate {
 
     private final String type;
     private final int maxHitPoints;
+    private final boolean isHollow = false;
 
     public BuildingBuilder getBuilder() {
         return Building.builder()
                 .type(type)
-                .maxHitPoints(maxHitPoints);
+                .maxHitPoints(maxHitPoints)
+                .isHollow(isHollow);
     }
 
 }

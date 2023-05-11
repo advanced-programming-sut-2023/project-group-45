@@ -31,6 +31,6 @@ public class Operators {
         player = new PlayerOperator(database);
         profile = new ProfileOperator(database);
         unit = new UnitOperator(database);
-        game = new GameOperator(database);
+        game = new GameOperator(database, templateDatabase);
     }
 }

@@ -23,6 +23,8 @@ public class OperatorException extends Exception {
         INVALID_USERNAME,
         INVALID_EMAIL,
         MAP_NOT_FOUND,
-        INVALID_GAME_PARAMETERS
+        INVALID_GAME_PARAMETERS,
+        UNIT_NOT_FOUND,
+        BUILDING_NOT_FOUND,
     }
 }

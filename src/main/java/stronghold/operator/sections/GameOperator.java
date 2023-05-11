@@ -2,6 +2,7 @@ package stronghold.operator.sections;
 
 import static stronghold.context.MapUtils.getReqAs;
 import static stronghold.operator.OperatorPreconditions.checkExpression;
+import static stronghold.operator.OperatorPreconditions.checkNotNull;
 import static stronghold.operator.OperatorPreconditions.checkUserExists;
 
 import java.util.List;
@@ -10,7 +11,10 @@ import lombok.Data;
 import stronghold.model.Database;
 import stronghold.model.Game;
 import stronghold.model.User;
+import stronghold.model.template.BuildingTemplate;
 import stronghold.model.template.GameMapTemplate;
+import stronghold.model.template.TemplateDatabase;
+import stronghold.model.template.UnitTemplate;
 import stronghold.operator.OperatorException;
 import stronghold.operator.OperatorException.Type;
 
@@ -18,6 +22,8 @@ import stronghold.operator.OperatorException.Type;
 public class GameOperator {
 
     private final Database database;
+    private final TemplateDatabase templateDatabase;
+
 
     public Game startGame(Map<String, Object> req) throws OperatorException {
         GameMapTemplate gameMapTemplate = getReqAs(req, "map", GameMapTemplate.class);
@@ -28,10 +34,11 @@ public class GameOperator {
         for (User user : users) {
             checkUserExists(database, user.getUsername());
         }
-        return Game.builder()
-                .users(users)
-                .gameMapTemplate(gameMapTemplate)
-                .build();
+        UnitTemplate lordTemplate = checkNotNull(templateDatabase.getUnitTemplates().get("Lord"),
+                Type.UNIT_NOT_FOUND);
+        BuildingTemplate baseTemplate = checkNotNull(templateDatabase.getBuildingTemplates()
+                .get("Base"), Type.BUILDING_NOT_FOUND);
+        return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
 }

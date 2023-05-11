@@ -1,0 +1,8 @@
+{
+  "type": "Lord",
+  "maxHitPoints": 100,
+  "speed": 1,
+  "range": 1,
+  "damage": 3,
+  "canClimb": true
+}

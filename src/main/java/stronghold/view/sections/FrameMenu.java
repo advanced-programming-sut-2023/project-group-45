@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import stronghold.model.Game;
+import stronghold.model.Player;
 import stronghold.model.Tile;
 import stronghold.operator.OperatorException;
 import stronghold.operator.Operators;
@@ -20,6 +21,7 @@ public class FrameMenu extends Menu {
         this.game = game;
         addCommand("next-frame", this::nextFrame);
         addCommand("show-map", this::showMap);
+        addCommand("next-turn", this::nextTurn);
     }
 
     private void nextFrame(Map<String, String> input) {
@@ -59,6 +61,13 @@ public class FrameMenu extends Menu {
                 }
             }
             System.out.println();
+        }
+    }
+
+    private void nextTurn(Map<String, String> input) {
+        for (Player player : game.getPlayers()) {
+            System.out.println("Turn for " + player.getUser().getUsername());
+            new TurnMenu(scanner, game, player).run();
         }
     }
 }

@@ -1,5 +1,7 @@
 package stronghold.model;
 
+import static stronghold.context.MapUtils.addIntMap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ public class Game implements Serializable {
             buildings.add(base);
             units.add(lord);
             this.map.getAt(position).setBuilding(base);
+            addIntMap(player.getResources(), gameMapTemplate.getInitialResources());
         }
     }
 }

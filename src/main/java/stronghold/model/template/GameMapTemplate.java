@@ -1,7 +1,9 @@
 package stronghold.model.template;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import stronghold.context.IntPair;
 import stronghold.model.GameMap;
@@ -13,6 +15,8 @@ public class GameMapTemplate {
     private final int width, height;
     private final List<IntPair> bases = new ArrayList<>();
     private final String[][] map;
+    // TIL: gson doesn't care about this default value
+    private final Map<String, Integer> initialResources = new HashMap<>();
 
     public GameMapTemplate(String name, int width, int height) {
         this.name = name;

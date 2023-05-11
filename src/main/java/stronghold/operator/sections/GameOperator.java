@@ -1,5 +1,6 @@
 package stronghold.operator.sections;
 
+import static stronghold.context.MapUtils.geqIntMap;
 import static stronghold.context.MapUtils.getReqAs;
 import static stronghold.context.MapUtils.getReqString;
 import static stronghold.context.MapUtils.subtractIntMap;
@@ -50,6 +51,16 @@ public class GameOperator {
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         // todo: update game, expect pretty long procedure
+        // assign workers to buildings
+        for (Building building : game.getBuildings()) {
+            Player player = building.getOwner();
+            if (building.getLabors() < building.getMaxLabors()) {
+                int workersToAssign = building.getMaxLabors() - building.getLabors();
+                int workersToTake = Math.min(workersToAssign, player.getPeasants());
+                player.setPeasants(player.getPeasants() - workersToTake);
+                building.setLabors(building.getLabors() + workersToTake);
+            }
+        }
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {
@@ -64,11 +75,8 @@ public class GameOperator {
         checkExpression(tile.getBuilding() == null,
                 Type.INVALID_POSITION);
         checkExpression(buildingTemplate.canBeBuiltOn(tile.getType()), Type.INVALID_POSITION);
-        for (String resource : buildingTemplate.getBuildCost().keySet()) {
-            checkExpression(
-                    player.getResources().get(resource) >= buildingTemplate.getBuildCost()
-                            .get(resource), Type.NOT_ENOUGH_RESOURCE);
-        }
+        checkExpression(geqIntMap(player.getResources(), buildingTemplate.getBuildCost()),
+                Type.NOT_ENOUGH_RESOURCE);
         subtractIntMap(player.getResources(), buildingTemplate.getBuildCost());
         Building building = buildingTemplate.getBuilder()
                 .owner(player)

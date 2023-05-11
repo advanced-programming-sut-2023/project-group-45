@@ -62,4 +62,13 @@ public class MapUtils {
     public static <K> void subtractIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
         delta.forEach((k, v) -> addIntMap(map, k, -v));
     }
+
+    public static <K> boolean geqIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
+        for (K key : delta.keySet()) {
+            if (map.getOrDefault(key, 0) < delta.get(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

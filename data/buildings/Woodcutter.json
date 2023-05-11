@@ -4,5 +4,8 @@
   "buildCost": {
     "wood": 10
   },
-  "tileType": "tree"
+  "tileType": "tree",
+  "supply": {
+    "wood": 3
+  }
 }

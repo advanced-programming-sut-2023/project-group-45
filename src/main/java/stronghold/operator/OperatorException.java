@@ -26,5 +26,7 @@ public class OperatorException extends Exception {
         INVALID_GAME_PARAMETERS,
         UNIT_NOT_FOUND,
         BUILDING_NOT_FOUND,
+        INVALID_POSITION,
+        NOT_ENOUGH_RESOURCE,
     }
 }

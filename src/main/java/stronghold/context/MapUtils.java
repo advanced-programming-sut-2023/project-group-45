@@ -51,11 +51,15 @@ public class MapUtils {
         return getReqAs(map, key, String.class);
     }
 
-    public static <K> int addIntMap(Map<K, Integer> map, K key, int delta) {
-        return map.compute(key, (k, v) -> v == null ? delta : v + delta);
+    private static <K> void addIntMap(Map<K, Integer> map, K key, int delta) {
+        map.compute(key, (k, v) -> v == null ? delta : v + delta);
     }
 
     public static <K> void addIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
         delta.forEach((k, v) -> addIntMap(map, k, v));
+    }
+
+    public static <K> void subtractIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
+        delta.forEach((k, v) -> addIntMap(map, k, -v));
     }
 }

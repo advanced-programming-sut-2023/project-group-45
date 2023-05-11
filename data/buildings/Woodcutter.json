@@ -1,0 +1,11 @@
+{
+  "type": "Woodcutter",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "wood": 10
+  },
+  "tileType": "tree",
+  "supply": {
+    "wood": 3
+  }
+}

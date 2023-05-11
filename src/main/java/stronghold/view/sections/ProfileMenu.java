@@ -41,6 +41,7 @@ public class ProfileMenu extends Menu {
         addCommand("change", this::changeProfile);
         addCommand("display", this::displayProfile);
         addCommand("map-editor", this::mapEditor);
+        addCommand("start-game", this::startGame);
     }
 
     private static String generateSlogan() {
@@ -174,7 +175,6 @@ public class ProfileMenu extends Menu {
     }
 
     private void mapEditor(Map<String, String> input) {
-        Map<String, Object> req = new HashMap<>();
         GameMapTemplate gameMap;
         if (getBoolOpt(input, "new")) {
             gameMap = new GameMapTemplate(
@@ -194,5 +194,22 @@ public class ProfileMenu extends Menu {
         }
         System.out.println("Switched to map editor");
         new MapEditorMenu(scanner, gameMap).run();
+    }
+
+    private void startGame(Map<String, String> input) {
+        String mapName = getOpt(input, "map");
+        try {
+            GameMapTemplate gameMap = Operators.mapEditor.getGameMap(new HashMap<>() {{
+                put("name", mapName);
+            }});
+            if (gameMap.getBases().isEmpty()) {
+                System.out.println("Map doesn't have any base!");
+                return;
+            }
+            System.out.println("Select your opponents!");
+            new StartGameMenu(scanner, user, gameMap).run();
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

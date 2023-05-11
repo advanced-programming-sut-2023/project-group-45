@@ -5,6 +5,7 @@ import stronghold.model.template.TemplateDatabase;
 import stronghold.operator.sections.AuthOperator;
 import stronghold.operator.sections.BuildingOperator;
 import stronghold.operator.sections.EconomyOperator;
+import stronghold.operator.sections.GameOperator;
 import stronghold.operator.sections.MapEditorOperator;
 import stronghold.operator.sections.PlayerOperator;
 import stronghold.operator.sections.ProfileOperator;
@@ -20,6 +21,7 @@ public class Operators {
     public static PlayerOperator player;
     public static ProfileOperator profile;
     public static UnitOperator unit;
+    public static GameOperator game;
 
     public static void initDatabase(Database database, TemplateDatabase templateDatabase) {
         auth = new AuthOperator(database);
@@ -29,5 +31,6 @@ public class Operators {
         player = new PlayerOperator(database);
         profile = new ProfileOperator(database);
         unit = new UnitOperator(database);
+        game = new GameOperator(database, templateDatabase);
     }
 }

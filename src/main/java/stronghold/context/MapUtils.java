@@ -50,4 +50,25 @@ public class MapUtils {
     public static String getReqString(Map<String, Object> map, String key) {
         return getReqAs(map, key, String.class);
     }
+
+    private static <K> void addIntMap(Map<K, Integer> map, K key, int delta) {
+        map.compute(key, (k, v) -> v == null ? delta : v + delta);
+    }
+
+    public static <K> void addIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
+        delta.forEach((k, v) -> addIntMap(map, k, v));
+    }
+
+    public static <K> void subtractIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
+        delta.forEach((k, v) -> addIntMap(map, k, -v));
+    }
+
+    public static <K> boolean geqIntMap(Map<K, Integer> map, Map<K, Integer> delta) {
+        for (K key : delta.keySet()) {
+            if (map.getOrDefault(key, 0) < delta.get(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -2,6 +2,7 @@ package stronghold.model;
 
 import java.io.Serializable;
 import lombok.Data;
+import stronghold.context.IntPair;
 
 @Data
 public class GameMap implements Serializable {
@@ -34,5 +35,9 @@ public class GameMap implements Serializable {
             return null;
         }
         return map[x][y];
+    }
+
+    public Tile getAt(IntPair position) {
+        return getAt(position.x(), position.y());
     }
 }

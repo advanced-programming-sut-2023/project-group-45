@@ -74,7 +74,9 @@ public class StartGameMenu extends Menu {
         try {
             Game game = Operators.game.startGame(new HashMap<>() {{
                 put("map", gameMap);
-                put("users", new ArrayList<>(players).add(starter));
+                put("users", new ArrayList<>(players) {{
+                    add(starter);
+                }});
             }});
             System.out.println("Let's start the game!");
             new FrameMenu(scanner, game).run();

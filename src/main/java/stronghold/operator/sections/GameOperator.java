@@ -41,4 +41,8 @@ public class GameOperator {
         return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
+    public void nextFrame(Map<String, Object> req) throws OperatorException {
+        Game game = getReqAs(req, "game", Game.class);
+        // todo: update game, expect pretty long procedure
+    }
 }

@@ -1,6 +1,9 @@
 package stronghold.model.template;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
+import stronghold.context.IntPair;
 import stronghold.model.GameMap;
 
 @Data
@@ -8,6 +11,7 @@ public class GameMapTemplate {
 
     private final String name;
     private final int width, height;
+    private final List<IntPair> bases = new ArrayList<>();
     private final String[][] map;
 
     public GameMapTemplate(String name, int width, int height) {
@@ -29,6 +33,7 @@ public class GameMapTemplate {
                 gameMap.getAt(i, j).setType(map[i][j]);
             }
         }
+        gameMap.getBases().addAll(bases);
         return gameMap;
     }
 }

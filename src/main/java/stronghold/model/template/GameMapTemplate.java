@@ -13,10 +13,11 @@ public class GameMapTemplate {
 
     private final String name;
     private final int width, height;
-    private final List<IntPair> bases = new ArrayList<>();
-    private final String[][] map;
     // TIL: gson doesn't care about this default value
+    private final List<IntPair> bases = new ArrayList<>();
     private final Map<String, Integer> initialResources = new HashMap<>();
+    private final int initialPopulation = 0;
+    private final String[][] map;
 
     public GameMapTemplate(String name, int width, int height) {
         this.name = name;

@@ -42,6 +42,7 @@ public class Game implements Serializable {
             units.add(lord);
             this.map.getAt(position).setBuilding(base);
             addIntMap(player.getResources(), gameMapTemplate.getInitialResources());
+            player.setPeasants(gameMapTemplate.getInitialPopulation());
         }
     }
 }

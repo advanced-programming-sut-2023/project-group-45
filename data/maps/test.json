@@ -12,6 +12,7 @@
       "y": 18
     }
   ],
+  "initialPopulation": 20,
   "map": [
     [
       "tree",

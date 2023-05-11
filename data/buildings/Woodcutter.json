@@ -7,5 +7,6 @@
   "tileType": "tree",
   "supply": {
     "wood": 3
-  }
+  },
+  "maxLabors": 1
 }

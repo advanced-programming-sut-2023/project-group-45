@@ -23,7 +23,7 @@ public class TurnMenu extends Menu {
         this.game = game;
         this.player = player;
         addCommand("who-am-i", this::whoAmI);
-        addCommand("show-resources", this::showResources);
+        addCommand("show-info", this::showInfo);
         addCommand("drop-building", this::dropBuilding);
     }
 
@@ -31,9 +31,9 @@ public class TurnMenu extends Menu {
         System.out.println("You are " + player.getUser().getUsername());
     }
 
-    private void showResources(Map<String, String> input) {
-        // todo: only for testing purposes
+    private void showInfo(Map<String, String> input) {
         System.out.println("Your resources: " + player.getResources());
+        System.out.println("Peasants: " + player.getPeasants());
     }
 
     private void dropBuilding(Map<String, String> input) {

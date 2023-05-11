@@ -1,5 +1,6 @@
 package stronghold.operator.sections;
 
+import static stronghold.context.MapUtils.addIntMap;
 import static stronghold.context.MapUtils.geqIntMap;
 import static stronghold.context.MapUtils.getReqAs;
 import static stronghold.context.MapUtils.getReqString;
@@ -28,9 +29,15 @@ import stronghold.operator.OperatorException.Type;
 @Data
 public class GameOperator {
 
+    private static final boolean VERBOSE = true;
     private final Database database;
     private final TemplateDatabase templateDatabase;
 
+    public void log(String format, Object... args) {
+        if (VERBOSE) {
+            System.out.printf(format + "\n", args);
+        }
+    }
 
     public Game startGame(Map<String, Object> req) throws OperatorException {
         GameMapTemplate gameMapTemplate = getReqAs(req, "map", GameMapTemplate.class);
@@ -59,7 +66,25 @@ public class GameOperator {
                 int workersToTake = Math.min(workersToAssign, player.getPeasants());
                 player.setPeasants(player.getPeasants() - workersToTake);
                 building.setLabors(building.getLabors() + workersToTake);
+                log("assign labors [count=%s, building=%s]", workersToTake, building);
             }
+        }
+        // supply chain
+        for (Building building : game.getBuildings()) {
+            if (building.getLabors() < building.getMaxLabors()) {
+                continue;
+            }
+            if (building.getSupply() == null) {
+                continue;
+            }
+            Player player = building.getOwner();
+            if (!geqIntMap(player.getResources(), building.getConsume())) {
+                continue;
+            }
+            subtractIntMap(player.getResources(), building.getConsume());
+            addIntMap(player.getResources(), building.getSupply());
+            log("supply chain [consume=%s, supply=%s, building=%s]",
+                    building.getConsume(), building.getSupply(), building);
         }
     }
 

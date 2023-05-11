@@ -29,6 +29,10 @@ public class StartGameMenu extends Menu {
     }
 
     private void addOpponent(Map<String, String> input) {
+        if (players.size() + 1 >= gameMap.getBases().size()) {
+            System.out.println("You cannot add more opponents");
+            return;
+        }
         try {
             User user = Operators.auth.findUser(new HashMap<>() {{
                 copyOptTo(input, this, "username");

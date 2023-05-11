@@ -202,6 +202,10 @@ public class ProfileMenu extends Menu {
             GameMapTemplate gameMap = Operators.mapEditor.getGameMap(new HashMap<>() {{
                 put("name", mapName);
             }});
+            if (gameMap.getBases().isEmpty()) {
+                System.out.println("Map doesn't have any base!");
+                return;
+            }
             System.out.println("Select your opponents!");
             new StartGameMenu(scanner, user, gameMap).run();
         } catch (OperatorException e) {

@@ -21,6 +21,11 @@ public class AuthOperator {
 
     private final Database database;
 
+    public User findUser(Map<String, Object> req) throws OperatorException {
+        String username = getReqString(req, "username");
+        return checkUserExists(database, username);
+    }
+
     public User register(Map<String, Object> req) throws OperatorException {
         String username = getReqString(req, "username");
         HashedString password = getReqAs(req, "password", HashedString.class);
@@ -41,15 +46,18 @@ public class AuthOperator {
     }
 
     private User updateStayLoggedInUser(Map<String, Object> req, User user) {
-        if (req.containsKey("stay-logged-in"))
-            database.setStayLoggedInUser(getReqAs(req, "stay-logged-in", Boolean.class) ? user : null);
+        if (req.containsKey("stay-logged-in")) {
+            database.setStayLoggedInUser(
+                    getReqAs(req, "stay-logged-in", Boolean.class) ? user : null);
+        }
         return user;
     }
 
     public User login(Map<String, Object> req) throws OperatorException {
         String username = getReqString(req, "username");
-        if (database.isStayLoggedInUsername(username))
+        if (database.isStayLoggedInUsername(username)) {
             return updateStayLoggedInUser(req, database.getStayLoggedInUser());
+        }
         HashedString password = getReqAs(req, "password", HashedString.class);
         User user = checkUserExists(database, username);
         checkExpression(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);

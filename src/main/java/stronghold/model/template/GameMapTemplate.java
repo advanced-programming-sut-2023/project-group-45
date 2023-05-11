@@ -33,7 +33,6 @@ public class GameMapTemplate {
                 gameMap.getAt(i, j).setType(map[i][j]);
             }
         }
-        gameMap.getBases().addAll(bases);
         return gameMap;
     }
 }

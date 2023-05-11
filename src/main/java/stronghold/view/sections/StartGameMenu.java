@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import stronghold.model.Game;
 import stronghold.model.User;
 import stronghold.model.template.GameMapTemplate;
 import stronghold.operator.OperatorException;
@@ -26,6 +27,7 @@ public class StartGameMenu extends Menu {
         addCommand("add-opponent", this::addOpponent);
         addCommand("show-opponents", this::showOpponents);
         addCommand("clear-opponents", this::clearOpponents);
+        addCommand("start-game", this::startGame);
     }
 
     private void addOpponent(Map<String, String> input) {
@@ -66,5 +68,18 @@ public class StartGameMenu extends Menu {
     private void clearOpponents(Map<String, String> input) {
         players.clear();
         System.out.println("Cleared opponents");
+    }
+
+    private void startGame(Map<String, String> input) {
+        try {
+            Game game = Operators.game.startGame(new HashMap<>() {{
+                put("map", gameMap);
+                put("users", new ArrayList<>(players).add(starter));
+            }});
+            System.out.println("Let's start the game!");
+            new FrameMenu(scanner, game).run();
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

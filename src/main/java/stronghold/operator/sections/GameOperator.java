@@ -11,7 +11,6 @@ import static stronghold.operator.OperatorPreconditions.checkUserExists;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.Data;
 import stronghold.context.IntPair;
 import stronghold.model.Building;
@@ -56,10 +55,7 @@ public class GameOperator {
         return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
-    public void nextFrame(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
-        // todo: update game, expect pretty long procedure
-        // assign workers to buildings
+    private void assignLabor(Game game) {
         for (Building building : game.getBuildings()) {
             Player player = building.getOwner();
             if (building.getLabors() < building.getMaxLabors()) {
@@ -70,7 +66,9 @@ public class GameOperator {
                 log("assign labors [count=%s, building=%s]", workersToTake, building);
             }
         }
-        // supply chain
+    }
+
+    private void manageSupplyChain(Game game) {
         for (Building building : game.getBuildings()) {
             if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {
                 continue;
@@ -84,18 +82,22 @@ public class GameOperator {
             log("supply chain [consume=%s, supply=%s, building=%s]",
                     building.getConsume(), building.getSupply(), building);
         }
-        // housing space
+    }
+
+    private void manageOverpopulate(Game game) {
         for (Player player : game.getPlayers()) {
             int housingSpace = game.getHousingSpace(player);
             int totalPeasants = game.getTotalPeasants(player);
-            if (totalPeasants <= housingSpace)
+            if (totalPeasants <= housingSpace) {
                 continue;
+            }
             int notLabor = Math.min(player.getPeasants(), totalPeasants - housingSpace);
             player.setPeasants(player.getPeasants() - notLabor);
             totalPeasants -= notLabor;
             log("overpopulate [notLabor=%s, player=%s]", notLabor, player);
-            if (totalPeasants <= housingSpace)
+            if (totalPeasants <= housingSpace) {
                 continue;
+            }
             for (Building building : game.getBuildingsByOwner(player).toList()) {
                 while (totalPeasants > housingSpace && building.getLabors() > 0) {
                     totalPeasants--;
@@ -104,6 +106,13 @@ public class GameOperator {
                 }
             }
         }
+    }
+
+    public void nextFrame(Map<String, Object> req) throws OperatorException {
+        Game game = getReqAs(req, "game", Game.class);
+        assignLabor(game);
+        manageSupplyChain(game);
+        manageOverpopulate(game);
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {

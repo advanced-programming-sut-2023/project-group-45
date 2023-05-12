@@ -28,5 +28,6 @@ public class OperatorException extends Exception {
         BUILDING_NOT_FOUND,
         INVALID_POSITION,
         NOT_ENOUGH_RESOURCE,
+        NOT_ENOUGH_GOLD,
     }
 }

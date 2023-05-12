@@ -8,8 +8,9 @@ public class CaptchaChecker {
     private CaptchaGenerator captchaGenerator;
 
     public void check(Scanner scanner) {
-        if (!CAPTCHA_ENABLED)
+        if (!CAPTCHA_ENABLED) {
             return;
+        }
         refresh();
         loop:
         while (true) {
@@ -22,8 +23,9 @@ public class CaptchaChecker {
                 default -> {
                     try {
                         int answer = Integer.parseInt(input);
-                        if (answer == captchaGenerator.getAnswer())
+                        if (answer == captchaGenerator.getAnswer()) {
                             break loop;
+                        }
                         System.out.println("Wrong answer");
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input");

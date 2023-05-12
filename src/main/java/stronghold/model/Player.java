@@ -15,4 +15,5 @@ public class Player implements Serializable {
     private final List<TradeRequest> tradeRequests = new ArrayList<>();
     private int happiness = 0, fear = 0;
     private int peasants = 0;
+    private int gold = 0;
 }

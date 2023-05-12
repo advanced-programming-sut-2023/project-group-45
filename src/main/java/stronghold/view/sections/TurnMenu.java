@@ -35,6 +35,8 @@ public class TurnMenu extends Menu {
     private void showInfo(Map<String, String> input) {
         System.out.println("Your resources: " + player.getResources());
         System.out.println("Peasants: " + player.getPeasants());
+        System.out.println("Religion: " + game.getReligion(player));
+        System.out.println("Happiness: " + game.getHappiness(player));
     }
 
     private void dropBuilding(Map<String, String> input) {

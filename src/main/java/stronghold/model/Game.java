@@ -5,7 +5,6 @@ import static stronghold.context.MapUtils.addIntMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Data;
 import stronghold.context.IntPair;
@@ -51,5 +50,27 @@ public class Game implements Serializable {
     public Stream<Unit> getUnitsOnPosition(IntPair position) {
         return units.stream()
                 .filter(unit -> unit.getPosition().equals(position));
+    }
+
+    public Stream<Building> getBuildingsByOwner(Player player) {
+        return buildings.stream()
+                .filter(building -> building.getOwner().equals(player));
+    }
+
+    public Stream<Building> getFunctionalBuildingsByOwner(Player player) {
+        return getBuildingsByOwner(player)
+                .filter(b -> b.getLabors() == b.getMaxLabors());
+    }
+
+    public int getReligion(Player player) {
+        return getFunctionalBuildingsByOwner(player)
+                .mapToInt(Building::getReligionFactor)
+                .sum();
+    }
+
+    public int getHappiness(Player player) {
+        return getFunctionalBuildingsByOwner(player)
+                .mapToInt(Building::getHappinessFactor)
+                .sum();
     }
 }

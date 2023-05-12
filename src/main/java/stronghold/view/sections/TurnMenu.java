@@ -76,7 +76,7 @@ public class TurnMenu extends Menu {
         String item = getOpt(input, "item");
         Integer amount = getIntOpt(input, "amount");
         try {
-            Operators.economy.buyMarketItem(new HashMap<String, Object>() {{
+            Operators.economy.buyMarketItem(new HashMap<>() {{
                 put("game", game);
                 put("player", player);
                 put("item", item);
@@ -92,7 +92,7 @@ public class TurnMenu extends Menu {
         String item = getOpt(input, "item");
         Integer amount = getIntOpt(input, "amount");
         try {
-            Operators.economy.sellMarketItem(new HashMap<String, Object>() {{
+            Operators.economy.sellMarketItem(new HashMap<>() {{
                 put("game", game);
                 put("player", player);
                 put("item", item);
@@ -111,7 +111,7 @@ public class TurnMenu extends Menu {
         String message = getOpt(input, "message");
         Player target = getPlayerByUsername(getOpt(input, "target"));
         try {
-            Operators.economy.requestTrade(new HashMap<String, Object>() {{
+            Operators.economy.requestTrade(new HashMap<>() {{
                 put("game", game);
                 put("player", player);
                 put("item", item);
@@ -159,7 +159,7 @@ public class TurnMenu extends Menu {
     private void acceptTrade(Map<String, String> input) {
         int id = getIntOpt(input, "id");
         try {
-            Operators.economy.acceptTrade(new HashMap<String, Object>() {{
+            Operators.economy.acceptTrade(new HashMap<>() {{
                 put("request", checkNotNull(player.getIncomingTradeRequests().get(id - 1),
                         "Trade request " + id + " not found"));
             }});
@@ -172,7 +172,7 @@ public class TurnMenu extends Menu {
     private void rejectTrade(Map<String, String> input) {
         int id = getIntOpt(input, "id");
         try {
-            Operators.economy.deleteTrade(new HashMap<String, Object>() {{
+            Operators.economy.deleteTrade(new HashMap<>() {{
                 put("request", checkNotNull(player.getIncomingTradeRequests().get(id - 1),
                         "Trade request " + id + " not found"));
             }});
@@ -185,7 +185,7 @@ public class TurnMenu extends Menu {
     private void cancelTrade(Map<String, String> input) {
         int id = getIntOpt(input, "id");
         try {
-            Operators.economy.deleteTrade(new HashMap<String, Object>() {{
+            Operators.economy.deleteTrade(new HashMap<>() {{
                 put("request", checkNotNull(player.getActiveTradeRequests().get(id - 1),
                         "Trade request " + id + " not found"));
             }});

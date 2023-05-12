@@ -25,6 +25,7 @@ public class TurnMenu extends Menu {
         addCommand("who-am-i", this::whoAmI);
         addCommand("show-info", this::showInfo);
         addCommand("drop-building", this::dropBuilding);
+        addCommand("map-view", this::mapView);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -51,5 +52,10 @@ public class TurnMenu extends Menu {
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void mapView(Map<String, String> input) {
+        System.out.println("Switched to map view");
+        new MapViewMenu(scanner, game).run();
     }
 }

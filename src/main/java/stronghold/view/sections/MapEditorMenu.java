@@ -1,12 +1,12 @@
 package stronghold.view.sections;
 
-import static stronghold.context.MapUtils.getOpt;
 import static stronghold.context.MapUtils.getIntPairOpt;
+import static stronghold.context.MapUtils.getOpt;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Random;
+import java.util.Scanner;
 import stronghold.context.IntPair;
 import stronghold.model.template.GameMapTemplate;
 import stronghold.operator.Operators;
@@ -23,10 +23,16 @@ public class MapEditorMenu extends Menu {
         addCommand("add-base", this::addBase);
         addCommand("show-bases", this::showBases);
         addCommand("clear-bases", this::clearBases);
+        addCommand("set-texture", this::setTileTexture);
+        addCommand("set-range-texture", this::setRangeTexture);
+        addCommand("clear-tile", this::clearTile);
+        addCommand("drop-rock", this::dropRock);
+        addCommand("drop-tree", this::dropTree);
     }
 
     private boolean isValidPosition(IntPair position) {
-        return position.x() >= 0 && position.x() < gameMap.getWidth() && position.y() >= 0 && position.y() < gameMap.getHeight();
+        return position.x() >= 0 && position.x() < gameMap.getWidth() && position.y() >= 0
+                && position.y() < gameMap.getHeight();
     }
 
     private void saveMap(Map<String, String> input) {
@@ -95,7 +101,7 @@ public class MapEditorMenu extends Menu {
 
     private void clearTile(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
-        if(!isValidPosition(position)){
+        if (!isValidPosition(position)) {
             System.out.println("Invalid position");
             return;
         }
@@ -103,18 +109,18 @@ public class MapEditorMenu extends Menu {
         System.out.println("Done");
     }
 
-    private void dropRock(Map<String, String> input){
+    private void dropRock(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
-        if(!isValidPosition(position)){
+        if (!isValidPosition(position)) {
             System.out.println("Invalid position");
             return;
         }
         String direction = getOpt(input, "direction");
-        if(direction.equals("random")){
+        if (direction.equals("random")) {
             Random random = new Random();
             direction = String.valueOf("news".charAt(random.nextInt(4)));
         }
-        if(direction.length() > 1 || !"news".contains(direction)){
+        if (direction.length() > 1 || !"news".contains(direction)) {
             System.out.println("Invalid direction");
             return;
         }
@@ -122,9 +128,9 @@ public class MapEditorMenu extends Menu {
         System.out.println("Done");
     }
 
-    private void dropTree(Map<String, String> input){
+    private void dropTree(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
-        if(!isValidPosition(position)){
+        if (!isValidPosition(position)) {
             System.out.println("Invalid position");
             return;
         }

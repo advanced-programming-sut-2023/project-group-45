@@ -56,7 +56,9 @@ public class TemplateDatabase {
             throws IOException {
         File path = new File(root, subPath);
         if (!path.exists()) // same as empty directory
+        {
             return;
+        }
         for (File file : checkNotNull(path.listFiles())) {
             String templateName = file.getName().replace(".json", "");
             T template = fromFile(file, clazz);
@@ -64,7 +66,8 @@ public class TemplateDatabase {
         }
     }
 
-    private <T> void depopulate(Map<String, T> templates, File root, String subpath, boolean overwrite)
+    private <T> void depopulate(Map<String, T> templates, File root, String subpath,
+            boolean overwrite)
             throws IOException {
         File path = new File(root, subpath);
         for (String templateName : templates.keySet()) {

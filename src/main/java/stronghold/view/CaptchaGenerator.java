@@ -38,8 +38,9 @@ public class CaptchaGenerator {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (String row : rows)
+        for (String row : rows) {
             sb.append(row).append('\n');
+        }
         return sb.toString();
     }
 

@@ -60,7 +60,7 @@ public class MapUtils {
         return getReqAs(map, key, String.class);
     }
 
-    private static <K> void addIntMap(Map<K, Integer> map, K key, int delta) {
+    public static <K> void addIntMap(Map<K, Integer> map, K key, int delta) {
         map.compute(key, (k, v) -> v == null ? delta : v + delta);
     }
 

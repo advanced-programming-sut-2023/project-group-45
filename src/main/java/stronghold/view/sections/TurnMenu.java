@@ -112,7 +112,6 @@ public class TurnMenu extends Menu {
         Player target = getPlayerByUsername(getOpt(input, "target"));
         try {
             Operators.economy.requestTrade(new HashMap<>() {{
-                put("game", game);
                 put("player", player);
                 put("item", item);
                 put("amount", amount);

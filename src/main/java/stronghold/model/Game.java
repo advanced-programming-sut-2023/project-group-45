@@ -2,6 +2,7 @@ package stronghold.model;
 
 import static stronghold.context.MapUtils.addIntMap;
 
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,8 @@ import stronghold.model.template.UnitTemplate;
 
 @Data
 public class Game implements Serializable {
+
+    public static final List<String> FOODS = ImmutableList.of("bread");
 
     private final List<Player> players = new ArrayList<>();
     private final GameMapTemplate mapTemplate;
@@ -55,6 +58,12 @@ public class Game implements Serializable {
     public Stream<Building> getBuildingsByOwner(Player player) {
         return buildings.stream()
                 .filter(building -> building.getOwner().equals(player));
+    }
+
+    public int getTotalPeasants(Player player) {
+        return player.getPeasants() + getBuildingsByOwner(player)
+                .mapToInt(Building::getLabors)
+                .sum();
     }
 
     public Stream<Building> getFunctionalBuildingsByOwner(Player player) {

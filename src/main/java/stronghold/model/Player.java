@@ -15,6 +15,7 @@ public class Player implements Serializable {
     private final List<TradeRequest> incomingTradeRequests = new ArrayList<>(),
             activeTradeRequests = new ArrayList<>(), successfulTradeRequests = new ArrayList<>();
     private int peasants = 0;
+    private int foodRate = -2, taxRate = 0;
 
     public int getGold() {
         return resources.get("gold");
@@ -22,5 +23,19 @@ public class Player implements Serializable {
 
     public void setGold(int gold) {
         resources.put("gold", gold);
+    }
+  
+    public double getFoodRation(){
+        return 0.5 * (foodRate + 2);
+    }
+
+    public double getTaxPerPeasant(){
+        if (taxRate == 0){
+            return 0;
+        }
+        if (taxRate < 0){
+            return -0.4 + 0.2 * taxRate;
+        }
+        return 0.4 + 0.2 * taxRate;
     }
 }

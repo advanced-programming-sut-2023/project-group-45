@@ -37,6 +37,11 @@ public class TurnMenu extends Menu {
         addCommand("list-trade-requests", this::listTradeRequests);
         addCommand("trade-history", this::tradeHistory);
         addCommand("map-view", this::mapView);
+        addCommand("show-food-list", this::showFoodList);
+        addCommand("food-rate", this::setFoodRate);
+        addCommand("show-food-rate", this::showFoodRate);
+        addCommand("tax-rate", this::setTaxRate);
+        addCommand("show-tax-rate", this::showTaxRate);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -206,6 +211,48 @@ public class TurnMenu extends Menu {
     private void mapView(Map<String, String> input) {
         System.out.println("Switched to map view");
         new MapViewMenu(scanner, game).run();
+    }
+
+    private void showFoodList(Map<String, String> input) {
+        player.getResources().forEach((k, v) -> {
+            if (Game.FOODS.contains(k)) {
+                System.out.println(" - " + k + ": " + v);
+            }
+        });
+    }
+
+    private void setFoodRate(Map<String, String> input) {
+        int rate = getIntOpt(input, "rate");
+        try {
+            Operators.game.setFoodRate(new HashMap<>() {{
+                put("player", player);
+                put("rate", rate);
+            }});
+            System.out.println("Food rate updated successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void showFoodRate(Map<String, String> input) {
+        System.out.printf("Food rate is: %d\n", player.getFoodRate());
+    }
+
+    private void setTaxRate(Map<String, String> input) {
+        int rate = getIntOpt(input, "rate");
+        try {
+            Operators.game.setTaxRate(new HashMap<>() {{
+                put("player", player);
+                put("rate", rate);
+            }});
+            System.out.println("Tax rate updated successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void showTaxRate(Map<String, String> input) {
+        System.out.printf("Tax rate is: %d\n", player.getTaxRate());
     }
 }
 

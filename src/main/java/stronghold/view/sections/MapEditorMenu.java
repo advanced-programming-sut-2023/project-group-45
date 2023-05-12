@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import stronghold.context.ANSIColor;
 import stronghold.context.IntPair;
 import stronghold.model.template.GameMapTemplate;
 import stronghold.operator.Operators;
@@ -28,6 +29,7 @@ public class MapEditorMenu extends Menu {
         addCommand("clear-tile", this::clearTile);
         addCommand("drop-rock", this::dropRock);
         addCommand("drop-tree", this::dropTree);
+        addCommand("show-map", this::showMap);
     }
 
     private boolean isValidPosition(IntPair position) {
@@ -137,5 +139,23 @@ public class MapEditorMenu extends Menu {
         String type = getOpt(input, "type");
         gameMap.getMap()[position.x()][position.y()] = "tree-" + type;
         System.out.println("Done");
+    }
+
+    private void showMap(Map<String, String> input) {
+        for (int y = 0; y < gameMap.getHeight(); y++) {
+            for (int x = 0; x < gameMap.getWidth(); x++) {
+                String type = gameMap.getMap()[x][y];
+                System.out.print(MapViewMenu.getColorByType(type));
+                if (gameMap.getBases().contains(new IntPair(x, y))) {
+                    System.out.print("B");
+                } else if (type.equals("plain")) {
+                    System.out.print(".");
+                } else {
+                    System.out.print(type.charAt(0));
+                }
+                MapViewMenu.resetColor();
+            }
+            System.out.println();
+        }
     }
 }

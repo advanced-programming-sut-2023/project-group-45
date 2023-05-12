@@ -5,6 +5,8 @@ import static stronghold.context.MapUtils.addIntMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Data;
 import stronghold.context.IntPair;
 import stronghold.model.template.BuildingTemplate;
@@ -44,5 +46,10 @@ public class Game implements Serializable {
             addIntMap(player.getResources(), gameMapTemplate.getInitialResources());
             player.setPeasants(gameMapTemplate.getInitialPopulation());
         }
+    }
+
+    public Stream<Unit> getUnitsOnPosition(IntPair position) {
+        return units.stream()
+                .filter(unit -> unit.getPosition().equals(position));
     }
 }

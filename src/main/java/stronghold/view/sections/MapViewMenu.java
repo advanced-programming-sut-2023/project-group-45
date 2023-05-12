@@ -11,6 +11,7 @@ import static stronghold.context.MapUtils.getIntOpt;
 
 import java.util.Map;
 import java.util.Scanner;
+import stronghold.context.IntPair;
 import stronghold.model.Game;
 import stronghold.model.Tile;
 import stronghold.view.Menu;
@@ -98,7 +99,9 @@ public class MapViewMenu extends Menu {
                 Tile tile = game.getMap().getAt(x, y);
                 setColorByTile(tile);
                 System.out.print(tile.getType().equals("plain") ? "." : tile.getType().charAt(0));
-                System.out.print("..");
+                long unitCount = game.getUnitsOnPosition(new IntPair(x, y)).count();
+                System.out.print(
+                        unitCount == 0 ? ".." : unitCount < 10 ? "." + unitCount : unitCount);
                 resetColor();
                 if (x + 1 != xStart + MAX_WIDTH) {
                     System.out.print("│");

@@ -6,17 +6,19 @@ import lombok.Data;
 import stronghold.model.Building;
 import stronghold.model.Building.BuildingBuilder;
 
+/*
+ * Read notes for UnitTemplate
+ */
 @Data
 public class BuildingTemplate {
 
-    private final String type;
-    private final int maxHitPoints;
-    private final boolean isHollow = false;
-    private final String tileType = null;
-    private final Map<String, Integer> buildCost = new HashMap<>();
-    // these two can be null
-    private final Map<String, Integer> consume = new HashMap<>();
-    private final Map<String, Integer> supply = new HashMap<>();
+    private String type;
+    private int maxHitPoints;
+    private boolean isHollow = false;
+    private String tileType = null;
+    private Map<String, Integer> buildCost = new HashMap<>();
+    private Map<String, Integer> consume = new HashMap<>();
+    private Map<String, Integer> supply = new HashMap<>();
     private int maxLabors;
 
     public BuildingBuilder getBuilder() {
@@ -25,7 +27,7 @@ public class BuildingTemplate {
                 .maxHitPoints(maxHitPoints)
                 .isHollow(isHollow)
                 .maxLabors(maxLabors)
-                .consume(consume == null ? new HashMap<>() : consume)
+                .consume(consume)
                 .supply(supply);
     }
 

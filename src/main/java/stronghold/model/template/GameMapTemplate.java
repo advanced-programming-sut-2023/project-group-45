@@ -8,16 +8,18 @@ import lombok.Data;
 import stronghold.context.IntPair;
 import stronghold.model.GameMap;
 
+/*
+ * Read notes for UnitTemplate
+ */
 @Data
 public class GameMapTemplate {
 
-    private final String name;
-    private final int width, height;
-    // TIL: gson doesn't care about this default value
-    private final List<IntPair> bases = new ArrayList<>();
-    private final Map<String, Integer> initialResources = new HashMap<>();
-    private final String[][] map;
-    private int initialPopulation;
+    private String name;
+    private int width, height;
+    private List<IntPair> bases = new ArrayList<>();
+    private Map<String, Integer> initialResources = new HashMap<>();
+    private int initialPopulation = 10;
+    private String[][] map;
 
     public GameMapTemplate(String name, int width, int height) {
         this.name = name;
@@ -29,6 +31,10 @@ public class GameMapTemplate {
                 map[i][j] = "plain";
             }
         }
+    }
+
+    public GameMapTemplate() {
+        // only called by Gson
     }
 
     public GameMap build() {

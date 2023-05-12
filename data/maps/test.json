@@ -12,6 +12,9 @@
       "y": 18
     }
   ],
+  "initialResources": {
+    "wood": 100
+  },
   "initialPopulation": 20,
   "map": [
     [
@@ -454,8 +457,5 @@
       "plain",
       "plain"
     ]
-  ],
-  "initialResources": {
-    "wood": 100
-  }
+  ]
 }

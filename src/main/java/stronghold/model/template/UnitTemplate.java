@@ -3,12 +3,17 @@ package stronghold.model.template;
 import lombok.Data;
 import stronghold.model.Unit;
 
+/*
+ * Note for Template classes:
+ * Gson needs a no-arg constructor to instantiate the class and set the provided default values
+ * Make sure all the fields are non-final, so lombok will generate a no-arg constructor
+ */
 @Data
 public class UnitTemplate {
 
-    private final String type;
-    private final int maxHitPoints, speed, range, damage;
-    private final boolean canClimb = false, canDig = false;
+    private String type;
+    private int maxHitPoints, speed, range, damage;
+    private boolean canClimb = false, canDig = false;
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()

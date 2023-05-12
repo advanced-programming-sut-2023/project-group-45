@@ -71,10 +71,7 @@ public class GameOperator {
         }
         // supply chain
         for (Building building : game.getBuildings()) {
-            if (building.getLabors() < building.getMaxLabors()) {
-                continue;
-            }
-            if (building.getSupply() == null) {
+            if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {
                 continue;
             }
             Player player = building.getOwner();

@@ -56,7 +56,7 @@ public class MapViewMenu extends Menu {
         this.showMap();
     }
 
-    private String getColorByType(String type) {
+    public static String getColorByType(String type) {
         if (type.startsWith("tree")) {
             return GREEN.background() + BLACK.foreground();
         }
@@ -81,11 +81,11 @@ public class MapViewMenu extends Menu {
         return "";
     }
 
-    private void setColorByTile(Tile tile) {
+    public static void setColorByTile(Tile tile) {
         System.out.print(getColorByType(tile.getType()));
     }
 
-    private void resetColor() {
+    public static void resetColor() {
         System.out.print(RESET);
     }
 

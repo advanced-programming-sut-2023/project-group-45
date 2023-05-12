@@ -4,11 +4,11 @@ public enum ANSIColor {
     BLACK("\033[30m", "\033[40m", "\033[100m", "\033[90m"),
     RED("\033[31m", "\033[41m", "\033[101m", "\033[91m"),
     GREEN("\033[32m", "\033[42m", "\033[102m", "\033[92m"),
-    BROWN("\033[33m", "\033[43m", "\033[103m", "\033[93m"),
+    YELLOW("\033[33m", "\033[43m", "\033[103m", "\033[93m"),
     BLUE("\033[34m", "\033[44m", "\033[104m", "\033[94m"),
     PURPLE("\033[35m", "\033[45m", "\033[105m", "\033[95m"),
     CYAN("\033[36m", "\033[46m", "\033[106m", "\033[96m"),
-    GRAY("\033[37m", "\033[47m", "\033[107m", "\033[97m"),
+    WHITE("\033[37m", "\033[47m", "\033[107m", "\033[97m"),
     ;
 
     public static final String RESET = "\033[0m";
@@ -18,8 +18,8 @@ public enum ANSIColor {
     private final String brightForeground;
     private final String brightBackground;
 
-    ANSIColor(String foreground, String brightForeground, String background,
-            String brightBackground) {
+    ANSIColor(String foreground, String background, String brightBackground,
+            String brightForeground) {
         this.foreground = foreground;
         this.brightForeground = brightForeground;
         this.background = background;

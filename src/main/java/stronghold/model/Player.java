@@ -13,6 +13,10 @@ public class Player implements Serializable {
     private final User user;
     private final Map<String, Integer> resources = new HashMap<>();
     private final List<TradeRequest> tradeRequests = new ArrayList<>();
-    private int happiness = 0, fear = 0;
+    private int foodRate = -2, taxRate = 0;
     private int peasants = 0;
+
+    public double getFoodRation(){
+        return 0.5 * (foodRate + 2);
+    }
 }

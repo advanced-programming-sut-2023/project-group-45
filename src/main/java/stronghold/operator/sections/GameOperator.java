@@ -55,6 +55,37 @@ public class GameOperator {
         return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
+    private void updateFood(Game game){
+        for(Player player : game.getPlayers()){
+            int peasants = game.getTotalPeasants(player);
+            int totalFoods = (int) (peasants * player.getFoodRation());
+            while (totalFoods > 0){
+                int minFood = totalFoods, nonZero = 0;
+                for(String food : game.getFoods()){
+                    int count = player.getResources().getOrDefault(food, 0);
+                    if(count > 0){
+                        minFood = Math.min(minFood, count);
+                        nonZero++;
+                    }
+                }
+                if(nonZero == 0){
+                    player.setFoodRate(-2);
+                    break;
+                }
+                minFood = Math.min(minFood, (totalFoods + nonZero - 1) / nonZero);
+                for(String food : game.getFoods()){
+                    int count = player.getResources().getOrDefault(food, 0);
+                    if(count <= 0){
+                        continue;
+                    }
+                    totalFoods -= minFood;
+                    player.getResources().put(food, count - minFood);
+                    minFood = Math.min(minFood, totalFoods);
+                }
+            }
+        }
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         // todo: update game, expect pretty long procedure
@@ -69,6 +100,7 @@ public class GameOperator {
                 log("assign labors [count=%s, building=%s]", workersToTake, building);
             }
         }
+        updateFood(game);
         // supply chain
         for (Building building : game.getBuildings()) {
             if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {

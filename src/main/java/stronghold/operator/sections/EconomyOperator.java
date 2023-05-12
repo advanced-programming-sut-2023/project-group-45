@@ -1,39 +1,79 @@
 package stronghold.operator.sections;
 
-import java.util.List;
+import static stronghold.context.MapUtils.*;
+import static stronghold.operator.OperatorPreconditions.checkExpression;
+
 import java.util.Map;
 import lombok.Data;
 import stronghold.model.Database;
+import stronghold.model.Game;
 import stronghold.model.Market;
+import stronghold.model.Player;
 import stronghold.model.TradeRequest;
-import stronghold.operator.Result;
+import stronghold.operator.OperatorException;
+import stronghold.operator.OperatorException.Type;
 
 @Data
 public final class EconomyOperator {
 
     private final Database database;
 
-    public static Result<List<TradeRequest>> getTradeList(Map<Object, String> req) {
-        return null;
+    public void requestTrade(Map<String, Object> req) throws OperatorException {
+        Player player = getReqAs(req, "player", Player.class);
+        Player target = getReqAs(req, "target", Player.class);
+        String item = getReqString(req, "item");
+        int amount = getReqAs(req, "amount", Integer.class);
+        int price = getReqAs(req, "price", Integer.class);
+        String message = getReqString(req, "message");
+        checkExpression(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
+        TradeRequest tradeRequest = new TradeRequest(player, target, item, amount, price, message);
+        addIntMap(player.getResources(), item, -amount);
+        player.getActiveTradeRequests().add(tradeRequest);
+        target.getIncomingTradeRequests().add(tradeRequest);
     }
 
-    public static Result<TradeRequest> requestTrade(Map<Object, String> req) {
-        return null;
+    public void acceptTrade(Map<String, Object> req) throws OperatorException {
+        TradeRequest tradeRequest = getReqAs(req, "request", TradeRequest.class);
+        Player player = tradeRequest.getReceiver();
+        Player sender = tradeRequest.getSender();
+        checkExpression(player.getGold() < tradeRequest.getPrice(), Type.NOT_ENOUGH_GOLD);
+        addIntMap(player.getResources(), tradeRequest.getItem(), tradeRequest.getAmount());
+        player.setGold(player.getGold() - tradeRequest.getPrice());
+        sender.setGold(tradeRequest.getSender().getGold() + tradeRequest.getPrice());
+        player.getIncomingTradeRequests().remove(tradeRequest);
+        sender.getActiveTradeRequests().remove(tradeRequest);
+        player.getSuccessfulTradeRequests().add(tradeRequest);
+        sender.getSuccessfulTradeRequests().add(tradeRequest);
     }
 
-    public static Result<Void> acceptTrade(Map<Object, String> req) {
-        return null;
+    public void deleteTrade(Map<String, Object> req) throws OperatorException {
+        TradeRequest tradeRequest = getReqAs(req, "request", TradeRequest.class);
+        Player player = tradeRequest.getReceiver();
+        Player sender = tradeRequest.getSender();
+        player.getIncomingTradeRequests().remove(tradeRequest);
+        sender.getActiveTradeRequests().remove(tradeRequest);
+        addIntMap(sender.getResources(), tradeRequest.getItem(), tradeRequest.getAmount());
     }
 
-    public static Result<Market> getMarket(Map<Object, String> req) {
-        return null;
+    public void buyMarketItem(Map<String, Object> req) throws OperatorException {
+        String item = getReqString(req, "item");
+        int amount = getReqAs(req, "amount", Integer.class);
+        Player player = getReqAs(req, "player", Player.class);
+        Game game = getReqAs(req, "game", Game.class);
+        Market market = game.getMarket();
+        checkExpression(player.getGold() < amount * market.getPrices().get(item).x(), Type.NOT_ENOUGH_GOLD);
+        addIntMap(player.getResources(), item, amount);
+        player.setGold(player.getGold() - amount * market.getPrices().get(item).x());
     }
 
-    public static Result<Void> buyMarketItem(Map<Object, String> req) {
-        return null;
-    }
-
-    public static Result<Void> sellMarketItem(Map<Object, String> req) {
-        return null;
+    public void sellMarketItem(Map<String, Object> req) throws OperatorException {
+        String item = getReqString(req, "item");
+        int amount = getReqAs(req, "amount", Integer.class);
+        Player player = getReqAs(req, "player", Player.class);
+        Game game = getReqAs(req, "game", Game.class);
+        Market market = game.getMarket();
+        checkExpression(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
+        addIntMap(player.getResources(), item, -amount);
+        player.setGold(player.getGold() + amount * market.getPrices().get(item).y());
     }
 }

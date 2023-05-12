@@ -108,11 +108,58 @@ public class GameOperator {
         }
     }
 
+    private void manageFood(Game game) {
+        for (Player player : game.getPlayers()) {
+            int peasants = game.getTotalPeasants(player);
+            int totalFoods = (int) (peasants * player.getFoodRation());
+            while (totalFoods > 0) {
+                int minFood = totalFoods, nonZero = 0;
+                for (String food : Game.FOODS) {
+                    int count = player.getResources().getOrDefault(food, 0);
+                    if (count > 0) {
+                        minFood = Math.min(minFood, count);
+                        nonZero++;
+                    }
+                }
+                if (nonZero == 0) {
+                    player.setFoodRate(-2);
+                    break;
+                }
+                minFood = Math.min(minFood, (totalFoods + nonZero - 1) / nonZero);
+                for (String food : Game.FOODS) {
+                    int count = player.getResources().getOrDefault(food, 0);
+                    if (count <= 0) {
+                        continue;
+                    }
+                    totalFoods -= minFood;
+                    player.getResources().put(food, count - minFood);
+                    minFood = Math.min(minFood, totalFoods);
+                }
+            }
+        }
+    }
+
+    private void manageTax(Game game) {
+        for (Player player : game.getPlayers()) {
+            int peasants = game.getTotalPeasants(player);
+            int totalTax = (int) (peasants * player.getTaxPerPeasant());
+            int golds = player.getResources().getOrDefault("gold", 0);
+            if (golds + totalTax < 0) {
+                player.setTaxRate(0);
+                continue;
+            }
+            golds += totalTax;
+            player.getResources().put("gold", golds);
+        }
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         assignLabor(game);
         manageSupplyChain(game);
         manageOverpopulate(game);
+        manageFood(game);
+        manageTax(game);
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {
@@ -136,5 +183,19 @@ public class GameOperator {
                 .build();
         tile.setBuilding(building);
         game.getBuildings().add(building);
+    }
+
+    public void setFoodRate(Map<String, Object> req) throws OperatorException {
+        Player player = getReqAs(req, "player", Player.class);
+        int foodRate = getReqAs(req, "rate", Integer.class);
+        checkExpression(foodRate >= -2 && foodRate <= 2, Type.INVALID_GAME_PARAMETERS);
+        player.setFoodRate(foodRate);
+    }
+
+    public void setTaxRate(Map<String, Object> req) throws OperatorException {
+        Player player = getReqAs(req, "player", Player.class);
+        int taxRate = getReqAs(req, "rate", Integer.class);
+        checkExpression(taxRate >= -3 && taxRate <= 8, Type.INVALID_GAME_PARAMETERS);
+        player.setTaxRate(taxRate);
     }
 }

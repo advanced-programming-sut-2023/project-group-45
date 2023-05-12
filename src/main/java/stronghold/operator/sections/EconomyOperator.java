@@ -2,7 +2,6 @@ package stronghold.operator.sections;
 
 import static stronghold.context.MapUtils.*;
 
-import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import stronghold.model.Database;
@@ -19,16 +18,49 @@ public final class EconomyOperator {
 
     private final Database database;
 
-    public Result<List<TradeRequest>> getTradeList(Map<String, Object> req) {
-        return null;
+    public void requestTrade(Map<String, Object> req) throws OperatorException {
+        Player player = getReqAs(req, "player", Player.class);
+        Player target = getReqAs(req, "target", Player.class);
+        String item = getReqString(req, "item");
+        int amount = getReqAs(req, "amount", Integer.class);
+        Game game = getReqAs(req, "game", Game.class);
+        int price = getReqAs(req, "price", Integer.class);
+        String message = getReqString(req, "message");
+        if (player.getResources().get(item) < amount) {
+            throw new OperatorException(Type.NOT_ENOUGH_RESOURCE);
+        } else {
+            TradeRequest tradeRequest = new TradeRequest(player, target, item, amount, price,
+                    message);
+            addIntMap(player.getResources(), item, -amount);
+            player.getActiveTradeRequests().add(tradeRequest);
+            target.getIncomingTradeRequests().add(tradeRequest);
+        }
     }
 
-    public Result<TradeRequest> requestTrade(Map<String, Object> req) {
-        return null;
+    public void acceptTrade(Map<String, Object> req) throws OperatorException {
+        TradeRequest tradeRequest = getReqAs(req, "request", TradeRequest.class);
+        Player player = tradeRequest.getReceiver();
+        Player sender = tradeRequest.getSender();
+        if (player.getGold() < tradeRequest.getPrice()) {
+            throw new OperatorException(Type.NOT_ENOUGH_GOLD);
+        } else {
+            addIntMap(player.getResources(), tradeRequest.getItem(), tradeRequest.getAmount());
+            player.setGold(player.getGold() - tradeRequest.getPrice());
+            sender.setGold(tradeRequest.getSender().getGold() + tradeRequest.getPrice());
+            player.getIncomingTradeRequests().remove(tradeRequest);
+            sender.getActiveTradeRequests().remove(tradeRequest);
+            player.getSuccessfulTradeRequests().add(tradeRequest);
+            sender.getSuccessfulTradeRequests().add(tradeRequest);
+        }
     }
 
-    public Result<Void> acceptTrade(Map<String, Object> req) {
-        return null;
+    public void deleteTrade(Map<String, Object> req) throws OperatorException {
+        TradeRequest tradeRequest = getReqAs(req, "request", TradeRequest.class);
+        Player player = tradeRequest.getReceiver();
+        Player sender = tradeRequest.getSender();
+        player.getIncomingTradeRequests().remove(tradeRequest);
+        sender.getActiveTradeRequests().remove(tradeRequest);
+        addIntMap(sender.getResources(), tradeRequest.getItem(), tradeRequest.getAmount());
     }
 
     public void buyMarketItem(Map<String, Object> req) throws OperatorException {

@@ -1,16 +1,16 @@
 package stronghold.view.sections;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static stronghold.context.MapUtils.getIntOpt;
 import static stronghold.context.MapUtils.getOpt;
 
-import java.nio.file.LinkPermission;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import stronghold.context.IntPair;
 import stronghold.model.Game;
-import stronghold.model.Market;
 import stronghold.model.Player;
+import stronghold.model.TradeRequest;
 import stronghold.operator.OperatorException;
 import stronghold.operator.Operators;
 import stronghold.view.Menu;
@@ -30,6 +30,12 @@ public class TurnMenu extends Menu {
         addCommand("show-price-list", this::showPriceList);
         addCommand("buy-item", this::buyItem);
         addCommand("sell-item", this::sellItem);
+        addCommand("request-trade", this::requestTrade);
+        addCommand("accept-trade", this::acceptTrade);
+        addCommand("reject-trade", this::rejectTrade);
+        addCommand("cancel-trade", this::cancelTrade);
+        addCommand("list-trade-requests", this::listTradeRequests);
+        addCommand("trade-history", this::tradeHistory);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -97,6 +103,105 @@ public class TurnMenu extends Menu {
             System.out.println(e.getMessage());
         }
     }
+
+    private void requestTrade(Map<String, String> input) {
+        String item = getOpt(input, "item");
+        Integer amount = getIntOpt(input, "amount");
+        Integer price = getIntOpt(input, "price");
+        String message = getOpt(input, "message");
+        Player target = getPlayerByUsername(getOpt(input, "target"));
+        try {
+            Operators.economy.requestTrade(new HashMap<String, Object>() {{
+                put("game", game);
+                put("player", player);
+                put("item", item);
+                put("amount", amount);
+                put("price", price);
+                put("message", message);
+                put("target", target);
+            }});
+            System.out.println("Trade request sent successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void listTradeRequests(Map<String, String> input) {
+        System.out.println("Incoming trade requests:");
+        int id = 1;
+        for (TradeRequest tradeRequest : player.getIncomingTradeRequests()) {
+            System.out.printf("%d. %s\n", id++, tradeRequest);
+        }
+        if (id == 1) {
+            System.out.println("No incoming trade requests");
+        }
+        id = 1;
+        System.out.println("Active trade requests:");
+        for (TradeRequest tradeRequest : player.getActiveTradeRequests()) {
+            System.out.printf("%d. %s\n", id++, tradeRequest);
+        }
+        if (id == 1) {
+            System.out.println("No active trade requests");
+        }
+    }
+
+    private void tradeHistory(Map<String, String> input) {
+        System.out.println("Trade history:");
+        int id = 1;
+        for (TradeRequest tradeRequest : player.getSuccessfulTradeRequests()) {
+            System.out.printf("%d. %s\n", id++, tradeRequest);
+        }
+        if (id == 1) {
+            System.out.println("No trade history");
+        }
+    }
+
+    private void acceptTrade(Map<String, String> input) {
+        int id = getIntOpt(input, "id");
+        try {
+            Operators.economy.acceptTrade(new HashMap<String, Object>() {{
+                put("request", checkNotNull(player.getIncomingTradeRequests().get(id - 1),
+                        "Trade request " + id + " not found"));
+            }});
+            System.out.println("Trade request accepted successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void rejectTrade(Map<String, String> input) {
+        int id = getIntOpt(input, "id");
+        try {
+            Operators.economy.deleteTrade(new HashMap<String, Object>() {{
+                put("request", checkNotNull(player.getIncomingTradeRequests().get(id - 1),
+                        "Trade request " + id + " not found"));
+            }});
+            System.out.println("Trade request rejected successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void cancelTrade(Map<String, String> input) {
+        int id = getIntOpt(input, "id");
+        try {
+            Operators.economy.deleteTrade(new HashMap<String, Object>() {{
+                put("request", checkNotNull(player.getActiveTradeRequests().get(id - 1),
+                        "Trade request " + id + " not found"));
+            }});
+            System.out.println("Trade request cancelled successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private Player getPlayerByUsername(String username) {
+        return checkNotNull(game.getPlayers().stream()
+                .filter(player -> player.getUser().getUsername().equals(username))
+                .findFirst().orElse(null), "Player " + username + " not found");
+    }
 }
+
+
 
 

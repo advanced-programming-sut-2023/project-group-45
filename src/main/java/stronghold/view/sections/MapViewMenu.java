@@ -7,6 +7,7 @@ import static stronghold.context.ANSIColor.PURPLE;
 import static stronghold.context.ANSIColor.RESET;
 import static stronghold.context.ANSIColor.WHITE;
 import static stronghold.context.ANSIColor.YELLOW;
+import static stronghold.context.MapUtils.getIntOpt;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -19,14 +20,39 @@ public class MapViewMenu extends Menu {
     private static final int MAX_HEIGHT = 7, MAX_WIDTH = 20;
 
     private final Game game;
-    private final int yStart = 0;
-    private final int xStart = 0;
+    private int yStart = 0;
+    private int xStart = 0;
 
     public MapViewMenu(Scanner scanner, Game game) {
         super(scanner);
         this.game = game;
-        addCommand("show-map", this::showMap);
-        this.showMap(null);
+        addCommand("show", x -> this.showMap());
+        addCommand("move", this::moveMap);
+        this.showMap();
+    }
+
+    private void moveMap(Map<String, String> input) {
+        int dy = 0, dx = 0;
+        if (input.containsKey("up")) {
+            dy -= getIntOpt(input, "up");
+        }
+        if (input.containsKey("down")) {
+            dy += getIntOpt(input, "down");
+        }
+        if (input.containsKey("left")) {
+            dx -= getIntOpt(input, "left");
+        }
+        if (input.containsKey("right")) {
+            dx += getIntOpt(input, "right");
+        }
+        if (yStart + dy < 0 || yStart + dy + MAX_HEIGHT > game.getMap().getHeight()
+                || xStart + dx < 0 || xStart + dx + MAX_WIDTH > game.getMap().getWidth()) {
+            System.out.println("Cannot move that way");
+            return;
+        }
+        yStart += dy;
+        xStart += dx;
+        this.showMap();
     }
 
     private String getColorByType(String type) {
@@ -62,7 +88,7 @@ public class MapViewMenu extends Menu {
         System.out.print(RESET);
     }
 
-    private void showMap(Map<String, String> input) {
+    private void showMap() {
         int length = 4 * MAX_WIDTH - 1;
         String startPos = "(" + xStart + "," + yStart + ")";
         System.out.println("┌" + startPos + "─".repeat(length - startPos.length()) + "┐");

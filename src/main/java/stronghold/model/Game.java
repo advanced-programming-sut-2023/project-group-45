@@ -73,4 +73,16 @@ public class Game implements Serializable {
                 .mapToInt(Building::getHappinessFactor)
                 .sum();
     }
+
+    public int getHousingSpace(Player player) {
+        return getFunctionalBuildingsByOwner(player)
+                .mapToInt(Building::getHousingSpace)
+                .sum();
+    }
+
+    public int getTotalPeasants(Player player) {
+        return player.getPeasants() + getBuildingsByOwner(player)
+                .mapToInt(Building::getLabors)
+                .sum();
+    }
 }

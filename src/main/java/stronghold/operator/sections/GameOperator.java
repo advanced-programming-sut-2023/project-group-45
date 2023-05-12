@@ -11,6 +11,7 @@ import static stronghold.operator.OperatorPreconditions.checkUserExists;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Data;
 import stronghold.context.IntPair;
 import stronghold.model.Building;
@@ -82,6 +83,26 @@ public class GameOperator {
             addIntMap(player.getResources(), building.getSupply());
             log("supply chain [consume=%s, supply=%s, building=%s]",
                     building.getConsume(), building.getSupply(), building);
+        }
+        // housing space
+        for (Player player : game.getPlayers()) {
+            int housingSpace = game.getHousingSpace(player);
+            int totalPeasants = game.getTotalPeasants(player);
+            if (totalPeasants <= housingSpace)
+                continue;
+            int notLabor = Math.min(player.getPeasants(), totalPeasants - housingSpace);
+            player.setPeasants(player.getPeasants() - notLabor);
+            totalPeasants -= notLabor;
+            log("overpopulate [notLabor=%s, player=%s]", notLabor, player);
+            if (totalPeasants <= housingSpace)
+                continue;
+            for (Building building : game.getBuildingsByOwner(player).toList()) {
+                while (totalPeasants > housingSpace && building.getLabors() > 0) {
+                    totalPeasants--;
+                    building.setLabors(building.getLabors() - 1);
+                    log("overpopulate [labor=1, building=%s]", building);
+                }
+            }
         }
     }
 

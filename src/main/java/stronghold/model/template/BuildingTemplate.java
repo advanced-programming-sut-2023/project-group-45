@@ -33,7 +33,8 @@ public class BuildingTemplate {
                 .consume(consume)
                 .supply(supply)
                 .religionFactor(religionFactor)
-                .happinessFactor(happinessFactor);
+                .happinessFactor(happinessFactor)
+                .housingSpace(housingSpace);
     }
 
     public boolean canBeBuiltOn(String tileType) {

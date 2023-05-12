@@ -2,5 +2,5 @@
   "type": "Base",
   "maxHitPoints": 100,
   "isHollow": true,
-  "housingSpace": 20
+  "housingSpace": 10
 }

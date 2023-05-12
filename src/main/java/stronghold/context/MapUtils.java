@@ -35,6 +35,10 @@ public class MapUtils {
         return Integer.parseInt(getOpt(map, key));
     }
 
+    public static IntPair getIntPairOpt(Map<String, String> map, String keyX, String keyY){
+        return new IntPair(getIntOpt(map, keyX), getIntOpt(map, keyY));
+    }
+
     public static Object getReq(Map<String, Object> map, String key) {
         return checkNotNull(map.get(key), "Missing key in operator request: %s", key);
     }

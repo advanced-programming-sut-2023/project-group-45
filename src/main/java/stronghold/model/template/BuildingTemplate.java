@@ -30,7 +30,7 @@ public class BuildingTemplate {
     }
 
     public boolean canBeBuiltOn(String tileType) {
-        return this.tileType == null || this.tileType.equals(tileType);
+        return this.tileType == null || tileType.startsWith(this.tileType);
     }
 
 }

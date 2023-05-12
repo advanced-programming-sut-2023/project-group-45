@@ -52,4 +52,21 @@ public class Game implements Serializable {
         return units.stream()
                 .filter(unit -> unit.getPosition().equals(position));
     }
+
+    public Stream<Building> getBuildingsByOwner(Player player) {
+        return buildings.stream()
+                .filter(building -> building.getOwner().equals(player));
+    }
+
+    public int getReligion(Player player) {
+        return getBuildingsByOwner(player)
+                .mapToInt(Building::getReligionFactor)
+                .sum();
+    }
+
+    public int getHappiness(Player player) {
+        return getBuildingsByOwner(player)
+                .mapToInt(Building::getHappinessFactor)
+                .sum();
+    }
 }

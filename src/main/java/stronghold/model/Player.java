@@ -19,4 +19,14 @@ public class Player implements Serializable {
     public double getFoodRation(){
         return 0.5 * (foodRate + 2);
     }
+
+    public double getTaxPerPeasant(){
+        if(taxRate == 0){
+            return 0;
+        }
+        if(taxRate < 0){
+            return -0.4 + 0.2 * taxRate;
+        }
+        return 0.4 + 0.2 * taxRate;
+    }
 }

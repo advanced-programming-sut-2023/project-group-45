@@ -86,6 +86,20 @@ public class GameOperator {
         }
     }
 
+    private void updateTax(Game game){
+        for(Player player : game.getPlayers()){
+            int peasants = game.getTotalPeasants(player);
+            int totalTax = (int) (peasants * player.getTaxPerPeasant());
+            int golds = player.getResources().getOrDefault("gold", 0);
+            if(golds + totalTax < 0){
+                player.setTaxRate(0);
+                continue;
+            }
+            golds += totalTax;
+            player.getResources().put("gold", golds);
+        }
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         // todo: update game, expect pretty long procedure
@@ -101,6 +115,7 @@ public class GameOperator {
             }
         }
         updateFood(game);
+        updateTax(game);
         // supply chain
         for (Building building : game.getBuildings()) {
             if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {

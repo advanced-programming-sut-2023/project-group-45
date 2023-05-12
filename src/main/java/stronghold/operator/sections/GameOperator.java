@@ -55,6 +55,59 @@ public class GameOperator {
         return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
+    private void assignLabor(Game game) {
+        for (Building building : game.getBuildings()) {
+            Player player = building.getOwner();
+            if (building.getLabors() < building.getMaxLabors()) {
+                int workersToAssign = building.getMaxLabors() - building.getLabors();
+                int workersToTake = Math.min(workersToAssign, player.getPeasants());
+                player.setPeasants(player.getPeasants() - workersToTake);
+                building.setLabors(building.getLabors() + workersToTake);
+                log("assign labors [count=%s, building=%s]", workersToTake, building);
+            }
+        }
+    }
+
+    private void manageSupplyChain(Game game) {
+        for (Building building : game.getBuildings()) {
+            if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {
+                continue;
+            }
+            Player player = building.getOwner();
+            if (!geqIntMap(player.getResources(), building.getConsume())) {
+                continue;
+            }
+            subtractIntMap(player.getResources(), building.getConsume());
+            addIntMap(player.getResources(), building.getSupply());
+            log("supply chain [consume=%s, supply=%s, building=%s]",
+                    building.getConsume(), building.getSupply(), building);
+        }
+    }
+
+    private void manageOverpopulate(Game game) {
+        for (Player player : game.getPlayers()) {
+            int housingSpace = game.getHousingSpace(player);
+            int totalPeasants = game.getTotalPeasants(player);
+            if (totalPeasants <= housingSpace) {
+                continue;
+            }
+            int notLabor = Math.min(player.getPeasants(), totalPeasants - housingSpace);
+            player.setPeasants(player.getPeasants() - notLabor);
+            totalPeasants -= notLabor;
+            log("overpopulate [notLabor=%s, player=%s]", notLabor, player);
+            if (totalPeasants <= housingSpace) {
+                continue;
+            }
+            for (Building building : game.getBuildingsByOwner(player).toList()) {
+                while (totalPeasants > housingSpace && building.getLabors() > 0) {
+                    totalPeasants--;
+                    building.setLabors(building.getLabors() - 1);
+                    log("overpopulate [labor=1, building=%s]", building);
+                }
+            }
+        }
+    }
+
     private void manageFood(Game game) {
         for (Player player : game.getPlayers()) {
             int peasants = game.getTotalPeasants(player);
@@ -102,34 +155,11 @@ public class GameOperator {
 
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
-        // todo: update game, expect pretty long procedure
-        // assign workers to buildings
-        for (Building building : game.getBuildings()) {
-            Player player = building.getOwner();
-            if (building.getLabors() < building.getMaxLabors()) {
-                int workersToAssign = building.getMaxLabors() - building.getLabors();
-                int workersToTake = Math.min(workersToAssign, player.getPeasants());
-                player.setPeasants(player.getPeasants() - workersToTake);
-                building.setLabors(building.getLabors() + workersToTake);
-                log("assign labors [count=%s, building=%s]", workersToTake, building);
-            }
-        }
+        assignLabor(game);
+        manageSupplyChain(game);
+        manageOverpopulate(game);
         manageFood(game);
         manageTax(game);
-        // supply chain
-        for (Building building : game.getBuildings()) {
-            if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {
-                continue;
-            }
-            Player player = building.getOwner();
-            if (!geqIntMap(player.getResources(), building.getConsume())) {
-                continue;
-            }
-            subtractIntMap(player.getResources(), building.getConsume());
-            addIntMap(player.getResources(), building.getSupply());
-            log("supply chain [consume=%s, supply=%s, building=%s]",
-                    building.getConsume(), building.getSupply(), building);
-        }
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {

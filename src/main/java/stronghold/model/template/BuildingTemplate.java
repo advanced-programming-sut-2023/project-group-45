@@ -22,6 +22,7 @@ public class BuildingTemplate {
     private int maxLabors = 0;
     private int religionFactor = 0;
     private int happinessFactor = 0;
+    private int housingSpace = 0;
 
     public BuildingBuilder getBuilder() {
         return Building.builder()
@@ -32,7 +33,8 @@ public class BuildingTemplate {
                 .consume(consume)
                 .supply(supply)
                 .religionFactor(religionFactor)
-                .happinessFactor(happinessFactor);
+                .happinessFactor(happinessFactor)
+                .housingSpace(housingSpace);
     }
 
     public boolean canBeBuiltOn(String tileType) {

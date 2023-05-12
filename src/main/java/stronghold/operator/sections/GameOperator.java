@@ -123,6 +123,7 @@ public class GameOperator {
                 }
                 if (nonZero == 0) {
                     player.setFoodRate(-2);
+                    log("reset food rate [player=%s]", player);
                     break;
                 }
                 minFood = Math.min(minFood, (totalFoods + nonZero - 1) / nonZero);
@@ -133,6 +134,7 @@ public class GameOperator {
                     }
                     totalFoods -= minFood;
                     player.getResources().put(food, count - minFood);
+                    log("eat food [food=%s, count=%s, player=%s]", food, minFood, player);
                     minFood = Math.min(minFood, totalFoods);
                 }
             }
@@ -146,10 +148,12 @@ public class GameOperator {
             int golds = player.getResources().getOrDefault("gold", 0);
             if (golds + totalTax < 0) {
                 player.setTaxRate(0);
+                log("reset tax rate [player=%s]", player);
                 continue;
             }
             golds += totalTax;
             player.getResources().put("gold", golds);
+            log("collect tax [gold=%s, player=%s]", totalTax, player);
         }
     }
 

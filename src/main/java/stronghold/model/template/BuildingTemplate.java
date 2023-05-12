@@ -22,6 +22,7 @@ public class BuildingTemplate {
     private int maxLabors = 0;
     private int religionFactor = 0;
     private int happinessFactor = 0;
+    private int housingSpace = 0;
 
     public BuildingBuilder getBuilder() {
         return Building.builder()

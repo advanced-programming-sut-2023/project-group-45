@@ -1,0 +1,9 @@
+{
+  "type": "Hovel",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "wood": 6
+  },
+  "tileType": "plain",
+  "housingSpace": 8
+}

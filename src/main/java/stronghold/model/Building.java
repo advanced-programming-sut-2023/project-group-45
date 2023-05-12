@@ -17,10 +17,10 @@ public class Building implements Serializable {
     private final int maxLabors;
     private final Map<String, Integer> consume;
     private final Map<String, Integer> supply;
-    private int hitPoints;
-    private int labors = 0;
     private final int religionFactor;
     private final int happinessFactor;
+    private int hitPoints;
+    private int labors = 0;
 
     @Builder(toBuilder = true)
     public Building(String type, int maxHitPoints, boolean isHollow, Player owner,

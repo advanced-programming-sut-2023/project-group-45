@@ -17,7 +17,10 @@ import lombok.Data;
 @Data
 public class TemplateDatabase {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableJdkUnsafe()
+            .create();
     private final Map<String, UnitTemplate> unitTemplates = new HashMap<>();
     private final Map<String, BuildingTemplate> buildingTemplates = new HashMap<>();
     private final Map<String, GameMapTemplate> gameMapTemplates = new HashMap<>();

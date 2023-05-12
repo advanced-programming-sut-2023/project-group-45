@@ -23,17 +23,18 @@ public class TurnMenu extends Menu {
         this.game = game;
         this.player = player;
         addCommand("who-am-i", this::whoAmI);
-        addCommand("show-resources", this::showResources);
+        addCommand("show-info", this::showInfo);
         addCommand("drop-building", this::dropBuilding);
+        addCommand("map-view", this::mapView);
     }
 
     private void whoAmI(Map<String, String> input) {
         System.out.println("You are " + player.getUser().getUsername());
     }
 
-    private void showResources(Map<String, String> input) {
-        // todo: only for testing purposes
+    private void showInfo(Map<String, String> input) {
         System.out.println("Your resources: " + player.getResources());
+        System.out.println("Peasants: " + player.getPeasants());
     }
 
     private void dropBuilding(Map<String, String> input) {
@@ -51,5 +52,10 @@ public class TurnMenu extends Menu {
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void mapView(Map<String, String> input) {
+        System.out.println("Switched to map view");
+        new MapViewMenu(scanner, game).run();
     }
 }

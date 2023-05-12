@@ -12,16 +12,19 @@
       "y": 18
     }
   ],
+  "initialResources": {
+    "wood": 100
+  },
   "initialPopulation": 20,
   "map": [
     [
       "tree",
-      "plain",
-      "plain",
-      "plain",
-      "plain",
-      "plain",
-      "plain",
+      "farmland",
+      "water",
+      "stone",
+      "iron",
+      "rock",
+      "oil",
       "plain",
       "plain",
       "plain",
@@ -37,9 +40,9 @@
       "plain"
     ],
     [
-      "plain",
-      "plain",
-      "plain",
+      "farmland",
+      "farmland",
+      "rock",
       "plain",
       "plain",
       "plain",
@@ -454,8 +457,5 @@
       "plain",
       "plain"
     ]
-  ],
-  "initialResources": {
-    "wood": 100
-  }
+  ]
 }

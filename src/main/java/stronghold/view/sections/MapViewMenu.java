@@ -3,6 +3,7 @@ package stronghold.view.sections;
 import static stronghold.context.ANSIColor.BLACK;
 import static stronghold.context.ANSIColor.BLUE;
 import static stronghold.context.ANSIColor.GREEN;
+import static stronghold.context.ANSIColor.PURPLE;
 import static stronghold.context.ANSIColor.RESET;
 import static stronghold.context.ANSIColor.WHITE;
 import static stronghold.context.ANSIColor.YELLOW;
@@ -15,7 +16,7 @@ import stronghold.view.Menu;
 
 public class MapViewMenu extends Menu {
 
-    private static final int MAX_HEIGHT = 5, MAX_WIDTH = 5;
+    private static final int MAX_HEIGHT = 7, MAX_WIDTH = 20;
 
     private final Game game;
     private final int yStart = 0;
@@ -25,6 +26,7 @@ public class MapViewMenu extends Menu {
         super(scanner);
         this.game = game;
         addCommand("show-map", this::showMap);
+        this.showMap(null);
     }
 
     private String getColorByType(String type) {
@@ -38,13 +40,16 @@ public class MapViewMenu extends Menu {
             return BLUE.brightBackground() + BLACK.foreground();
         }
         if (type.equals("stone")) {
-            return WHITE.background();
+            return WHITE.background() + BLACK.foreground();
         }
         if (type.equals("iron")) {
             return YELLOW.background() + BLACK.foreground();
         }
         if (type.startsWith("rock")) {
-            return BLACK.brightBackground() + WHITE.foreground();
+            return BLACK.brightBackground();
+        }
+        if (type.equals("oil")) {
+            return PURPLE.background() + BLACK.foreground();
         }
         return "";
     }

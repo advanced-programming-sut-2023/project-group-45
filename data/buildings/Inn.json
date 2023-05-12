@@ -1,0 +1,12 @@
+{
+  "type": "Inn",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "wood": 20,
+    "gold": 100
+  },
+  "maxLabors": 1,
+  "tileType": "plain",
+  "religionFactor": -1,
+  "happinessFactor": 2
+}

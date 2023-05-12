@@ -55,10 +55,31 @@ public class Game implements Serializable {
                 .filter(unit -> unit.getPosition().equals(position));
     }
 
+    public Stream<Building> getBuildingsByOwner(Player player) {
+        return buildings.stream()
+                .filter(building -> building.getOwner().equals(player));
+    }
+
     public int getTotalPeasants(Player player) {
-        return player.getPeasants() + buildings.stream()
-                .filter(building -> building.getOwner().equals(player))
+        return player.getPeasants() + getBuildingsByOwner(player).
                 .mapToInt(Building::getLabors)
+                .sum();
+    }
+
+    public Stream<Building> getFunctionalBuildingsByOwner(Player player) {
+        return getBuildingsByOwner(player)
+                .filter(b -> b.getLabors() == b.getMaxLabors());
+    }
+
+    public int getReligion(Player player) {
+        return getFunctionalBuildingsByOwner(player)
+                .mapToInt(Building::getReligionFactor)
+                .sum();
+    }
+
+    public int getHappiness(Player player) {
+        return getFunctionalBuildingsByOwner(player)
+                .mapToInt(Building::getHappinessFactor)
                 .sum();
     }
 }

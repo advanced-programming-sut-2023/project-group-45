@@ -1,0 +1,9 @@
+{
+  "type": "Chapel",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "gold": 250
+  },
+  "tileType": "plain",
+  "religionFactor": 1
+}

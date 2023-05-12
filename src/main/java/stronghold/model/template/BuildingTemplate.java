@@ -19,7 +19,9 @@ public class BuildingTemplate {
     private Map<String, Integer> buildCost = new HashMap<>();
     private Map<String, Integer> consume = new HashMap<>();
     private Map<String, Integer> supply = new HashMap<>();
-    private int maxLabors;
+    private int maxLabors = 0;
+    private int religionFactor = 0;
+    private int happinessFactor = 0;
 
     public BuildingBuilder getBuilder() {
         return Building.builder()
@@ -28,7 +30,9 @@ public class BuildingTemplate {
                 .isHollow(isHollow)
                 .maxLabors(maxLabors)
                 .consume(consume)
-                .supply(supply);
+                .supply(supply)
+                .religionFactor(religionFactor)
+                .happinessFactor(happinessFactor);
     }
 
     public boolean canBeBuiltOn(String tileType) {

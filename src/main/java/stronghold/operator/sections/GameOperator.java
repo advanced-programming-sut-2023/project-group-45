@@ -154,4 +154,18 @@ public class GameOperator {
         tile.setBuilding(building);
         game.getBuildings().add(building);
     }
+
+    public void setFoodRate(Map<String, Object> req) throws OperatorException {
+        Player player = getReqAs(req, "player", Player.class);
+        int foodRate = getReqAs(req, "rate", Integer.class);
+        checkExpression(foodRate >= -2 && foodRate <= 2, Type.INVALID_GAME_PARAMETERS);
+        player.setFoodRate(foodRate);
+    }
+
+    public void setTaxRate(Map<String, Object> req) throws OperatorException {
+        Player player = getReqAs(req, "player", Player.class);
+        int taxRate = getReqAs(req, "rate", Integer.class);
+        checkExpression(taxRate >= -3 && taxRate <= 8, Type.INVALID_GAME_PARAMETERS);
+        player.setTaxRate(taxRate);
+    }
 }

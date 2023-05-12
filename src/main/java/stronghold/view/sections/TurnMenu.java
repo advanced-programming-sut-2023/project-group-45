@@ -64,27 +64,45 @@ public class TurnMenu extends Menu {
         new MapViewMenu(scanner, game).run();
     }
 
-    private void showFoodList(Map<String, String> input){
-        for(String food : game.getFoods()){
-            System.out.println(food);
+    private void showFoodList(Map<String, String> input) {
+        player.getResources().forEach((k, v) -> {
+            if (Game.FOODS.contains(k)) {
+                System.out.println(" - " + k + ": " + v);
+            }
+        });
+    }
+
+    private void setFoodRate(Map<String, String> input) {
+        int rate = getIntOpt(input, "rate");
+        try {
+            Operators.game.setFoodRate(new HashMap<>() {{
+                put("player", player);
+                put("rate", rate);
+            }});
+            System.out.println("Food rate updated successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    private void setFoodRate(Map<String, String> input){
-        int rate = getIntOpt(input, "rate");
-        player.setFoodRate(rate);
-    }
-
-    private void showFoodRate(Map<String, String> input){
+    private void showFoodRate(Map<String, String> input) {
         System.out.printf("Food rate is: %d\n", player.getFoodRate());
     }
 
-    private void setTaxRate(Map<String, String> input){
+    private void setTaxRate(Map<String, String> input) {
         int rate = getIntOpt(input, "rate");
-        player.setTaxRate(rate);
+        try {
+            Operators.game.setTaxRate(new HashMap<>() {{
+                put("player", player);
+                put("rate", rate);
+            }});
+            System.out.println("Tax rate updated successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private void showTaxRate(Map<String, String> input){
+    private void showTaxRate(Map<String, String> input) {
         System.out.printf("Tax rate is: %d\n", player.getTaxRate());
     }
 }

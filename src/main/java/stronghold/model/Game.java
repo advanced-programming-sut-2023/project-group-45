@@ -88,10 +88,4 @@ public class Game implements Serializable {
                 .mapToInt(Building::getHousingSpace)
                 .sum();
     }
-
-    public int getTotalPeasants(Player player) {
-        return player.getPeasants() + getBuildingsByOwner(player)
-                .mapToInt(Building::getLabors)
-                .sum();
-    }
 }

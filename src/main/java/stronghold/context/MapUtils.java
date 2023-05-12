@@ -32,7 +32,16 @@ public class MapUtils {
     }
 
     public static int getIntOpt(Map<String, String> map, String key) {
-        return Integer.parseInt(getOpt(map, key));
+        try {
+            return Integer.parseInt(getOpt(map, key));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Invalid integer value for --" + key + ", got " + getOpt(map, key));
+        }
+    }
+
+    public static IntPair getIntPairOpt(Map<String, String> map, String keyX, String keyY){
+        return new IntPair(getIntOpt(map, keyX), getIntOpt(map, keyY));
     }
 
     public static Object getReq(Map<String, Object> map, String key) {

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Scanner;
 import stronghold.model.Game;
 import stronghold.model.Player;
-import stronghold.model.Tile;
 import stronghold.operator.OperatorException;
 import stronghold.operator.Operators;
 import stronghold.view.Menu;
@@ -20,8 +19,8 @@ public class FrameMenu extends Menu {
         super(scanner);
         this.game = game;
         addCommand("next-frame", this::nextFrame);
-        addCommand("show-map", this::showMap);
         addCommand("next-turn", this::nextTurn);
+        addCommand("map-view", this::mapView);
     }
 
     private void nextFrame(Map<String, String> input) {
@@ -45,29 +44,15 @@ public class FrameMenu extends Menu {
         System.out.println("Frames passed");
     }
 
-    private void showMap(Map<String, String> input) {
-        // todo: currently just for test
-        for (int y = 0; y < game.getMap().getHeight(); y++) {
-            for (int x = 0; x < game.getMap().getWidth(); x++) {
-                Tile tile = game.getMap().getAt(x, y);
-                if (tile.getBuilding() != null) {
-                    System.out.print(tile.getBuilding().getType().charAt(0));
-                } else if (tile.getType().equals("plain")) {
-                    System.out.print("~");
-                } else if (tile.getType().equals("tree")) {
-                    System.out.print("$");
-                } else {
-                    System.out.print(" ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
     private void nextTurn(Map<String, String> input) {
         for (Player player : game.getPlayers()) {
             System.out.println("Turn for " + player.getUser().getUsername());
             new TurnMenu(scanner, game, player).run();
         }
+    }
+
+    private void mapView(Map<String, String> input) {
+        System.out.println("Switched to map view");
+        new MapViewMenu(scanner, game).run();
     }
 }

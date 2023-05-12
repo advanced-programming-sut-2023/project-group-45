@@ -27,8 +27,12 @@ public class TemplateDatabaseEditor {
                     int maxHitPoints = Integer.parseInt(tokens[3]);
                     int speed = Integer.parseInt(tokens[4]);
                     int damage = Integer.parseInt(tokens[2]);
-                    UnitTemplate unitTemplate = new UnitTemplate(type, maxHitPoints * 10,
-                            speed, 1, damage);
+                    UnitTemplate unitTemplate = new UnitTemplate();
+                    unitTemplate.setType(type);
+                    unitTemplate.setMaxHitPoints(maxHitPoints*10);
+                    unitTemplate.setSpeed(speed);
+                    unitTemplate.setRange(1);
+                    unitTemplate.setDamage(damage);
                     unitTemplates.put(type, unitTemplate);
                 }
                 case "removeUnit" -> {
@@ -47,7 +51,9 @@ public class TemplateDatabaseEditor {
                 case "addBuilding" -> {
                     String type = tokens[1];
                     int maxHitPoints = Integer.parseInt(tokens[2]);
-                    BuildingTemplate buildingTemplate = new BuildingTemplate(type, maxHitPoints);
+                    BuildingTemplate buildingTemplate = new BuildingTemplate();
+                    buildingTemplate.setType(type);
+                    buildingTemplate.setMaxHitPoints(maxHitPoints);
                     buildingTemplates.put(type, buildingTemplate);
                 }
                 case "removeBuilding" -> {

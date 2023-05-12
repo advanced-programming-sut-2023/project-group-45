@@ -1,0 +1,12 @@
+{
+  "type": "Wheat farmer",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "wood": 15
+  },
+  "maxLabors": 1,
+  "tileType": "farmland",
+  "supply": {
+    "wheat": 1
+  }
+}

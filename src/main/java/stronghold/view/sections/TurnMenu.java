@@ -25,7 +25,7 @@ public class TurnMenu extends Menu {
         this.game = game;
         this.player = player;
         addCommand("who-am-i", this::whoAmI);
-        addCommand("show-resources", this::showResources);
+        addCommand("show-info", this::showInfo);
         addCommand("drop-building", this::dropBuilding);
         addCommand("show-price-list", this::showPriceList);
         addCommand("buy-item", this::buyItem);
@@ -36,15 +36,18 @@ public class TurnMenu extends Menu {
         addCommand("cancel-trade", this::cancelTrade);
         addCommand("list-trade-requests", this::listTradeRequests);
         addCommand("trade-history", this::tradeHistory);
+        addCommand("map-view", this::mapView);
     }
 
     private void whoAmI(Map<String, String> input) {
         System.out.println("You are " + player.getUser().getUsername());
     }
 
-    private void showResources(Map<String, String> input) {
-        // todo: only for testing purposes
+    private void showInfo(Map<String, String> input) {
         System.out.println("Your resources: " + player.getResources());
+        System.out.println("Peasants: " + player.getPeasants());
+        System.out.println("Religion: " + game.getReligion(player));
+        System.out.println("Happiness: " + game.getHappiness(player));
     }
 
     private void dropBuilding(Map<String, String> input) {
@@ -199,8 +202,10 @@ public class TurnMenu extends Menu {
                 .filter(player -> player.getUser().getUsername().equals(username))
                 .findFirst().orElse(null), "Player " + username + " not found");
     }
+
+    private void mapView(Map<String, String> input) {
+        System.out.println("Switched to map view");
+        new MapViewMenu(scanner, game).run();
+    }
 }
-
-
-
 

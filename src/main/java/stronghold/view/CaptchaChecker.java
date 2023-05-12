@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class CaptchaChecker {
 
-    private static final boolean CAPTCHA_ENABLED = true;
+    private static final boolean CAPTCHA_ENABLED = false;
     private CaptchaGenerator captchaGenerator;
 
     public void check(Scanner scanner) {

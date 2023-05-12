@@ -1,0 +1,15 @@
+{
+  "type": "Mill",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "wood": 20
+  },
+  "maxLabors": 3,
+  "tileType": "plain",
+  "consume": {
+    "wheat": 1
+  },
+  "supply": {
+    "flour": 1
+  }
+}

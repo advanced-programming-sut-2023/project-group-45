@@ -14,7 +14,6 @@ public class Player implements Serializable {
     private final Map<String, Integer> resources = new HashMap<>();
     private final List<TradeRequest> incomingTradeRequests = new ArrayList<>(),
             activeTradeRequests = new ArrayList<>(), successfulTradeRequests = new ArrayList<>();
-    private int happiness = 0, fear = 0;
     private int peasants = 0;
 
     public int getGold() {

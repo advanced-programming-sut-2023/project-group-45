@@ -55,27 +55,27 @@ public class GameOperator {
         return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
-    private void updateFood(Game game){
-        for(Player player : game.getPlayers()){
+    private void manageFood(Game game) {
+        for (Player player : game.getPlayers()) {
             int peasants = game.getTotalPeasants(player);
             int totalFoods = (int) (peasants * player.getFoodRation());
-            while (totalFoods > 0){
+            while (totalFoods > 0) {
                 int minFood = totalFoods, nonZero = 0;
-                for(String food : game.getFoods()){
+                for (String food : Game.FOODS) {
                     int count = player.getResources().getOrDefault(food, 0);
-                    if(count > 0){
+                    if (count > 0) {
                         minFood = Math.min(minFood, count);
                         nonZero++;
                     }
                 }
-                if(nonZero == 0){
+                if (nonZero == 0) {
                     player.setFoodRate(-2);
                     break;
                 }
                 minFood = Math.min(minFood, (totalFoods + nonZero - 1) / nonZero);
-                for(String food : game.getFoods()){
+                for (String food : Game.FOODS) {
                     int count = player.getResources().getOrDefault(food, 0);
-                    if(count <= 0){
+                    if (count <= 0) {
                         continue;
                     }
                     totalFoods -= minFood;
@@ -86,12 +86,12 @@ public class GameOperator {
         }
     }
 
-    private void updateTax(Game game){
-        for(Player player : game.getPlayers()){
+    private void manageTax(Game game) {
+        for (Player player : game.getPlayers()) {
             int peasants = game.getTotalPeasants(player);
             int totalTax = (int) (peasants * player.getTaxPerPeasant());
             int golds = player.getResources().getOrDefault("gold", 0);
-            if(golds + totalTax < 0){
+            if (golds + totalTax < 0) {
                 player.setTaxRate(0);
                 continue;
             }
@@ -114,8 +114,8 @@ public class GameOperator {
                 log("assign labors [count=%s, building=%s]", workersToTake, building);
             }
         }
-        updateFood(game);
-        updateTax(game);
+        manageFood(game);
+        manageTax(game);
         // supply chain
         for (Building building : game.getBuildings()) {
             if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {

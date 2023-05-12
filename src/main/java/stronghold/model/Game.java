@@ -61,7 +61,7 @@ public class Game implements Serializable {
     }
 
     public int getTotalPeasants(Player player) {
-        return player.getPeasants() + getBuildingsByOwner(player).
+        return player.getPeasants() + getBuildingsByOwner(player)
                 .mapToInt(Building::getLabors)
                 .sum();
     }

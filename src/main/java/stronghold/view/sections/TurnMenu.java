@@ -14,6 +14,7 @@ import stronghold.context.ListPair;
 import stronghold.model.Game;
 import stronghold.model.Player;
 import stronghold.model.TradeRequest;
+import stronghold.model.Unit;
 import stronghold.operator.OperatorException;
 import stronghold.operator.Operators;
 import stronghold.view.Menu;
@@ -48,6 +49,7 @@ public class TurnMenu extends Menu {
         addCommand("show-popularity", this::showPopularity);
         addCommand("unit-menu", this::unitMenu);
         addCommand("drop-unit", this::dropUnit);
+        addCommand("build-equipment", this::buildEquipment);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -305,6 +307,22 @@ public class TurnMenu extends Menu {
                 Operators.game.dropUnit(req);
             }
             System.out.println("Units dropped successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void buildEquipment(Map<String, String> input) {
+        IntPair position = getIntPairOpt(input, "x", "y");
+        try {
+            Unit unit = Operators.game.buildEquipment(new HashMap<>() {{
+                put("game", game);
+                put("player", player);
+                put("position", position);
+                copyOptTo(input, this, "type");
+            }});
+            System.out.println("Equipment " + unit.getType() +
+                    " built at (" + position.x() + "," + position.y() + ")");
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

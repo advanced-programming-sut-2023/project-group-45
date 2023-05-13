@@ -15,6 +15,7 @@ public class UnitTemplate {
     private int maxHitPoints, speed, range, damage;
     private boolean canClimb = false, canDig = false;
     private int vision = 5;
+    private int engineers = 0;
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()

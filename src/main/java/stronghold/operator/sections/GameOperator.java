@@ -439,4 +439,26 @@ public class GameOperator {
         unit.setPosition(position);
         game.getUnits().add(unit);
     }
+
+    public Unit buildEquipment(Map<String, Object> req) throws OperatorException {
+        Game game = getReqAs(req, "game", Game.class);
+        Player player = getReqAs(req, "player", Player.class);
+        IntPair position = getReqAs(req, "position", IntPair.class);
+        String unitType = getReqString(req, "type");
+        UnitTemplate unitTemplate = checkNotNull(templateDatabase.getUnitTemplates().get(unitType),
+                Type.UNIT_NOT_FOUND);
+        checkExpression(unitTemplate.getEngineers() > 0, Type.UNIT_NOT_FOUND);
+        List<Unit> engineers = game.getUnitsOnPosition(position)
+                .filter(u -> u.getType().equals("Engineer"))
+                .limit(unitTemplate.getEngineers())
+                .toList();
+        checkExpression(engineers.size() == unitTemplate.getEngineers(), Type.NOT_ENOUGH_ENGINEER);
+        engineers.forEach(u -> u.die(game));
+        Unit unit = unitTemplate.getBuilder()
+                .owner(player)
+                .build();
+        unit.setPosition(position);
+        game.getUnits().add(unit);
+        return unit;
+    }
 }

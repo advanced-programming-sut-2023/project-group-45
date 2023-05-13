@@ -1,0 +1,15 @@
+{
+  "type": "Engineer guild",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "wood": 10,
+    "gold": 100
+  },
+  "tileType": "plain",
+  "isHollow": true,
+  "dropUnit": {
+    "Engineer": {
+      "gold": 10
+    }
+  }
+}

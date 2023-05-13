@@ -1,6 +1,8 @@
 package stronghold.operator.sections;
 
-import static stronghold.context.MapUtils.*;
+import static stronghold.context.MapUtils.addIntMap;
+import static stronghold.context.MapUtils.getReqAs;
+import static stronghold.context.MapUtils.getReqString;
 import static stronghold.operator.OperatorPreconditions.checkExpression;
 
 import java.util.Map;
@@ -61,7 +63,8 @@ public final class EconomyOperator {
         Player player = getReqAs(req, "player", Player.class);
         Game game = getReqAs(req, "game", Game.class);
         Market market = game.getMarket();
-        checkExpression(player.getGold() < amount * market.getPrices().get(item).x(), Type.NOT_ENOUGH_GOLD);
+        checkExpression(player.getGold() < amount * market.getPrices().get(item).x(),
+                Type.NOT_ENOUGH_GOLD);
         addIntMap(player.getResources(), item, amount);
         player.setGold(player.getGold() - amount * market.getPrices().get(item).x());
     }

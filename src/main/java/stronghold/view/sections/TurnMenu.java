@@ -5,9 +5,11 @@ import static stronghold.context.MapUtils.getIntOpt;
 import static stronghold.context.MapUtils.getOpt;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 import stronghold.context.IntPair;
+import stronghold.context.ListPair;
 import stronghold.model.Game;
 import stronghold.model.Player;
 import stronghold.model.TradeRequest;
@@ -42,6 +44,7 @@ public class TurnMenu extends Menu {
         addCommand("show-food-rate", this::showFoodRate);
         addCommand("tax-rate", this::setTaxRate);
         addCommand("show-tax-rate", this::showTaxRate);
+        addCommand("show-popularity", this::showPopularity);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -49,10 +52,19 @@ public class TurnMenu extends Menu {
     }
 
     private void showInfo(Map<String, String> input) {
-        System.out.println("Your resources: " + player.getResources());
-        System.out.println("Peasants: " + player.getPeasants());
-        System.out.println("Religion: " + game.getReligion(player));
-        System.out.println("Happiness: " + game.getHappiness(player));
+        ListPair<String, String> info = new ListPair<>() {{
+            put("Resources", "" + player.getResources());
+            put("Peasants", "" + player.getPeasants());
+            put("Religion", "" + game.getReligion(player));
+            put("Happiness", "" + game.getHappiness(player));
+            put("Population", "" + game.getTotalPeasants(player));
+            put("Housing", "" + game.getHousingSpace(player));
+            put("Food rate", "" + player.getFoodRate());
+            put("Tax rate", "" + player.getTaxRate());
+            put("Gold", "" + player.getGold());
+            put("Popularity", "" + player.getPopularity());
+        }};
+        info.forEach((k, v) -> System.out.printf("%15s: %s\n", k, v));
     }
 
     private void dropBuilding(Map<String, String> input) {
@@ -73,6 +85,10 @@ public class TurnMenu extends Menu {
     }
 
     private void showPriceList(Map<String, String> input) {
+        if (game.getMarket().getPrices().isEmpty()) {
+            System.out.println("No items in the market");
+            return;
+        }
         for (String item : game.getMarket().getPrices().keySet()) {
             IntPair price = game.getMarket().getPrices().get(item);
             System.out.println("Name       Buy       Sell");
@@ -253,6 +269,19 @@ public class TurnMenu extends Menu {
 
     private void showTaxRate(Map<String, String> input) {
         System.out.printf("Tax rate is: %d\n", player.getTaxRate());
+    }
+
+    private void showPopularity(Map<String, String> input) {
+        ListPair<String, String> info = new ListPair<>() {{
+            put("Food", "" + player.getFoodDeltaPopularity());
+            put("Tax", "" + player.getTaxDeltaPopularity());
+            put("Religion", "" + game.getReligion(player));
+            put("Happiness", "" + game.getHappiness(player));
+            put("Delta popularity", "" + player.getDeltaPopularity());
+            put("Total popularity", "" + player.getPopularity());
+        }};
+        System.out.println("Factors:");
+        info.forEach((k, v) -> System.out.printf(" - %20s: %s\n", k, v));
     }
 }
 

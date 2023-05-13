@@ -23,6 +23,7 @@ import stronghold.model.Game;
 import stronghold.model.Navigation;
 import stronghold.model.Player;
 import stronghold.model.Tile;
+import stronghold.model.TradeRequest;
 import stronghold.model.Unit;
 import stronghold.model.User;
 import stronghold.model.template.BuildingTemplate;
@@ -31,6 +32,7 @@ import stronghold.model.template.TemplateDatabase;
 import stronghold.model.template.UnitTemplate;
 import stronghold.operator.OperatorException;
 import stronghold.operator.OperatorException.Type;
+import stronghold.operator.Operators;
 
 @Data
 public class GameOperator {
@@ -261,7 +263,9 @@ public class GameOperator {
         for (Unit unit : died) {
             log("kill unit [unit=%s]", unit);
             unit.die(game);
-            // todo: lord
+            if (unit.getType().equals("Lord")) {
+                terminatePlayer(game, unit.getOwner());
+            }
         }
     }
 
@@ -321,6 +325,26 @@ public class GameOperator {
         manageNavigation(game);
         manageOverpopulate(game);
         manageAttacks(game);
+    }
+
+    private void terminatePlayer(Game game, Player player) {
+        log("terminate player [player=%s]", player);
+        for (Building building : game.getBuildingsByOwner(player).toList()) {
+            game.getMap().getAt(building.getPosition()).setBuilding(null);
+        }
+        for (TradeRequest request : player.getIncomingTradeRequests()) {
+            try {
+                Operators.economy.deleteTrade(new HashMap<>() {{
+                    put("request", request);
+                }});
+            } catch (OperatorException e) {
+                e.printStackTrace();
+            }
+        }
+        game.getUnits().removeIf(u -> u.getOwner().equals(player));
+        game.getBuildings().removeIf(b -> b.getOwner().equals(player));
+        game.getPlayers().remove(player);
+        // todo: add scores to player.user
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {

@@ -1,5 +1,6 @@
 package stronghold.view.sections;
 
+import static stronghold.context.MapUtils.copyOptTo;
 import static stronghold.context.MapUtils.getIntPairOpt;
 import static stronghold.context.MapUtils.getOpt;
 
@@ -32,6 +33,7 @@ public class UnitMenu extends Menu {
         addCommand("clear-selection", this::clearSelection);
         addCommand("move-to", this::moveTo);
         addCommand("attack-to", this::attackTo);
+        addCommand("set-mode", this::setMode);
     }
 
     private void showSelection(Map<String, String> input) {
@@ -106,6 +108,18 @@ public class UnitMenu extends Menu {
             System.out.println(
                     "Units ordered to attack " + unit.getType() + " at (" + position.x() + ","
                             + position.y() + ")");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void setMode(Map<String, String> input) {
+        try {
+            Operators.game.setUnitMode(new HashMap<>() {{
+                put("units", selection);
+                copyOptTo(input, this, "mode");
+            }});
+            System.out.println("Mode changed successfully");
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

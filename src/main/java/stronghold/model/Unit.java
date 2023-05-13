@@ -23,7 +23,7 @@ public class Unit implements Serializable {
     @ToString.Exclude   // avoid recursive call
     @EqualsAndHashCode.Exclude
     private Unit attackGoal = null;
-    private String mode = "offensive";
+    private String mode = "standing";
 
     /* I couldn't find a way to use lombok-generated constructor.
      * It seems there is no way to initialize hitPoints (= maxHitPoints) both in the constructor

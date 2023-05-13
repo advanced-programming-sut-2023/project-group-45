@@ -419,4 +419,24 @@ public class GameOperator {
                 Type.INVALID_GAME_PARAMETERS);
         units.forEach(unit -> unit.setMode(mode));
     }
+
+    public void dropUnit(Map<String, Object> req) throws OperatorException {
+        Game game = getReqAs(req, "game", Game.class);
+        Player player = getReqAs(req, "player", Player.class);
+        IntPair position = getReqAs(req, "position", IntPair.class);
+        String unitType = getReqString(req, "type");
+        UnitTemplate unitTemplate = checkNotNull(templateDatabase.getUnitTemplates().get(unitType),
+                Type.UNIT_NOT_FOUND);
+        Tile tile = checkNotNull(game.getMap().getAt(position), Type.INVALID_POSITION);
+        Building building = checkNotNull(tile.getBuilding(), Type.INVALID_POSITION);
+        Map<String, Integer> cost = checkNotNull(building.getDropUnit().get(unitType),
+                Type.UNIT_NOT_FOUND);
+        checkExpression(geqIntMap(player.getResources(), cost), Type.NOT_ENOUGH_RESOURCE);
+        subtractIntMap(player.getResources(), cost);
+        Unit unit = unitTemplate.getBuilder()
+                .owner(player)
+                .build();
+        unit.setPosition(position);
+        game.getUnits().add(unit);
+    }
 }

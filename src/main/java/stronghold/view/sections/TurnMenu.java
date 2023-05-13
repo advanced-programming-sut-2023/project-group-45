@@ -1,12 +1,12 @@
 package stronghold.view.sections;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static stronghold.context.MapUtils.copyOptTo;
 import static stronghold.context.MapUtils.getIntOpt;
 import static stronghold.context.MapUtils.getIntPairOpt;
 import static stronghold.context.MapUtils.getOpt;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 import stronghold.context.IntPair;
@@ -47,6 +47,7 @@ public class TurnMenu extends Menu {
         addCommand("show-tax-rate", this::showTaxRate);
         addCommand("show-popularity", this::showPopularity);
         addCommand("unit-menu", this::unitMenu);
+        addCommand("drop-unit", this::dropUnit);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -288,6 +289,25 @@ public class TurnMenu extends Menu {
     private void unitMenu(Map<String, String> input) {
         System.out.println("Switched to unit menu");
         new UnitMenu(scanner, game, player).run();
+    }
+
+    private void dropUnit(Map<String, String> input) {
+        IntPair position = getIntPairOpt(input, "x", "y");
+        int count = (input.containsKey("count") ? getIntOpt(input, "count") : 1);
+        Map<String, Object> req = new HashMap<>() {{
+            put("game", game);
+            put("player", player);
+            put("position", position);
+            copyOptTo(input, this, "type");
+        }};
+        try {
+            for (int i = 0; i < count; i++) {
+                Operators.game.dropUnit(req);
+            }
+            System.out.println("Units dropped successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 

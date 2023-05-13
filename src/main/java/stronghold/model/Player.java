@@ -25,16 +25,16 @@ public class Player implements Serializable {
     public void setGold(int gold) {
         resources.put("gold", gold);
     }
-  
-    public double getFoodRation(){
+
+    public double getFoodRation() {
         return 0.5 * (foodRate + 2);
     }
 
-    public double getTaxPerPeasant(){
-        if (taxRate == 0){
+    public double getTaxPerPeasant() {
+        if (taxRate == 0) {
             return 0;
         }
-        if (taxRate < 0){
+        if (taxRate < 0) {
             return -0.4 + 0.2 * taxRate;
         }
         return 0.4 + 0.2 * taxRate;

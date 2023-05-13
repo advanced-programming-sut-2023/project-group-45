@@ -267,4 +267,14 @@ public class GameOperator {
         checkExpression(taxRate >= -3 && taxRate <= 8, Type.INVALID_GAME_PARAMETERS);
         player.setTaxRate(taxRate);
     }
+
+    public void setNavigationGoal(Map<String, Object> req) throws OperatorException {
+        List<Unit> units = getReqAs(req, "units", List.class);
+        if (units.isEmpty())
+            return;
+        Game game = getReqAs(req, "game", Game.class);
+        IntPair position = getReqAs(req, "position", IntPair.class);
+        checkExpression(new Navigation(game).isWalkable(position), Type.INVALID_POSITION);
+        units.forEach(unit -> unit.setNavigationGoal(position));
+    }
 }

@@ -2,6 +2,7 @@ package stronghold.view.sections;
 
 import static stronghold.context.MapUtils.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -9,6 +10,8 @@ import stronghold.context.IntPair;
 import stronghold.model.Game;
 import stronghold.model.Player;
 import stronghold.model.Unit;
+import stronghold.operator.OperatorException;
+import stronghold.operator.Operators;
 import stronghold.view.Menu;
 
 public class UnitMenu extends Menu {
@@ -76,9 +79,15 @@ public class UnitMenu extends Menu {
 
     private void moveTo(Map<String, String> input) {
         IntPair goal = getIntPairOpt(input, "x", "y");
-        for (Unit unit : selection) {
-            unit.setNavigationGoal(goal);
+        try {
+            Operators.game.setNavigationGoal(new HashMap<>() {{
+                put("game", game);
+                put("units", selection);
+                put("position", goal);
+            }});
+            System.out.println("Units ordered to move");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println("Units ordered to move");
     }
 }

@@ -396,4 +396,19 @@ public class GameOperator {
         checkExpression(new Navigation(game).isWalkable(position), Type.INVALID_POSITION);
         units.forEach(unit -> unit.setNavigationGoal(position));
     }
+
+    public Unit attackUnit(Map<String, Object> req) throws OperatorException {
+        Game game = getReqAs(req, "game", Game.class);
+        Player player = getReqAs(req, "player", Player.class);
+        IntPair position = getReqAs(req, "position", IntPair.class);
+        List<Unit> units = getReqAs(req, "units", List.class);
+        checkExpression(game.getMap().getAt(position) != null, Type.INVALID_GAME_PARAMETERS);
+        Unit target = game.getUnitsOnPosition(position)
+                .filter(u -> !u.getOwner().equals(player))
+                .findFirst()
+                .orElse(null);
+        checkExpression(target != null, Type.INVALID_POSITION);
+        units.forEach(unit -> unit.setAttackGoal(target));
+        return target;
+    }
 }

@@ -1,6 +1,8 @@
 package stronghold.view.sections;
 
-import static stronghold.context.MapUtils.*;
+import static stronghold.context.MapUtils.getIntPairOpt;
+import static stronghold.context.MapUtils.getOpt;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ public class UnitMenu extends Menu {
         addCommand("select-type", this::selectType);
         addCommand("clear-selection", this::clearSelection);
         addCommand("move-to", this::moveTo);
+        addCommand("attack-to", this::attackTo);
     }
 
     private void showSelection(Map<String, String> input) {
@@ -86,6 +89,23 @@ public class UnitMenu extends Menu {
                 put("position", goal);
             }});
             System.out.println("Units ordered to move");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void attackTo(Map<String, String> input) {
+        IntPair position = getIntPairOpt(input, "x", "y");
+        try {
+            Unit unit = Operators.game.attackUnit(new HashMap<>() {{
+                put("game", game);
+                put("player", player);
+                put("units", selection);
+                put("position", position);
+            }});
+            System.out.println(
+                    "Units ordered to attack " + unit.getType() + " at (" + position.x() + ","
+                            + position.y() + ")");
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

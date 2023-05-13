@@ -46,6 +46,7 @@ public class TurnMenu extends Menu {
         addCommand("tax-rate", this::setTaxRate);
         addCommand("show-tax-rate", this::showTaxRate);
         addCommand("show-popularity", this::showPopularity);
+        addCommand("unit-menu", this::unitMenu);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -282,6 +283,11 @@ public class TurnMenu extends Menu {
         }};
         System.out.println("Factors:");
         info.forEach((k, v) -> System.out.printf(" - %20s: %s\n", k, v));
+    }
+
+    private void unitMenu(Map<String, String> input) {
+        System.out.println("Switched to unit menu");
+        new UnitMenu(scanner, game, player).run();
     }
 }
 

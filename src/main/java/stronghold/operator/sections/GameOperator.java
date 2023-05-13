@@ -1,5 +1,6 @@
 package stronghold.operator.sections;
 
+import static java.util.stream.Collectors.groupingBy;
 import static stronghold.context.MapUtils.addIntMap;
 import static stronghold.context.MapUtils.geqIntMap;
 import static stronghold.context.MapUtils.getReqAs;
@@ -16,8 +17,10 @@ import stronghold.context.IntPair;
 import stronghold.model.Building;
 import stronghold.model.Database;
 import stronghold.model.Game;
+import stronghold.model.Navigation;
 import stronghold.model.Player;
 import stronghold.model.Tile;
+import stronghold.model.Unit;
 import stronghold.model.User;
 import stronghold.model.template.BuildingTemplate;
 import stronghold.model.template.GameMapTemplate;
@@ -168,7 +171,8 @@ public class GameOperator {
             int popularity = player.getPopularity();
             popularity = Math.max(0, Math.min(100, popularity + deltaPopularity));
             player.setPopularity(popularity);
-            log("popularity [delta=%s, popularity=%s, player=%s]", deltaPopularity, popularity, player);
+            log("popularity [delta=%s, popularity=%s, player=%s]", deltaPopularity, popularity,
+                    player);
 
             if (popularity >= 80 && game.getTotalPeasants(player) < game.getHousingSpace(player)) {
                 player.setPeasants(player.getPeasants() + 1);
@@ -181,6 +185,32 @@ public class GameOperator {
         }
     }
 
+    private void manageNavigation(Game game) {
+        Navigation navigation = new Navigation(game);
+        for (int y = 0; y < game.getMap().getWidth(); y++) {
+            for (int x = 0; x < game.getMap().getHeight(); x++) {
+                final int finalX = x;
+                final int finalY = y;
+                game.getUnitsOnPosition(new IntPair(finalX, finalY))
+                        .filter(u -> u.getNavigationGoal() != null)
+                        .collect(groupingBy(Unit::getSpeed))
+                        .forEach((speed, units) -> {
+                            Unit unit = units.get(0);
+                            IntPair start = new IntPair(finalX, finalY);
+                            IntPair end = unit.getNavigationGoal();
+                            IntPair step = navigation.nextStep(start, end, unit.getSpeed());
+                            if (step == null) {
+                                log("no path for unit [unit=%s]", unit);
+                                unit.setNavigationGoal(null);
+                            } else {
+                                log("move unit [step=%s, unit=%s]", step, unit);
+                                unit.setPosition(step);
+                            }
+                        });
+            }
+        }
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         assignLabor(game);
@@ -189,6 +219,7 @@ public class GameOperator {
         manageFood(game);
         manageTax(game);
         managePopularity(game);
+        manageNavigation(game);
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {

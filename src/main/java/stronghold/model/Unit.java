@@ -14,6 +14,7 @@ public class Unit implements Serializable {
     private final Player owner;
     private int hitPoints;
     private IntPair position;
+    private IntPair navigationGoal = null;
 
     /* I couldn't find a way to use lombok-generated constructor.
      * It seems there is no way to initialize hitPoints (= maxHitPoints) both in the constructor
@@ -22,8 +23,7 @@ public class Unit implements Serializable {
      */
     @Builder(toBuilder = true)
     public Unit(String type, int maxHitPoints, int speed, int range, int damage, boolean canClimb,
-            boolean canDig,
-            Player owner) {
+            boolean canDig, Player owner) {
         this.maxHitPoints = maxHitPoints;
         this.speed = speed;
         this.range = range;

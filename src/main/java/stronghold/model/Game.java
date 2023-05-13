@@ -68,7 +68,7 @@ public class Game implements Serializable {
 
     public Stream<Building> getFunctionalBuildingsByOwner(Player player) {
         return getBuildingsByOwner(player)
-                .filter(b -> b.getLabors() == b.getMaxLabors());
+                .filter(b -> b.getHitPoints() > 0 && b.getLabors() == b.getMaxLabors());
     }
 
     public int getReligion(Player player) {
@@ -87,5 +87,37 @@ public class Game implements Serializable {
         return getFunctionalBuildingsByOwner(player)
                 .mapToInt(Building::getHousingSpace)
                 .sum();
+    }
+
+    public List<Object> getTargetsAround(Player player, IntPair center, int range) {
+        List<Object> targetCandidates = new ArrayList<>();
+        for (int dy = -range; dy <= range; dy++) {
+            for (int dx = -range; dx <= range; dx++) {
+                if (Math.abs(dx) + Math.abs(dy) > range) {
+                    continue;
+                }
+                IntPair position = center.add(dx, dy);
+                Tile tile = map.getAt(position);
+                if (tile == null) {
+                    continue;
+                }
+                targetCandidates.addAll(getUnitsOnPosition(position)
+                        .filter(u -> !u.getOwner().equals(player))
+                        .toList());
+                if (tile.getBuilding() == null) {
+                    continue;
+                }
+                Building building = tile.getBuilding();
+                if (!building.getOwner().equals(player)
+                        && building.getHitPoints() > 0) {
+                    targetCandidates.add(tile.getBuilding());
+                }
+            }
+        }
+        return targetCandidates;
+    }
+
+    public List<Object> getTargetsAround(Unit unit, int range) {
+        return getTargetsAround(unit.getOwner(), unit.getPosition(), range);
     }
 }

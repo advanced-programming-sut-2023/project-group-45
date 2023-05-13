@@ -2,7 +2,9 @@ package stronghold.context;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MapUtils {
 
@@ -40,7 +42,7 @@ public class MapUtils {
         }
     }
 
-    public static IntPair getIntPairOpt(Map<String, String> map, String keyX, String keyY){
+    public static IntPair getIntPairOpt(Map<String, String> map, String keyX, String keyY) {
         return new IntPair(getIntOpt(map, keyX), getIntOpt(map, keyY));
     }
 
@@ -79,5 +81,9 @@ public class MapUtils {
             }
         }
         return true;
+    }
+
+    public static <E> E randomChoice(List<E> list) {
+        return list.get(new Random().nextInt(list.size()));
     }
 }

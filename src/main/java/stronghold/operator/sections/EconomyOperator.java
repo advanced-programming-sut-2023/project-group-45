@@ -27,6 +27,7 @@ public final class EconomyOperator {
         int amount = getReqAs(req, "amount", Integer.class);
         int price = getReqAs(req, "price", Integer.class);
         String message = getReqString(req, "message");
+        checkExpression(amount > 0 && price >= 0, Type.INVALID_GAME_PARAMETERS);
         checkExpression(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
         TradeRequest tradeRequest = new TradeRequest(player, target, item, amount, price, message);
         addIntMap(player.getResources(), item, -amount);

@@ -85,6 +85,10 @@ public class TurnMenu extends Menu {
     }
 
     private void showPriceList(Map<String, String> input) {
+        if (game.getMarket().getPrices().isEmpty()) {
+            System.out.println("No items in the market");
+            return;
+        }
         for (String item : game.getMarket().getPrices().keySet()) {
             IntPair price = game.getMarket().getPrices().get(item);
             System.out.println("Name       Buy       Sell");

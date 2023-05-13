@@ -10,6 +10,7 @@ import static stronghold.operator.OperatorPreconditions.checkExpression;
 import static stronghold.operator.OperatorPreconditions.checkNotNull;
 import static stronghold.operator.OperatorPreconditions.checkUserExists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -187,6 +188,8 @@ public class GameOperator {
 
     private void manageNavigation(Game game) {
         Navigation navigation = new Navigation(game);
+        List<List<Unit>> unitsToMove = new ArrayList<>();
+        List<IntPair> positionsToMoveTo = new ArrayList<>();
         for (int y = 0; y < game.getMap().getWidth(); y++) {
             for (int x = 0; x < game.getMap().getHeight(); x++) {
                 final int finalX = x;
@@ -200,14 +203,20 @@ public class GameOperator {
                             IntPair end = unit.getNavigationGoal();
                             IntPair step = navigation.nextStep(start, end, unit.getSpeed());
                             if (step == null) {
-                                log("no path for unit [unit=%s]", unit);
-                                unit.setNavigationGoal(null);
+                                log("no path for units [units=%s]", units);
+                                units.forEach(u -> u.setNavigationGoal(null));
                             } else {
-                                log("move unit [step=%s, unit=%s]", step, unit);
-                                unit.setPosition(step);
+                                unitsToMove.add(units);
+                                positionsToMoveTo.add(step);
                             }
                         });
             }
+        }
+        for (int i = 0; i < unitsToMove.size(); i++) {
+            List<Unit> units = unitsToMove.get(i);
+            IntPair position = positionsToMoveTo.get(i);
+            log("move units [position=%s, units=%s]", position, units);
+            units.forEach(u -> u.setPosition(position));
         }
     }
 

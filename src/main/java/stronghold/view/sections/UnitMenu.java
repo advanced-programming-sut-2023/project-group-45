@@ -25,6 +25,7 @@ public class UnitMenu extends Menu {
         addCommand("select-position", this::selectPosition);
         addCommand("select-type", this::selectType);
         addCommand("clear-selection", this::clearSelection);
+        addCommand("move-to", this::moveTo);
     }
 
     private void showSelection(Map<String, String> input) {
@@ -71,5 +72,13 @@ public class UnitMenu extends Menu {
     private void clearSelection(Map<String, String> input) {
         selection.clear();
         System.out.println("Selection cleared");
+    }
+
+    private void moveTo(Map<String, String> input) {
+        IntPair goal = getIntPairOpt(input, "x", "y");
+        for (Unit unit : selection) {
+            unit.setNavigationGoal(goal);
+        }
+        System.out.println("Units ordered to move");
     }
 }

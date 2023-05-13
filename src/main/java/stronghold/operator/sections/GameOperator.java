@@ -168,6 +168,7 @@ public class GameOperator {
             int popularity = player.getPopularity();
             popularity = Math.max(0, Math.min(100, popularity + deltaPopularity));
             player.setPopularity(popularity);
+            log("popularity [delta=%s, popularity=%s, player=%s]", deltaPopularity, popularity, player);
 
             if (popularity >= 80 && game.getTotalPeasants(player) < game.getHousingSpace(player)) {
                 player.setPeasants(player.getPeasants() + 1);

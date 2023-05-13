@@ -157,6 +157,12 @@ public class GameOperator {
         }
     }
 
+    private void managePopularity(Game game) {
+        for (Player player : game.getPlayers()) {
+            // calculate delta
+        }
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         assignLabor(game);

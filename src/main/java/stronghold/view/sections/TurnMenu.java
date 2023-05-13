@@ -50,6 +50,7 @@ public class TurnMenu extends Menu {
         addCommand("unit-menu", this::unitMenu);
         addCommand("drop-unit", this::dropUnit);
         addCommand("build-equipment", this::buildEquipment);
+        addCommand("repair-building", this::repairBuilding);
     }
 
     private void whoAmI(Map<String, String> input) {
@@ -323,6 +324,20 @@ public class TurnMenu extends Menu {
             }});
             System.out.println("Equipment " + unit.getType() +
                     " built at (" + position.x() + "," + position.y() + ")");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void repairBuilding(Map<String, String> input) {
+        IntPair position = getIntPairOpt(input, "x", "y");
+        try {
+            Operators.game.repairBuilding(new HashMap<>() {{
+                put("game", game);
+                put("player", player);
+                put("position", position);
+            }});
+            System.out.println("Building at (" + position.x() + "," + position.y() + ") repaired");
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

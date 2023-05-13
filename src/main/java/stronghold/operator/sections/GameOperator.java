@@ -274,7 +274,7 @@ public class GameOperator {
         Map<Unit, Integer> unitsToDamage = new HashMap<>();
         Map<Building, Integer> buildingsToDamage = new HashMap<>();
         for (Unit unit : game.getUnits()) {
-            if (unit.getDamage() == 0) {
+            if (unit.getDamage(game) == 0) {
                 continue;
             }
             List<Object> targetCandidates = game.getTargetsAround(unit, unit.getRange());
@@ -284,9 +284,9 @@ public class GameOperator {
             Object target = (targetCandidates.contains(unit.getAttackGoal()) ? unit.getAttackGoal()
                     : randomChoice(targetCandidates));
             if (target instanceof Unit targetUnit) {
-                addIntMap(unitsToDamage, targetUnit, unit.getDamage());
+                addIntMap(unitsToDamage, targetUnit, unit.getDamage(game));
             } else if (target instanceof Building targetBuilding) {
-                addIntMap(buildingsToDamage, targetBuilding, unit.getDamage());
+                addIntMap(buildingsToDamage, targetBuilding, unit.getDamage(game));
             }
         }
         manageBuildingDamages(game, buildingsToDamage);
@@ -397,6 +397,20 @@ public class GameOperator {
         units.forEach(unit -> unit.setNavigationGoal(position));
     }
 
+    public void setPatrol(Map<String, Object> req) throws OperatorException {
+        List<Unit> units = getReqAs(req, "units", List.class);
+        if (units.isEmpty()) {
+            return;
+        }
+        Game game = getReqAs(req, "game", Game.class);
+        IntPair[] path = getReqAs(req, "path", IntPair[].class);
+        checkExpression(new Navigation(game).isWalkable(path), Type.INVALID_POSITION);
+        units.forEach(unit -> {
+            unit.setNavigationGoal(path[0]);
+            unit.setPatrol(path);
+        });
+    }
+
     public Unit attackUnit(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         Player player = getReqAs(req, "player", Player.class);
@@ -410,6 +424,36 @@ public class GameOperator {
         checkExpression(target != null, Type.INVALID_POSITION);
         units.forEach(unit -> unit.setAttackGoal(target));
         return target;
+    }
+
+    public void repairBuilding(Map<String, Object> req) throws OperatorException {
+        Game game = getReqAs(req, "game", Game.class);
+        Player player = getReqAs(req, "player", Player.class);
+        IntPair position = getReqAs(req, "position", IntPair.class);
+        Building building = game.getBuildingsByOwner(player)
+                .filter(b -> b.getPosition().equals(position))
+                .findFirst()
+                .orElse(null);
+        checkExpression(building != null, Type.INVALID_POSITION);
+        int cost = (int) ((building.getMaxHitPoints() - building.getHitPoints()) * 0.1);
+        if (building.getOwner() != player && building.getHitPoints() == building.getMaxHitPoints() || !game.getTargetsAround(player,
+                position, 2).isEmpty() || cost > player.getResources().get("stone")) {
+            throw new OperatorException(Type.CANT_REPAIR);
+        }
+        addIntMap(player.getResources(), "stone", -cost);
+        building.setHitPoints(building.getMaxHitPoints());
+    }
+
+    public void disbandUnits(Map<String, Object> req) throws OperatorException {
+        List<Unit> units = getReqAs(req, "units", List.class);
+        Game game = getReqAs(req, "game", Game.class);
+        if (units.isEmpty()) {
+            return;
+        }
+        units.forEach(unit -> {
+            unit.getOwner().setPeasants(unit.getOwner().getPeasants() + 1);
+            unit.die(game);
+        });
     }
 
     public void setUnitMode(Map<String, Object> req) throws OperatorException {

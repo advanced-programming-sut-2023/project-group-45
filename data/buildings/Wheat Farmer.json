@@ -1,5 +1,5 @@
 {
-  "type": "Wheat farmer",
+  "type": "Wheat Farmer",
   "maxHitPoints": 100,
   "buildCost": {
     "wood": 15

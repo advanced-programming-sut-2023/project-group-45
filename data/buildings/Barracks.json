@@ -1,0 +1,15 @@
+{
+  "type": "Barracks",
+  "maxHitPoints": 100,
+  "buildCost": {
+    "stone": 15
+  },
+  "tileType": "plain",
+  "isHollow": true,
+  "dropUnit": {
+    "Archer": {
+      "bow": 1,
+      "gold": 10
+    }
+  }
+}

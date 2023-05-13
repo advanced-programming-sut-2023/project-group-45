@@ -23,6 +23,7 @@ public class BuildingTemplate {
     private int religionFactor = 0;
     private int happinessFactor = 0;
     private int housingSpace = 0;
+    private Map<String, Map<String, Integer>> dropUnit = new HashMap<>();
 
     public BuildingBuilder getBuilder() {
         return Building.builder()
@@ -34,7 +35,8 @@ public class BuildingTemplate {
                 .supply(supply)
                 .religionFactor(religionFactor)
                 .happinessFactor(happinessFactor)
-                .housingSpace(housingSpace);
+                .housingSpace(housingSpace)
+                .dropUnit(dropUnit);
     }
 
     public boolean canBeBuiltOn(String tileType) {

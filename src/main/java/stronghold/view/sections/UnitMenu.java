@@ -28,7 +28,7 @@ public class UnitMenu extends Menu {
         this.game = game;
         this.player = player;
         addCommand("show-selection", this::showSelection);
-        addCommand("select-position", this::selectPosition);
+        addCommand("select-at", this::selectPosition);
         addCommand("select-type", this::selectType);
         addCommand("clear-selection", this::clearSelection);
         addCommand("move-to", this::moveTo);

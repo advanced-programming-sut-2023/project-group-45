@@ -14,7 +14,9 @@
   ],
   "initialResources": {
     "wood": 100,
-    "gold": 10000
+    "gold": 10000,
+    "stone": 100,
+    "bow": 10
   },
   "initialPopulation": 20,
   "map": [

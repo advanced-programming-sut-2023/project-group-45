@@ -2,6 +2,7 @@ package stronghold.view.sections;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static stronghold.context.MapUtils.getIntOpt;
+import static stronghold.context.MapUtils.getIntPairOpt;
 import static stronghold.context.MapUtils.getOpt;
 
 import java.util.HashMap;
@@ -69,14 +70,13 @@ public class TurnMenu extends Menu {
 
     private void dropBuilding(Map<String, String> input) {
         String type = getOpt(input, "type");
-        int x = getIntOpt(input, "x");
-        int y = getIntOpt(input, "y");
+        IntPair position = getIntPairOpt(input, "x", "y");
         try {
             Operators.game.dropBuilding(new HashMap<>() {{
                 put("game", game);
                 put("player", player);
                 put("building", type);
-                put("position", new IntPair(x, y));
+                put("position", position);
             }});
             System.out.println("Building added successfully");
         } catch (OperatorException e) {

@@ -20,6 +20,7 @@ public class Building implements Serializable {
     private final int religionFactor;
     private final int happinessFactor;
     private final int housingSpace;
+    private final Map<String, Map<String, Integer>> dropUnit;
     private int hitPoints;
     private int labors = 0;
 
@@ -27,7 +28,7 @@ public class Building implements Serializable {
     public Building(String type, int maxHitPoints, boolean isHollow, Player owner,
             IntPair position, int maxLabors, Map<String, Integer> consume,
             Map<String, Integer> supply, int religionFactor, int happinessFactor,
-            int housingSpace) {
+            int housingSpace, Map<String, Map<String, Integer>> dropUnit) {
         this.type = type;
         this.maxHitPoints = maxHitPoints;
         this.hitPoints = maxHitPoints;
@@ -40,6 +41,7 @@ public class Building implements Serializable {
         this.religionFactor = religionFactor;
         this.happinessFactor = happinessFactor;
         this.housingSpace = housingSpace;
+        this.dropUnit = dropUnit;
     }
 
     public void destroy(Game game) {

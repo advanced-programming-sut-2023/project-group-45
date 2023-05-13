@@ -68,7 +68,7 @@ public class Game implements Serializable {
 
     public Stream<Building> getFunctionalBuildingsByOwner(Player player) {
         return getBuildingsByOwner(player)
-                .filter(b -> b.getLabors() == b.getMaxLabors());
+                .filter(b -> b.getHitPoints() > 0 && b.getLabors() == b.getMaxLabors());
     }
 
     public int getReligion(Player player) {

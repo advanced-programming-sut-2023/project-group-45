@@ -5,12 +5,14 @@ import static stronghold.context.MapUtils.addIntMap;
 import static stronghold.context.MapUtils.geqIntMap;
 import static stronghold.context.MapUtils.getReqAs;
 import static stronghold.context.MapUtils.getReqString;
+import static stronghold.context.MapUtils.randomChoice;
 import static stronghold.context.MapUtils.subtractIntMap;
 import static stronghold.operator.OperatorPreconditions.checkExpression;
 import static stronghold.operator.OperatorPreconditions.checkNotNull;
 import static stronghold.operator.OperatorPreconditions.checkUserExists;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -62,7 +64,7 @@ public class GameOperator {
     private void assignLabor(Game game) {
         for (Building building : game.getBuildings()) {
             Player player = building.getOwner();
-            if (building.getLabors() < building.getMaxLabors()) {
+            if (building.getLabors() < building.getMaxLabors() && building.getHitPoints() > 0) {
                 int workersToAssign = building.getMaxLabors() - building.getLabors();
                 int workersToTake = Math.min(workersToAssign, player.getPeasants());
                 player.setPeasants(player.getPeasants() - workersToTake);
@@ -74,7 +76,8 @@ public class GameOperator {
 
     private void manageSupplyChain(Game game) {
         for (Building building : game.getBuildings()) {
-            if (building.getLabors() < building.getMaxLabors() || building.getSupply().isEmpty()) {
+            if (building.getLabors() < building.getMaxLabors() || building.getHitPoints() <= 0
+                    || building.getSupply().isEmpty()) {
                 continue;
             }
             Player player = building.getOwner();
@@ -155,6 +158,9 @@ public class GameOperator {
                 log("reset tax rate [player=%s]", player);
                 continue;
             }
+            if (totalTax == 0) {
+                continue;
+            }
             golds += totalTax;
             player.getResources().put("gold", golds);
             log("collect tax [gold=%s, player=%s]", totalTax, player);
@@ -177,11 +183,11 @@ public class GameOperator {
 
             if (popularity >= 80 && game.getTotalPeasants(player) < game.getHousingSpace(player)) {
                 player.setPeasants(player.getPeasants() + 1);
-                log("birth [popularity=%s, player=%]", popularity, player);
+                log("peasant birth [popularity=%s, player=%]", popularity, player);
             }
             if (popularity <= 20 && player.getPeasants() > 0) {
                 player.setPeasants(player.getPeasants() - 1);
-                log("death [popularity=%s, player=%s]", popularity, player);
+                log("peasant death [popularity=%s, player=%s]", popularity, player);
             }
         }
     }
@@ -220,15 +226,101 @@ public class GameOperator {
         }
     }
 
+    private void manageBuildingDamages(Game game, Map<Building, Integer> toDamage) {
+        List<Building> destroyed = new ArrayList<>();
+        for (Map.Entry<Building, Integer> entry : toDamage.entrySet()) {
+            Building target = entry.getKey();
+            int damage = entry.getValue();
+            int hp = target.getHitPoints();
+            hp = Math.max(0, hp - damage);
+            target.setHitPoints(hp);
+            log("damage building [damage=%s, hp=%s, target=%s]", damage, hp, target);
+            if (hp == 0) {
+                destroyed.add(target);
+            }
+        }
+        for (Building building : destroyed) {
+            log("destroy building [building=%s]", building);
+            building.destroy(game);
+        }
+    }
+
+    private void manageUnitDamages(Game game, Map<Unit, Integer> toDamage) {
+        List<Unit> died = new ArrayList<>();
+        for (Map.Entry<Unit, Integer> entry : toDamage.entrySet()) {
+            Unit target = entry.getKey();
+            int damage = entry.getValue();
+            int hp = target.getHitPoints();
+            hp = Math.max(0, hp - damage);
+            target.setHitPoints(hp);
+            log("damage unit [damage=%s, hp=%s, target=%s]", damage, hp, target);
+            if (hp == 0) {
+                died.add(target);
+            }
+        }
+        for (Unit unit : died) {
+            log("kill unit [unit=%s]", unit);
+            unit.die(game);
+            // todo: lord
+        }
+    }
+
+    private void manageAttacks(Game game) {
+        Map<Unit, Integer> unitsToDamage = new HashMap<>();
+        Map<Building, Integer> buildingsToDamage = new HashMap<>();
+        for (Unit unit : game.getUnits()) {
+            if (unit.getDamage() == 0) {
+                continue;
+            }
+            List<Object> targetCandidates = new ArrayList<>();
+            int range = unit.getRange();
+            for (int dy = -range; dy <= range; dy++) {
+                for (int dx = -range; dx <= range; dx++) {
+                    if (Math.abs(dx) + Math.abs(dy) > range) {
+                        continue;
+                    }
+                    IntPair position = unit.getPosition().add(dx, dy);
+                    Tile tile = game.getMap().getAt(position);
+                    if (tile == null) {
+                        continue;
+                    }
+                    targetCandidates.addAll(game.getUnitsOnPosition(position)
+                            .filter(u -> !u.getOwner().equals(unit.getOwner()))
+                            .toList());
+                    if (tile.getBuilding() == null) {
+                        continue;
+                    }
+                    Building building = tile.getBuilding();
+                    if (!building.getOwner().equals(unit.getOwner())
+                            && building.getHitPoints() > 0) {
+                        targetCandidates.add(tile.getBuilding());
+                    }
+                }
+            }
+            if (targetCandidates.isEmpty()) {
+                continue;
+            }
+            Object target = randomChoice(targetCandidates);
+            if (target instanceof Unit targetUnit) {
+                addIntMap(unitsToDamage, targetUnit, unit.getDamage());
+            } else if (target instanceof Building targetBuilding) {
+                addIntMap(buildingsToDamage, targetBuilding, unit.getDamage());
+            }
+        }
+        manageBuildingDamages(game, buildingsToDamage);
+        manageUnitDamages(game, unitsToDamage);
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         assignLabor(game);
         manageSupplyChain(game);
-        manageOverpopulate(game);
         manageFood(game);
         manageTax(game);
         managePopularity(game);
         manageNavigation(game);
+        manageOverpopulate(game);
+        manageAttacks(game);
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {
@@ -270,8 +362,9 @@ public class GameOperator {
 
     public void setNavigationGoal(Map<String, Object> req) throws OperatorException {
         List<Unit> units = getReqAs(req, "units", List.class);
-        if (units.isEmpty())
+        if (units.isEmpty()) {
             return;
+        }
         Game game = getReqAs(req, "game", Game.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
         checkExpression(new Navigation(game).isWalkable(position), Type.INVALID_POSITION);

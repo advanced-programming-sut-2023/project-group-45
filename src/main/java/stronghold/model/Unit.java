@@ -34,4 +34,8 @@ public class Unit implements Serializable {
         this.hitPoints = maxHitPoints;
         this.owner = owner;
     }
+
+    public void die(Game game) {
+        game.getUnits().remove(this);
+    }
 }

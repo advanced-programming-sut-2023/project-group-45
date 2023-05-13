@@ -16,7 +16,8 @@ public class Navigation {
     public boolean isWalkable(IntPair position) {
         Tile tile = game.getMap().getAt(position);
         return tile != null && WALKABLE_TILES.contains(tile.getType()) &&
-                (tile.getBuilding() == null || tile.getBuilding().isHollow());
+                (tile.getBuilding() == null || tile.getBuilding().isHollow()
+                        || tile.getBuilding().getHitPoints() <= 0);
     }
 
     /*

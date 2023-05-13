@@ -13,6 +13,12 @@ public class Navigation {
     private static final List<String> WALKABLE_TILES = List.of("plain", "farmland");
     private final Game game;
 
+    public boolean isWalkable(IntPair position) {
+        Tile tile = game.getMap().getAt(position);
+        return tile != null && WALKABLE_TILES.contains(tile.getType()) &&
+                (tile.getBuilding() == null || tile.getBuilding().isHollow());
+    }
+
     /*
      * Returns null, when start == end, or when there is no path from start to end.
      */
@@ -30,10 +36,7 @@ public class Navigation {
             for (Direction dir : Direction.shuffledValues()) {
                 IntPair v = u.add(dir.dx(), dir.dy());
                 Tile tile = game.getMap().getAt(v);
-                if (tile == null || next[v.x()][v.y()] != null) {
-                    continue;
-                }
-                if (!WALKABLE_TILES.contains(tile.getType())) {
+                if (tile == null || next[v.x()][v.y()] != null || !isWalkable(v)) {
                     continue;
                 }
                 next[v.x()][v.y()] = u;

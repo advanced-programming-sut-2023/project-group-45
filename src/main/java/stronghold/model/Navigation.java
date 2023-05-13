@@ -1,6 +1,7 @@
 package stronghold.model;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class Navigation {
     /*
      * Returns null, when start == end, or when there is no path from start to end.
      */
-    public IntPair nextStep(IntPair start, IntPair end, int speed) {
+    public List<IntPair> getPath(IntPair start, IntPair end) {
         if (start.equals(end)) {
             return null;
         }
@@ -47,10 +48,23 @@ public class Navigation {
         if (next[start.x()][start.y()] == null) {
             return null;
         }
-        IntPair step = start;
-        for (int i = 0; i < speed; i++) {
-            step = next[step.x()][step.y()];
+        List<IntPair> path = new ArrayList<>();
+        IntPair u = start;
+        while (!u.equals(end)) {
+            path.add(u);
+            u = next[u.x()][u.y()];
         }
-        return step;
+        path.add(end);
+        return path;
+    }
+
+    public static IntPair getBySpeed(List<IntPair> path, int speed) {
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
+        if (speed >= path.size()) {
+            return path.get(path.size() - 1);
+        }
+        return path.get(speed);
     }
 }

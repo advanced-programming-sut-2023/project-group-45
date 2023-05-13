@@ -17,6 +17,7 @@ public class Player implements Serializable {
     private int peasants = 0;
     private int foodRate = -2, taxRate = 0;
     private int popularity = 100, deltaPopularity = 0;
+    private boolean isAlive = true;
 
     public int getGold() {
         return resources.get("gold");

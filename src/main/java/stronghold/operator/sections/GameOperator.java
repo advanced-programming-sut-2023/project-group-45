@@ -196,35 +196,36 @@ public class GameOperator {
 
     private void manageNavigation(Game game) {
         Navigation navigation = new Navigation(game);
-        List<List<Unit>> unitsToMove = new ArrayList<>();
+        List<Unit> unitsToMove = new ArrayList<>();
         List<IntPair> positionsToMoveTo = new ArrayList<>();
         for (int y = 0; y < game.getMap().getWidth(); y++) {
             for (int x = 0; x < game.getMap().getHeight(); x++) {
                 final int finalX = x;
                 final int finalY = y;
                 game.getUnitsOnPosition(new IntPair(finalX, finalY))
-                        .filter(u -> u.getNavigationGoal() != null)
-                        .collect(groupingBy(Unit::getSpeed))
-                        .forEach((speed, units) -> {
-                            Unit unit = units.get(0);
+                        .filter(u -> u.getGoal() != null)
+                        .collect(groupingBy(Unit::getGoal))
+                        .forEach((goal, units) -> {
                             IntPair start = new IntPair(finalX, finalY);
-                            IntPair end = unit.getNavigationGoal();
-                            IntPair step = navigation.nextStep(start, end, unit.getSpeed());
-                            if (step == null) {
+                            List<IntPair> path = navigation.getPath(start, goal);
+                            if (path == null) {
                                 log("no path for units [units=%s]", units);
-                                units.forEach(u -> u.setNavigationGoal(null));
+                                units.forEach(Unit::unsetGoal);
                             } else {
-                                unitsToMove.add(units);
-                                positionsToMoveTo.add(step);
+                                for (Unit unit : units) {
+                                    unitsToMove.add(unit);
+                                    positionsToMoveTo.add(
+                                            Navigation.getBySpeed(path, unit.getSpeed()));
+                                }
                             }
                         });
             }
         }
         for (int i = 0; i < unitsToMove.size(); i++) {
-            List<Unit> units = unitsToMove.get(i);
+            Unit unit = unitsToMove.get(i);
             IntPair position = positionsToMoveTo.get(i);
-            log("move units [position=%s, units=%s]", position, units);
-            units.forEach(u -> u.setPosition(position));
+            log("move unit [position=%s, unit=%s]", position, unit);
+            unit.setPosition(position);
         }
     }
 
@@ -344,6 +345,7 @@ public class GameOperator {
         game.getUnits().removeIf(u -> u.getOwner().equals(player));
         game.getBuildings().removeIf(b -> b.getOwner().equals(player));
         game.getPlayers().remove(player);
+        player.setAlive(false);
         // todo: add scores to player.user
     }
 

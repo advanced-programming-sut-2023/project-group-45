@@ -15,6 +15,7 @@ public class Unit implements Serializable {
     private int hitPoints;
     private IntPair position;
     private IntPair navigationGoal = null;
+    private Unit attackGoal = null;
 
     /* I couldn't find a way to use lombok-generated constructor.
      * It seems there is no way to initialize hitPoints (= maxHitPoints) both in the constructor
@@ -37,5 +38,18 @@ public class Unit implements Serializable {
 
     public void die(Game game) {
         game.getUnits().remove(this);
+    }
+
+    public IntPair getGoal() {
+        if (attackGoal != null && attackGoal.hitPoints > 0 && attackGoal.owner.isAlive()) {
+            return attackGoal.position;
+        }
+        attackGoal = null;
+        return navigationGoal;
+    }
+
+    public void unsetGoal() {
+        attackGoal = null;
+        navigationGoal = null;
     }
 }

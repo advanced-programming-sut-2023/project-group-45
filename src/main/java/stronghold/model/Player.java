@@ -39,4 +39,12 @@ public class Player implements Serializable {
         }
         return 0.4 + 0.2 * taxRate;
     }
+
+    public int getFoodDeltaPopularity() {
+        return 4 * foodRate;
+    }
+
+    public int getTaxDeltaPopularity() {
+        return -2 * taxRate + (taxRate < 0 ? +1 : 0) + (taxRate > 4 ? -2 * (taxRate - 4) : 0);
+    }
 }

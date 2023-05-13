@@ -159,7 +159,24 @@ public class GameOperator {
 
     private void managePopularity(Game game) {
         for (Player player : game.getPlayers()) {
-            // calculate delta
+            int deltaPopularity = 0;
+            deltaPopularity += player.getFoodDeltaPopularity();
+            deltaPopularity += player.getTaxDeltaPopularity();
+            deltaPopularity += game.getReligion(player);
+            deltaPopularity += game.getHappiness(player);
+            player.setDeltaPopularity(deltaPopularity);
+            int popularity = player.getPopularity();
+            popularity = Math.max(0, Math.min(100, popularity + deltaPopularity));
+            player.setPopularity(popularity);
+
+            if (popularity >= 80 && game.getTotalPeasants(player) < game.getHousingSpace(player)) {
+                player.setPeasants(player.getPeasants() + 1);
+                log("birth [popularity=%s, player=%]", popularity, player);
+            }
+            if (popularity <= 20 && player.getPeasants() > 0) {
+                player.setPeasants(player.getPeasants() - 1);
+                log("death [popularity=%s, player=%s]", popularity, player);
+            }
         }
     }
 
@@ -170,6 +187,7 @@ public class GameOperator {
         manageOverpopulate(game);
         manageFood(game);
         manageTax(game);
+        managePopularity(game);
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {

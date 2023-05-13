@@ -277,35 +277,12 @@ public class GameOperator {
             if (unit.getDamage() == 0) {
                 continue;
             }
-            List<Object> targetCandidates = new ArrayList<>();
-            int range = unit.getRange();
-            for (int dy = -range; dy <= range; dy++) {
-                for (int dx = -range; dx <= range; dx++) {
-                    if (Math.abs(dx) + Math.abs(dy) > range) {
-                        continue;
-                    }
-                    IntPair position = unit.getPosition().add(dx, dy);
-                    Tile tile = game.getMap().getAt(position);
-                    if (tile == null) {
-                        continue;
-                    }
-                    targetCandidates.addAll(game.getUnitsOnPosition(position)
-                            .filter(u -> !u.getOwner().equals(unit.getOwner()))
-                            .toList());
-                    if (tile.getBuilding() == null) {
-                        continue;
-                    }
-                    Building building = tile.getBuilding();
-                    if (!building.getOwner().equals(unit.getOwner())
-                            && building.getHitPoints() > 0) {
-                        targetCandidates.add(tile.getBuilding());
-                    }
-                }
-            }
+            List<Object> targetCandidates = game.getTargetsAround(unit, unit.getRange());
             if (targetCandidates.isEmpty()) {
                 continue;
             }
-            Object target = randomChoice(targetCandidates);
+            Object target = (targetCandidates.contains(unit.getAttackGoal()) ? unit.getAttackGoal()
+                    : randomChoice(targetCandidates));
             if (target instanceof Unit targetUnit) {
                 addIntMap(unitsToDamage, targetUnit, unit.getDamage());
             } else if (target instanceof Building targetBuilding) {
@@ -316,6 +293,28 @@ public class GameOperator {
         manageUnitDamages(game, unitsToDamage);
     }
 
+    private void manageVision(Game game) {
+        for (Unit unit : game.getUnits()) {
+            if (unit.getAttackGoal() != null) {
+                continue;
+            }
+            int vision = unit.getEffectiveVision();
+            if (vision == 0) {
+                continue;
+            }
+            List<Unit> visibleTargets = game.getTargetsAround(unit, vision).stream()
+                    .filter(obj -> obj instanceof Unit)
+                    .map(obj -> (Unit) obj)
+                    .toList();
+            if (visibleTargets.isEmpty()) {
+                continue;
+            }
+            Unit target = randomChoice(visibleTargets);
+            log("target in vision [vision=%s, unit=%s, target=%s]", vision, unit, target);
+            unit.setAttackGoal(target);
+        }
+    }
+
     public void nextFrame(Map<String, Object> req) throws OperatorException {
         Game game = getReqAs(req, "game", Game.class);
         assignLabor(game);
@@ -323,9 +322,10 @@ public class GameOperator {
         manageFood(game);
         manageTax(game);
         managePopularity(game);
+        manageVision(game);
         manageNavigation(game);
-        manageOverpopulate(game);
         manageAttacks(game);
+        manageOverpopulate(game);
     }
 
     private void terminatePlayer(Game game, Player player) {
@@ -410,5 +410,13 @@ public class GameOperator {
         checkExpression(target != null, Type.INVALID_POSITION);
         units.forEach(unit -> unit.setAttackGoal(target));
         return target;
+    }
+
+    public void setUnitMode(Map<String, Object> req) throws OperatorException {
+        List<Unit> units = getReqAs(req, "units", List.class);
+        String mode = getReqString(req, "mode");
+        checkExpression(List.of("standing", "defensive", "offensive").contains(mode),
+                Type.INVALID_GAME_PARAMETERS);
+        units.forEach(unit -> unit.setMode(mode));
     }
 }

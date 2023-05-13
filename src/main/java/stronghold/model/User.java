@@ -4,6 +4,7 @@ import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.ToString;
 import stronghold.context.HashedString;
 
 @Data
@@ -13,6 +14,7 @@ public class User implements Serializable {
     @NonNull
     private String username;
     @NonNull
+    @ToString.Exclude // avoid long logs
     private HashedString password;
     @NonNull
     private String nickname;

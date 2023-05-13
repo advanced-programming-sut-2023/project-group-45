@@ -14,6 +14,7 @@ public class UnitTemplate {
     private String type;
     private int maxHitPoints, speed, range, damage;
     private boolean canClimb = false, canDig = false;
+    private int vision = 5;
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()
@@ -23,6 +24,7 @@ public class UnitTemplate {
                 .range(range)
                 .damage(damage)
                 .canClimb(canClimb)
-                .canDig(canDig);
+                .canDig(canDig)
+                .vision(vision);
     }
 }

@@ -1,9 +1,9 @@
 {
-  "type": "Good thing",
+  "type": "Bad Thing",
   "maxHitPoints": 100,
   "buildCost": {
-    "gold": 30
+    "gold": 50
   },
   "tileType": "plain",
-  "happinessFactor": 1
+  "happinessFactor": -1
 }

@@ -1,5 +1,5 @@
 {
-  "type": "Engineer guild",
+  "type": "Engineer Guild",
   "maxHitPoints": 100,
   "buildCost": {
     "wood": 10,

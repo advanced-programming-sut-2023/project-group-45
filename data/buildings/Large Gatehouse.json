@@ -1,5 +1,5 @@
 {
-  "type": "Hovel",
+  "type": "Large Gatehouse",
   "maxHitPoints": 100,
   "buildCost": {
     "stone": 20

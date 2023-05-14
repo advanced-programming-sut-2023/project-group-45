@@ -13,6 +13,8 @@
   "happinessFactor": 0,
   "housingSpace": 0,
   "dropUnit": {
-    "Tunneler": 20
+    "Tunneler": {
+      "gold": 20
+    }
   }
 }

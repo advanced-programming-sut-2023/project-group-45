@@ -5,5 +5,7 @@
   "range": 1,
   "damage": 4,
   "canClimb": true,
-  "canDig": true
+  "canDig": true,
+  "vision": 5,
+  "engineers": 0
 }

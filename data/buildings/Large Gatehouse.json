@@ -1,10 +1,16 @@
 {
   "type": "Large Gatehouse",
   "maxHitPoints": 100,
+  "isHollow": true,
+  "tileType": "plain",
   "buildCost": {
     "stone": 20
   },
-  "tileType": "plain",
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 0,
+  "happinessFactor": 0,
   "housingSpace": 10,
-  "isHollow": true
+  "dropUnit": {}
 }

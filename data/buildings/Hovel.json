@@ -1,9 +1,16 @@
 {
   "type": "Hovel",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "plain",
   "buildCost": {
     "wood": 6
   },
-  "tileType": "plain",
-  "housingSpace": 8
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 0,
+  "happinessFactor": 0,
+  "housingSpace": 8,
+  "dropUnit": {}
 }

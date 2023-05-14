@@ -1,11 +1,9 @@
 {
-  "type": "Engineer Guild",
+  "type": "Lookout Tower",
   "maxHitPoints": 100,
   "isHollow": true,
-  "tileType": "plain",
   "buildCost": {
-    "wood": 10,
-    "gold": 100
+    "stone": 10
   },
   "consume": {},
   "supply": {},
@@ -13,9 +11,5 @@
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,
-  "dropUnit": {
-    "Engineer": {
-      "gold": 10
-    }
-  }
+  "dropUnit": {}
 }

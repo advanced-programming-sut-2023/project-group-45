@@ -2,5 +2,12 @@
   "type": "Base",
   "maxHitPoints": 100,
   "isHollow": true,
-  "housingSpace": 10
+  "buildCost": {},
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 0,
+  "happinessFactor": 0,
+  "housingSpace": 10,
+  "dropUnit": {}
 }

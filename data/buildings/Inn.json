@@ -1,12 +1,17 @@
 {
   "type": "Inn",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "plain",
   "buildCost": {
     "wood": 20,
     "gold": 100
   },
+  "consume": {},
+  "supply": {},
   "maxLabors": 1,
-  "tileType": "plain",
   "religionFactor": -1,
-  "happinessFactor": 2
+  "happinessFactor": 2,
+  "housingSpace": 0,
+  "dropUnit": {}
 }

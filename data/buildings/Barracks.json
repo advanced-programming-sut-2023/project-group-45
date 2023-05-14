@@ -1,11 +1,17 @@
 {
   "type": "Barracks",
   "maxHitPoints": 100,
+  "isHollow": true,
+  "tileType": "plain",
   "buildCost": {
     "stone": 15
   },
-  "tileType": "plain",
-  "isHollow": true,
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 0,
+  "happinessFactor": 0,
+  "housingSpace": 0,
   "dropUnit": {
     "Archer": {
       "bow": 1,

@@ -1,9 +1,16 @@
 {
   "type": "Cathedral",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "plain",
   "buildCost": {
     "gold": 1000
   },
-  "tileType": "plain",
-  "religionFactor": 3
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 3,
+  "happinessFactor": 0,
+  "housingSpace": 0,
+  "dropUnit": {}
 }

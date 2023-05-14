@@ -1,16 +1,13 @@
 {
-  "type": "Good Thing",
+  "type": "Armourer",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
-  "buildCost": {
-    "gold": 30
-  },
+  "buildCost": {},
   "consume": {},
   "supply": {},
   "maxLabors": 0,
   "religionFactor": 0,
-  "happinessFactor": 1,
+  "happinessFactor": 0,
   "housingSpace": 0,
   "dropUnit": {}
 }

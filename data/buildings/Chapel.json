@@ -1,9 +1,16 @@
 {
   "type": "Chapel",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "plain",
   "buildCost": {
     "gold": 250
   },
-  "tileType": "plain",
-  "religionFactor": 1
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 1,
+  "happinessFactor": 0,
+  "housingSpace": 0,
+  "dropUnit": {}
 }

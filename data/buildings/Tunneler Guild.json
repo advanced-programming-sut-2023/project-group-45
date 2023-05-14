@@ -12,5 +12,7 @@
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,
-  "dropUnit": {}
+  "dropUnit": {
+    "Tunneler": 20
+  }
 }

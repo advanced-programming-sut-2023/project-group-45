@@ -12,5 +12,9 @@
   "religionFactor": 3,
   "happinessFactor": 0,
   "housingSpace": 0,
-  "dropUnit": {}
+  "dropUnit": {
+    "Black Monk": {
+      "gold": 10
+    }
+  }
 }

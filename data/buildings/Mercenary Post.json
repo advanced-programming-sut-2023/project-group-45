@@ -11,5 +11,24 @@
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,
-  "dropUnit": {}
+  "dropUnit": {
+    "Slave": {
+      "gold": 5
+    },
+    "Slinger": {
+      "gold": 12
+    },
+    "Assassin": {
+      "gold": 60
+    },
+    "Horse Archer": {
+      "gold": 80
+    },
+    "Arabian Swordsman": {
+      "gold": 80
+    },
+    "Fire Thrower": {
+      "gold": 100
+    }
+  }
 }

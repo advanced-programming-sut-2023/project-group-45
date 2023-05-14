@@ -1,0 +1,15 @@
+{
+    "type": "Granery",
+    "maxHitPoints": 100,
+    "isHollow": false,
+    "buildCost": {
+      "wood": 5
+    },
+    "consume": {},
+    "supply": {},
+    "maxLabors": 0,
+    "religionFactor": 0,
+    "happinessFactor": 0,
+    "housingSpace": 0,
+    "dropUnit": {}
+  }

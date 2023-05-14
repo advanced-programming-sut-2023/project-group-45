@@ -2,7 +2,10 @@
   "type": "Oil Smelter",
   "maxHitPoints": 100,
   "isHollow": false,
-  "buildCost": {},
+  "buildCost": {
+    "iron": 10,
+    "gold": 100
+  },
   "consume": {},
   "supply": {},
   "maxLabors": 0,

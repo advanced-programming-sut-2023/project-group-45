@@ -1,11 +1,16 @@
 {
   "type": "Apple Orchard",
+  "tileType": "farmland",
   "maxHitPoints": 100,
   "isHollow": false,
-  "buildCost": {},
+  "buildCost": {
+    "wood": 5
+  },
   "consume": {},
-  "supply": {},
-  "maxLabors": 0,
+  "supply": {
+    "apple": 1
+  },
+  "maxLabors": 1,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

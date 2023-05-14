@@ -2,10 +2,17 @@
   "type": "Armourer",
   "maxHitPoints": 100,
   "isHollow": false,
-  "buildCost": {},
-  "consume": {},
-  "supply": {},
-  "maxLabors": 0,
+  "buildCost": {
+    "wood": 20,
+    "gold": 100
+  },
+  "consume": {
+    "iron": 1
+  },
+  "supply": {
+    "armour": 1
+  },
+  "maxLabors": 1,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

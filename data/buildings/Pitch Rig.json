@@ -1,11 +1,14 @@
 {
   "type": "Pitch Rig",
+  "tileType": "oil",
   "maxHitPoints": 100,
   "isHollow": false,
-  "buildCost": {},
+  "buildCost": {
+    "wood": 20
+  },
   "consume": {},
   "supply": {},
-  "maxLabors": 0,
+  "maxLabors": 1,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

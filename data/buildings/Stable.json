@@ -2,9 +2,16 @@
   "type": "Stable",
   "maxHitPoints": 100,
   "isHollow": false,
-  "buildCost": {},
-  "consume": {},
-  "supply": {},
+  "buildCost": {
+    "wood": 20,
+    "gold": 400
+  },
+  "consume": {
+    "wheat": 1
+  },
+  "supply": {
+    "horse": 1
+  },
   "maxLabors": 0,
   "religionFactor": 0,
   "happinessFactor": 0,

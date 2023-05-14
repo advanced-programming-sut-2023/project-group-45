@@ -1,8 +1,11 @@
 {
   "type": "Tunneler Guild",
   "maxHitPoints": 100,
-  "isHollow": false,
-  "buildCost": {},
+  "isHollow": true,
+  "buildCost": {
+    "wood": 10,
+    "gold": 100
+  },
   "consume": {},
   "supply": {},
   "maxLabors": 0,

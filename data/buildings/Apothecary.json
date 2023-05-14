@@ -2,7 +2,10 @@
   "type": "Apothecary",
   "maxHitPoints": 100,
   "isHollow": false,
-  "buildCost": {},
+  "buildCost": {
+    "wood": 20,
+    "gold": 150
+  },
   "consume": {},
   "supply": {},
   "maxLabors": 0,

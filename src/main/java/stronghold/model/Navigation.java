@@ -21,6 +21,10 @@ public class Navigation {
                         || tile.getBuilding().getHitPoints() <= 0);
     }
 
+    public boolean isWalkable(IntPair[] path) {
+        return isWalkable(path[0]) && isWalkable(path[1]);
+    }
+
     /*
      * Returns null, when start == end, or when there is no path from start to end.
      */

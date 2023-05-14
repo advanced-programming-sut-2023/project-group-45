@@ -30,5 +30,6 @@ public class OperatorException extends Exception {
         NOT_ENOUGH_RESOURCE,
         NOT_ENOUGH_GOLD,
         NOT_ENOUGH_ENGINEER,
+        CANT_REPAIR,
     }
 }

@@ -20,6 +20,7 @@ public class Unit implements Serializable {
     private int hitPoints;
     private IntPair position;
     private IntPair navigationGoal = null;
+    private IntPair[] patrol = null;
     @ToString.Exclude   // avoid recursive call
     @EqualsAndHashCode.Exclude
     private Unit attackGoal = null;
@@ -46,6 +47,7 @@ public class Unit implements Serializable {
     }
 
     public void die(Game game) {
+        hitPoints = 0;
         game.getUnits().remove(this);
     }
 
@@ -54,11 +56,19 @@ public class Unit implements Serializable {
             return attackGoal.position;
         }
         attackGoal = null;
+        if (patrol != null) {
+            if (navigationGoal.equals(patrol[0])) {
+                navigationGoal = patrol[1];
+            } else if (navigationGoal.equals(patrol[1])) {
+                navigationGoal = patrol[0];
+            }
+        }
         return navigationGoal;
     }
 
     public void unsetGoal() {
         attackGoal = null;
+        patrol = null;
         navigationGoal = null;
     }
 
@@ -70,5 +80,9 @@ public class Unit implements Serializable {
             return (int) (vision * DEFENSIVE_VISION_RATE);
         }
         return vision;
+    }
+
+    public int getDamage(Game game) {
+        return (int) (damage * (1 + 0.05 * game.getHappiness(owner)));
     }
 }

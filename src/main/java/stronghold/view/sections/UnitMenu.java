@@ -34,6 +34,8 @@ public class UnitMenu extends Menu {
         addCommand("move-to", this::moveTo);
         addCommand("attack-to", this::attackTo);
         addCommand("set-mode", this::setMode);
+        addCommand("set-patrol", this::setPatrol);
+        addCommand("disband", this::disband);
     }
 
     private void showSelection(Map<String, String> input) {
@@ -96,6 +98,20 @@ public class UnitMenu extends Menu {
         }
     }
 
+    private void setPatrol(Map<String, String> input) {
+        IntPair[] path = {getIntPairOpt(input, "x1", "y1"), getIntPairOpt(input, "x2", "y2")};
+        try {
+            Operators.game.setPatrol(new HashMap<>() {{
+                put("game", game);
+                put("units", selection);
+                put("path", path);
+            }});
+            System.out.println("Units ordered to patrol");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private void attackTo(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
         try {
@@ -120,6 +136,19 @@ public class UnitMenu extends Menu {
                 copyOptTo(input, this, "mode");
             }});
             System.out.println("Mode changed successfully");
+        } catch (OperatorException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void disband(Map<String, String> input) {
+        try {
+            Operators.game.disbandUnits(new HashMap<>() {{
+                put("game", game);
+                put("units", selection);
+            }});
+            System.out.println("Units disbanded successfully");
+            selection.clear();
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

@@ -1,9 +1,16 @@
 {
   "type": "Bad Thing",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "plain",
   "buildCost": {
     "gold": 50
   },
-  "tileType": "plain",
-  "happinessFactor": -1
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 0,
+  "happinessFactor": -1,
+  "housingSpace": 0,
+  "dropUnit": {}
 }

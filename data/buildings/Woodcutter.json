@@ -1,12 +1,18 @@
 {
   "type": "Woodcutter",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "tree",
   "buildCost": {
     "wood": 3
   },
-  "tileType": "tree",
+  "consume": {},
   "supply": {
     "wood": 2
   },
-  "maxLabors": 1
+  "maxLabors": 1,
+  "religionFactor": 0,
+  "happinessFactor": 0,
+  "housingSpace": 0,
+  "dropUnit": {}
 }

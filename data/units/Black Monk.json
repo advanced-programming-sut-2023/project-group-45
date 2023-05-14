@@ -3,5 +3,9 @@
   "maxHitPoints": 30,
   "speed": 2,
   "range": 2,
-  "damage": 3
+  "damage": 3,
+  "canClimb": false,
+  "canDig": false,
+  "vision": 5,
+  "engineers": 0
 }

@@ -1,18 +1,19 @@
 {
-  "type": "Mill",
+  "type": "Fletcher",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
   "buildCost": {
-    "wood": 20
+    "wood": 20,
+    "gold": 100
   },
   "consume": {
-    "wheat": 1
+    "wood": 2
   },
   "supply": {
-    "flour": 1
+    "bow": 1,
+    "crossbow": 1
   },
-  "maxLabors": 3,
+  "maxLabors": 1,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

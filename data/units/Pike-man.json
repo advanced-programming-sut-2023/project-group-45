@@ -4,5 +4,8 @@
   "speed": 2,
   "range": 2,
   "damage": 3,
-  "canDig": true
+  "canClimb": false,
+  "canDig": true,
+  "vision": 5,
+  "engineers": 0
 }

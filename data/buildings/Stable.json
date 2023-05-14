@@ -1,18 +1,18 @@
 {
-  "type": "Mill",
+  "type": "Stable",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
   "buildCost": {
-    "wood": 20
+    "wood": 20,
+    "gold": 400
   },
   "consume": {
     "wheat": 1
   },
   "supply": {
-    "flour": 1
+    "horse": 1
   },
-  "maxLabors": 3,
+  "maxLabors": 0,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

@@ -15,7 +15,7 @@ public class BuildingTemplate {
     private String type;
     private int maxHitPoints;
     private boolean isHollow = false;
-    private String tileType = null;
+    private String tileType = "plain";
     private Map<String, Integer> buildCost = new HashMap<>();
     private Map<String, Integer> consume = new HashMap<>();
     private Map<String, Integer> supply = new HashMap<>();
@@ -40,7 +40,7 @@ public class BuildingTemplate {
     }
 
     public boolean canBeBuiltOn(String tileType) {
-        return this.tileType == null || tileType.startsWith(this.tileType);
+        return tileType.startsWith(this.tileType);
     }
 
 }

@@ -1,11 +1,10 @@
 {
-  "type": "Engineer Guild",
+  "type": "Drawbridge",
   "maxHitPoints": 100,
   "isHollow": true,
-  "tileType": "plain",
+  "tileType": "water",
   "buildCost": {
-    "wood": 10,
-    "gold": 100
+    "wood": 10
   },
   "consume": {},
   "supply": {},
@@ -13,9 +12,5 @@
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,
-  "dropUnit": {
-    "Engineer": {
-      "gold": 10
-    }
-  }
+  "dropUnit": {}
 }

@@ -1,18 +1,16 @@
 {
-  "type": "Mill",
+  "type": "Iron Mine",
+  "tileType": "iron",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
   "buildCost": {
     "wood": 20
   },
-  "consume": {
-    "wheat": 1
-  },
+  "consume": {},
   "supply": {
-    "flour": 1
+    "iron": 1
   },
-  "maxLabors": 3,
+  "maxLabors": 2,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

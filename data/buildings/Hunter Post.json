@@ -1,18 +1,15 @@
 {
-  "type": "Mill",
+  "type": "Hunter Post",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
   "buildCost": {
-    "wood": 20
+    "wood": 5
   },
-  "consume": {
-    "wheat": 1
-  },
+  "consume": {},
   "supply": {
-    "flour": 1
+    "meat": 1
   },
-  "maxLabors": 3,
+  "maxLabors": 1,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

@@ -1,18 +1,14 @@
 {
-  "type": "Mill",
+  "type": "Pitch Rig",
+  "tileType": "oil",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
   "buildCost": {
     "wood": 20
   },
-  "consume": {
-    "wheat": 1
-  },
-  "supply": {
-    "flour": 1
-  },
-  "maxLabors": 3,
+  "consume": {},
+  "supply": {},
+  "maxLabors": 1,
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,

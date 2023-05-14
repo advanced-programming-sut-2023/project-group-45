@@ -1,17 +1,13 @@
 {
-  "type": "Mill",
+  "type": "Quarry",
+  "tileType": "stone",
   "maxHitPoints": 100,
   "isHollow": false,
-  "tileType": "plain",
   "buildCost": {
     "wood": 20
   },
-  "consume": {
-    "wheat": 1
-  },
-  "supply": {
-    "flour": 1
-  },
+  "consume": {},
+  "supply": {},
   "maxLabors": 3,
   "religionFactor": 0,
   "happinessFactor": 0,

@@ -1,15 +1,20 @@
 {
   "type": "Bakery",
   "maxHitPoints": 100,
+  "isHollow": false,
+  "tileType": "plain",
   "buildCost": {
     "wood": 10
   },
-  "maxLabors": 1,
-  "tileType": "plain",
   "consume": {
     "flour": 1
   },
   "supply": {
     "bread": 1
-  }
+  },
+  "maxLabors": 1,
+  "religionFactor": 0,
+  "happinessFactor": 0,
+  "housingSpace": 0,
+  "dropUnit": {}
 }

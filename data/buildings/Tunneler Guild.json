@@ -1,8 +1,7 @@
 {
-  "type": "Engineer Guild",
+  "type": "Tunneler Guild",
   "maxHitPoints": 100,
   "isHollow": true,
-  "tileType": "plain",
   "buildCost": {
     "wood": 10,
     "gold": 100
@@ -14,8 +13,6 @@
   "happinessFactor": 0,
   "housingSpace": 0,
   "dropUnit": {
-    "Engineer": {
-      "gold": 10
-    }
+    "Tunneler": 20
   }
 }

@@ -1,15 +1,49 @@
 {
   "type": "Barracks",
   "maxHitPoints": 100,
+  "isHollow": true,
+  "tileType": "plain",
   "buildCost": {
     "stone": 15
   },
-  "tileType": "plain",
-  "isHollow": true,
+  "consume": {},
+  "supply": {},
+  "maxLabors": 0,
+  "religionFactor": 0,
+  "happinessFactor": 0,
+  "housingSpace": 0,
   "dropUnit": {
     "Archer": {
       "bow": 1,
       "gold": 10
+    },
+    "Spearman": {
+      "spear": 1,
+      "gold": 8
+    },
+    "Maceman": {
+      "mace": 1,
+      "gold": 20
+    },
+    "Crossbowman": {
+      "crossbow": 1,
+      "gold": 20
+    },
+    "Pikeman": {
+      "gold": 20,
+      "pike": 1,
+      "armour": 1
+    },
+    "Swordsman": {
+      "gold": 40,
+      "sword": 1,
+      "armour": 1
+    },
+    "Knight": {
+      "gold": 40,
+      "sword": 1,
+      "armour": 1,
+      "horse": 1
     }
   }
 }

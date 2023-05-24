@@ -28,7 +28,7 @@ public final class EconomyOperator {
         int price = getReqAs(req, "price", Integer.class);
         String message = getReqString(req, "message");
         checkExpression(amount > 0 && price >= 0, Type.INVALID_GAME_PARAMETERS);
-        checkExpression(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
+        checkExpression(player.getResources().get(item) >= amount, Type.NOT_ENOUGH_RESOURCE);
         TradeRequest tradeRequest = new TradeRequest(player, target, item, amount, price, message);
         addIntMap(player.getResources(), item, -amount);
         player.getActiveTradeRequests().add(tradeRequest);
@@ -39,7 +39,7 @@ public final class EconomyOperator {
         TradeRequest tradeRequest = getReqAs(req, "request", TradeRequest.class);
         Player player = tradeRequest.getReceiver();
         Player sender = tradeRequest.getSender();
-        checkExpression(player.getGold() < tradeRequest.getPrice(), Type.NOT_ENOUGH_GOLD);
+        checkExpression(player.getGold() >= tradeRequest.getPrice(), Type.NOT_ENOUGH_GOLD);
         addIntMap(player.getResources(), tradeRequest.getItem(), tradeRequest.getAmount());
         player.setGold(player.getGold() - tradeRequest.getPrice());
         sender.setGold(tradeRequest.getSender().getGold() + tradeRequest.getPrice());

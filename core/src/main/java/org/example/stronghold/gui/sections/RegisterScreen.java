@@ -20,7 +20,7 @@ public class RegisterScreen extends FormScreen {
     Label usernameLabel, passwordLabel, passwordConfirmLabel, emailLabel, nicknameLabel;
     TextField usernameField, passwordField, passwordConfirmField, emailField, nicknameField;
     CheckBox randomPassword;
-    TextButton registerButton;
+    TextButton registerButton, backButton;
 
     public RegisterScreen(StrongholdGame game) {
         super(game);
@@ -44,6 +44,7 @@ public class RegisterScreen extends FormScreen {
         nicknameField = new TextField("", game.skin);
         randomPassword = new CheckBox("Random password", game.skin);
         registerButton = new TextButton("Register", game.skin);
+        backButton = new TextButton("Back", game.skin);
 
         table.pad(50);
         table.defaults().spaceBottom(10).spaceRight(10);
@@ -59,6 +60,7 @@ public class RegisterScreen extends FormScreen {
         table.add(nicknameField).growX().row();
         table.add(randomPassword).align(Align.right).colspan(2).row();
         table.add(registerButton).align(Align.center).colspan(2).minWidth(200).row();
+        table.add(backButton).align(Align.center).colspan(2).minWidth(200).row();
 
         popup.label.setColor(Color.RED);
 
@@ -66,6 +68,7 @@ public class RegisterScreen extends FormScreen {
         randomPassword.addListener(new SimpleChangeListener(this::randomPasswordChanged));
         passwordField.addListener(new SimpleChangeListener(this::passwordChanged));
         passwordConfirmField.addListener(new SimpleChangeListener(this::passwordConfirmChanged));
+        backButton.addListener(new SimpleChangeListener(this::back));
     }
 
     private void register() {
@@ -126,5 +129,9 @@ public class RegisterScreen extends FormScreen {
         } else {
             passwordConfirmField.setColor(Color.GREEN);
         }
+    }
+
+    private void back() {
+        game.setScreen(new LoginScreen(game));
     }
 }

@@ -38,7 +38,9 @@ public class LoginScreen extends FormScreen {
         passwordField.setPasswordMode(true);
         loginButton = new TextButton("Login", game.skin);
         registerButton = new TextButton("Register", game.skin);
+        forgotPasswordButton = new TextButton("Forgot password", game.skin);
         stayLoggedIn = new CheckBox("Stay logged in", game.skin);
+        stayLoggedIn.setChecked(true);
 
         table.pad(50);
         table.defaults().spaceBottom(10).spaceRight(10);
@@ -54,6 +56,7 @@ public class LoginScreen extends FormScreen {
         popup.label.setColor(Color.RED);
 
         loginButton.addListener(new SimpleChangeListener(this::login));
+        registerButton.addListener(new SimpleChangeListener(() -> game.setScreen(new RegisterScreen(game))));
     }
 
     private void login() {
@@ -64,7 +67,7 @@ public class LoginScreen extends FormScreen {
                 put("password", HashedString.fromPlain(password).withMode(HashMode.SHA256));
                 put("stay-logged-in", stayLoggedIn.isChecked());
             }});
-            Gdx.app.log("LoginScreen", "Logged in as " + user.getUsername());
+            log("Logged in as %s", user);
             // todo: switch to profile screen
         } catch (OperatorException e) {
             popup.pop(e.getMessage());

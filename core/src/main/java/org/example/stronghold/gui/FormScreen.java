@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public abstract class FormScreen implements Screen {
     final protected StrongholdGame game;
@@ -20,9 +21,13 @@ public abstract class FormScreen implements Screen {
         this.game = game;
     }
 
+    protected void log(String format, Object ...objects) {
+        Gdx.app.log(getClass().getSimpleName(), String.format(format, objects));
+    }
+
     @Override
     public final void show() {
-        stage = new Stage();
+        stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
         dirt = new Texture(Gdx.files.internal("craftacular/dirt.png"));

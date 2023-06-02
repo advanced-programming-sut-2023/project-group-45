@@ -13,7 +13,8 @@ public abstract class FormScreen implements Screen {
     protected Stage stage;
     protected PopupWindow popup;
     Texture dirt;
-    Table titleTable, table;
+    Table titleTable;
+    protected Table table;
 
     public FormScreen(StrongholdGame game) {
         this.game = game;

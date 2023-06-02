@@ -1,6 +1,8 @@
 package org.example.stronghold.context;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import lombok.Data;
 
 @Data
@@ -49,5 +51,10 @@ public class HashedString implements Serializable {
             return that.withMode(mode).equals(this);
         }
         return false; // no way to compare different hash modes
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mode, hashedContent);
     }
 }

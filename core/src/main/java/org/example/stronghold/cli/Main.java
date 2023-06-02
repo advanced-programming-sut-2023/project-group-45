@@ -10,8 +10,8 @@ import org.example.stronghold.cli.sections.AuthMenu;
 
 public class Main {
 
-    private static final File databaseFile = new File("./data/database.ser");
-    private static final File templateDatabaseRoot = new File("./data");
+    private static final File databaseFile = new File("./assets/data/database.ser");
+    private static final File templateDatabaseRoot = new File("./assets/data");
 
     public static void main(String[] args) throws IOException {
         Database database = Database.fromFileOrDefault(databaseFile);

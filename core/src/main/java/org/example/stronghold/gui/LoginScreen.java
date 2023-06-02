@@ -10,16 +10,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.stronghold.cli.sections.AuthMenu;
+import org.example.stronghold.context.HashMode;
+import org.example.stronghold.context.HashedString;
+import org.example.stronghold.model.User;
+import org.example.stronghold.operator.OperatorException;
+import org.example.stronghold.operator.Operators;
+
+import java.util.HashMap;
 
 public class LoginScreen implements Screen {
     final StrongholdGame game;
     Stage stage;
     Texture dirt;
     Table titleTable, formTable;
-    Label usernameLabel, passwordLabel, errorLabel;
+    Label usernameLabel, passwordLabel;
     TextField usernameField, passwordField;
     TextButton loginButton, registerButton, forgotPasswordButton;
-    CheckBox randomPassword;
+    CheckBox stayLoggedIn;
+    PopupWindow popUp;
 
     LoginScreen(StrongholdGame game) {
         this.game = game;
@@ -49,10 +57,7 @@ public class LoginScreen implements Screen {
         passwordField.setPasswordMode(true);
         loginButton = new TextButton("Login", game.skin);
         registerButton = new TextButton("Register", game.skin);
-        randomPassword = new CheckBox("Random Password", game.skin);
-        errorLabel = new Label("", game.skin); // todo: pop-up error
-        errorLabel.setAlignment(Align.center);
-        errorLabel.setColor(Color.RED);
+        stayLoggedIn = new CheckBox("Stay logged in", game.skin);
 
         formTable.pad(50);
         formTable.defaults().spaceBottom(10).spaceRight(10);
@@ -60,17 +65,18 @@ public class LoginScreen implements Screen {
         formTable.add(usernameField).growX().minWidth(400).row();
         formTable.add(passwordLabel).align(Align.right);
         formTable.add(passwordField).growX().row();
-        formTable.add(randomPassword).align(Align.center).colspan(2).spaceBottom(20).row();
+        formTable.add(stayLoggedIn).align(Align.right).colspan(2).row();
         formTable.add(loginButton).align(Align.center).colspan(2).minWidth(200).row();
         formTable.add(registerButton).align(Align.center).colspan(2).minWidth(200).row();
         formTable.add(forgotPasswordButton).align(Align.center).colspan(2).minWidth(200).row();
-        formTable.add(errorLabel).colspan(2).growX().row();
 
         formTable.pack();
         titleTable.pack();
 
-        randomPassword.addListener(new SimpleChangeListener(this::updateRandomPassword));
-        passwordField.addListener(new SimpleChangeListener(this::updatePasswordStrength));
+        popUp = new PopupWindow(game.craftacularSkin, game.skin, 300);
+        popUp.label.setColor(Color.RED);
+        stage.addActor(popUp);
+
         loginButton.addListener(new SimpleChangeListener(this::login));
     }
 
@@ -81,36 +87,18 @@ public class LoginScreen implements Screen {
         batch.end();
     }
 
-    private void updateRandomPassword() {
-        if (randomPassword.isChecked()) {
-            String password = AuthMenu.generatePassword();
-            passwordField.setText(password);
-            passwordField.setDisabled(true);
-            passwordField.setPasswordMode(false);
-        } else {
-            passwordField.setText("");
-            passwordField.setDisabled(false);
-            passwordField.setPasswordMode(true);
-        }
-    }
-
-    private void updatePasswordStrength() {
-        String password = passwordField.getText();
-        Color color;
-        if (AuthMenu.isPasswordWeak(password)) {
-            color = Color.RED;
-        } else {
-            color = Color.GREEN;
-        }
-        passwordField.setColor(color);
-    }
-
     private void login() {
-        errorLabel.setText("");
         String password = passwordField.getText();
-        if (AuthMenu.isPasswordWeak(password)) {
-            errorLabel.setText("Password is too weak");
-            return;
+        try {
+            User user = Operators.auth.login(new HashMap<>() {{
+                put("username", usernameField.getText());
+                put("password", HashedString.fromPlain(password).withMode(HashMode.SHA256));
+                put("stay-logged-in", stayLoggedIn.isChecked());
+            }});
+            Gdx.app.log("LoginScreen", "Logged in as " + user.getUsername());
+            // todo: switch to profile screen
+        } catch (OperatorException e) {
+            popUp.pop(e.getMessage());
         }
     }
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import org.example.stronghold.gui.sections.LoginScreen;
+import org.example.stronghold.gui.sections.TestMapScreen;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.operator.Operators;
@@ -33,7 +34,7 @@ public class StrongholdGame extends Game {
 
         skin = new Skin(Gdx.files.internal("default/uiskin.json"));
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
-        setScreen(new LoginScreen(this));
+        setScreen(new TestMapScreen(this));
     }
 
     @Override

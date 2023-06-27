@@ -23,6 +23,7 @@ public class AssetLoader implements Disposable {
     public void loadAll() {
         loadFromRoots(this::loadTexture, "buildings/", "plants/");
         loadFromRoots(this::loadTiledMap, "tiled-maps/");
+        loadTexture(Gdx.files.internal("craftacular/dirt.png"));
     }
 
     private void loadTexture(FileHandle file) {

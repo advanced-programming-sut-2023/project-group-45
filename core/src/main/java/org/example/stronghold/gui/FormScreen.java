@@ -30,7 +30,7 @@ public abstract class FormScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        dirt = new Texture(Gdx.files.internal("craftacular/dirt.png"));
+        dirt = game.assetLoader.getTexture("craftacular/dirt.png");
         dirt.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         titleTable = new Table();
@@ -88,6 +88,5 @@ public abstract class FormScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        dirt.dispose();
     }
 }

@@ -48,6 +48,14 @@ public class TestMapScreen implements Screen {
             return 1090 + tileRandomizer.nextInt(37, 148);
         if (tileType.equals("plain"))
             return 1090 + tileRandomizer.nextInt(908, 1036);
+        if (tileType.equals("rock"))
+            return 1090 + tileRandomizer.nextInt(148, 288);
+        if (tileType.equals("iron"))
+            return 2459 + tileRandomizer.nextInt(414, 491);
+        if (tileType.equals("stone"))
+            return 2459 + tileRandomizer.nextInt(0, 69);
+        if (tileType.equals("tree"))
+            return 1090 + tileRandomizer.nextInt(444, 592);
         return 149; // total white as unknown tile
     }
 
@@ -101,7 +109,7 @@ public class TestMapScreen implements Screen {
         Batch batch = renderer.getBatch();
         batch.begin();
         drawTextureAt(batch, barracks, 4, 2);
-        drawTextureAt(batch, barracks, 3, 2);
+        drawTextureAt(batch, barracks, 3, 1);
         drawTextureAt(batch, barracks, 3, 3);
         batch.end();
     }
@@ -111,12 +119,12 @@ public class TestMapScreen implements Screen {
     }
 
     public void drawTextureAt(Batch batch, Texture texture, int column, int row) {
-        float margin = 10;
+        float margin = 10f;
         float width = 30f * tilePerUnit - 2 * margin;
         Vector3 position = vec3AtCell(column, row);
         batch.draw(
             texture,
-            position.x + margin, position.y + margin,
+            position.x + margin, position.y + margin / 2,
             width,
             texture.getHeight() * width / texture.getWidth()
         );

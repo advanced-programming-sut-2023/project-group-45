@@ -8,7 +8,7 @@ import static org.example.stronghold.operator.OperatorPreconditions.checkExpress
 import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.model.Database;
-import org.example.stronghold.model.Game;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Market;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.TradeRequest;
@@ -62,8 +62,8 @@ public final class EconomyOperator {
         String item = getReqString(req, "item");
         int amount = getReqAs(req, "amount", Integer.class);
         Player player = getReqAs(req, "player", Player.class);
-        Game game = getReqAs(req, "game", Game.class);
-        Market market = game.getMarket();
+        GameData gameData = getReqAs(req, "game", GameData.class);
+        Market market = gameData.getMarket();
         checkExpression(player.getGold() < amount * market.getPrices().get(item).x(),
                 Type.NOT_ENOUGH_GOLD);
         addIntMap(player.getResources(), item, amount);
@@ -74,8 +74,8 @@ public final class EconomyOperator {
         String item = getReqString(req, "item");
         int amount = getReqAs(req, "amount", Integer.class);
         Player player = getReqAs(req, "player", Player.class);
-        Game game = getReqAs(req, "game", Game.class);
-        Market market = game.getMarket();
+        GameData gameData = getReqAs(req, "game", GameData.class);
+        Market market = gameData.getMarket();
         checkExpression(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
         addIntMap(player.getResources(), item, -amount);
         player.setGold(player.getGold() + amount * market.getPrices().get(item).y());

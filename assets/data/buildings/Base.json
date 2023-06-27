@@ -9,5 +9,11 @@
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 10,
-  "dropUnit": {}
+  "dropUnit": {},
+  "guiSetting": {
+    "asset": "buildings/Base.png",
+    "prefWidth": 100,
+    "offsetX": 10,
+    "offsetY": 10
+  }
 }

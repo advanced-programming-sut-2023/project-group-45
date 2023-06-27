@@ -46,9 +46,9 @@ public class Unit implements Serializable {
         this.vision = vision;
     }
 
-    public void die(Game game) {
+    public void die(GameData gameData) {
         hitPoints = 0;
-        game.getUnits().remove(this);
+        gameData.getUnits().remove(this);
     }
 
     public IntPair getGoal() {
@@ -82,7 +82,7 @@ public class Unit implements Serializable {
         return vision;
     }
 
-    public int getDamage(Game game) {
-        return (int) (damage * (1 + 0.05 * game.getHappiness(owner)));
+    public int getDamage(GameData gameData) {
+        return (int) (damage * (1 + 0.05 * gameData.getHappiness(owner)));
     }
 }

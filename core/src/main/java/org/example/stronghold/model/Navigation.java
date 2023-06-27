@@ -12,10 +12,10 @@ import org.example.stronghold.context.IntPair;
 public class Navigation {
 
     private static final List<String> WALKABLE_TILES = List.of("plain", "farmland");
-    private final Game game;
+    private final GameData gameData;
 
     public boolean isWalkable(IntPair position) {
-        Tile tile = game.getMap().getAt(position);
+        Tile tile = gameData.getMap().getAt(position);
         return tile != null && WALKABLE_TILES.contains(tile.getType()) &&
                 (tile.getBuilding() == null || tile.getBuilding().isHollow()
                         || tile.getBuilding().getHitPoints() <= 0);
@@ -32,7 +32,7 @@ public class Navigation {
         if (start.equals(end)) {
             return null;
         }
-        int w = game.getMap().getWidth(), h = game.getMap().getHeight();
+        int w = gameData.getMap().getWidth(), h = gameData.getMap().getHeight();
         IntPair[][] next = new IntPair[w][h];
         next[end.x()][end.y()] = end;
         Queue<IntPair> queue = new ArrayDeque<>();
@@ -41,7 +41,7 @@ public class Navigation {
             IntPair u = queue.poll();
             for (Direction dir : Direction.shuffledValues()) {
                 IntPair v = u.add(dir.dx(), dir.dy());
-                Tile tile = game.getMap().getAt(v);
+                Tile tile = gameData.getMap().getAt(v);
                 if (tile == null || next[v.x()][v.y()] != null || !isWalkable(v)) {
                     continue;
                 }

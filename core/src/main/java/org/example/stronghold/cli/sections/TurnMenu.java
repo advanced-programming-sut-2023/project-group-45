@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Scanner;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.context.ListPair;
-import org.example.stronghold.model.Game;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
@@ -21,12 +21,12 @@ import org.example.stronghold.cli.Menu;
 
 public class TurnMenu extends Menu {
 
-    private final Game game;
+    private final GameData gameData;
     private final Player player;
 
-    public TurnMenu(Scanner scanner, Game game, Player player) {
+    public TurnMenu(Scanner scanner, GameData gameData, Player player) {
         super(scanner);
-        this.game = game;
+        this.gameData = gameData;
         this.player = player;
         addCommand("who-am-i", this::whoAmI);
         addCommand("show-info", this::showInfo);
@@ -61,10 +61,10 @@ public class TurnMenu extends Menu {
         ListPair<String, String> info = new ListPair<>() {{
             put("Resources", "" + player.getResources());
             put("Peasants", "" + player.getPeasants());
-            put("Religion", "" + game.getReligion(player));
-            put("Happiness", "" + game.getHappiness(player));
-            put("Population", "" + game.getTotalPeasants(player));
-            put("Housing", "" + game.getHousingSpace(player));
+            put("Religion", "" + gameData.getReligion(player));
+            put("Happiness", "" + gameData.getHappiness(player));
+            put("Population", "" + gameData.getTotalPeasants(player));
+            put("Housing", "" + gameData.getHousingSpace(player));
             put("Food rate", "" + player.getFoodRate());
             put("Tax rate", "" + player.getTaxRate());
             put("Gold", "" + player.getGold());
@@ -78,7 +78,7 @@ public class TurnMenu extends Menu {
         IntPair position = getIntPairOpt(input, "x", "y");
         try {
             Operators.game.dropBuilding(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("player", player);
                 put("building", type);
                 put("position", position);
@@ -90,12 +90,12 @@ public class TurnMenu extends Menu {
     }
 
     private void showPriceList(Map<String, String> input) {
-        if (game.getMarket().getPrices().isEmpty()) {
+        if (gameData.getMarket().getPrices().isEmpty()) {
             System.out.println("No items in the market");
             return;
         }
-        for (String item : game.getMarket().getPrices().keySet()) {
-            IntPair price = game.getMarket().getPrices().get(item);
+        for (String item : gameData.getMarket().getPrices().keySet()) {
+            IntPair price = gameData.getMarket().getPrices().get(item);
             System.out.println("Name       Buy       Sell");
             System.out.printf("%10s%10d%10d", item, price.x(), price.y());
         }
@@ -106,7 +106,7 @@ public class TurnMenu extends Menu {
         Integer amount = getIntOpt(input, "amount");
         try {
             Operators.economy.buyMarketItem(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("player", player);
                 put("item", item);
                 put("amount", amount);
@@ -122,7 +122,7 @@ public class TurnMenu extends Menu {
         Integer amount = getIntOpt(input, "amount");
         try {
             Operators.economy.sellMarketItem(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("player", player);
                 put("item", item);
                 put("amount", amount);
@@ -224,19 +224,19 @@ public class TurnMenu extends Menu {
     }
 
     private Player getPlayerByUsername(String username) {
-        return checkNotNull(game.getPlayers().stream()
+        return checkNotNull(gameData.getPlayers().stream()
                 .filter(player -> player.getUser().getUsername().equals(username))
                 .findFirst().orElse(null), "Player " + username + " not found");
     }
 
     private void mapView(Map<String, String> input) {
         System.out.println("Switched to map view");
-        new MapViewMenu(scanner, game).run();
+        new MapViewMenu(scanner, gameData).run();
     }
 
     private void showFoodList(Map<String, String> input) {
         player.getResources().forEach((k, v) -> {
-            if (Game.FOODS.contains(k)) {
+            if (GameData.FOODS.contains(k)) {
                 System.out.println(" - " + k + ": " + v);
             }
         });
@@ -280,8 +280,8 @@ public class TurnMenu extends Menu {
         ListPair<String, String> info = new ListPair<>() {{
             put("Food", "" + player.getFoodDeltaPopularity());
             put("Tax", "" + player.getTaxDeltaPopularity());
-            put("Religion", "" + game.getReligion(player));
-            put("Happiness", "" + game.getHappiness(player));
+            put("Religion", "" + gameData.getReligion(player));
+            put("Happiness", "" + gameData.getHappiness(player));
             put("Delta popularity", "" + player.getDeltaPopularity());
             put("Total popularity", "" + player.getPopularity());
         }};
@@ -291,14 +291,14 @@ public class TurnMenu extends Menu {
 
     private void unitMenu(Map<String, String> input) {
         System.out.println("Switched to unit menu");
-        new UnitMenu(scanner, game, player).run();
+        new UnitMenu(scanner, gameData, player).run();
     }
 
     private void dropUnit(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
         int count = (input.containsKey("count") ? getIntOpt(input, "count") : 1);
         Map<String, Object> req = new HashMap<>() {{
-            put("game", game);
+            put("game", gameData);
             put("player", player);
             put("position", position);
             copyOptTo(input, this, "type");
@@ -317,7 +317,7 @@ public class TurnMenu extends Menu {
         IntPair position = getIntPairOpt(input, "x", "y");
         try {
             Unit unit = Operators.game.buildEquipment(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("player", player);
                 put("position", position);
                 copyOptTo(input, this, "type");
@@ -333,7 +333,7 @@ public class TurnMenu extends Menu {
         IntPair position = getIntPairOpt(input, "x", "y");
         try {
             Operators.game.repairBuilding(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("player", player);
                 put("position", position);
             }});

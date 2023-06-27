@@ -5,6 +5,7 @@ import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.Building.BuildingBuilder;
+import org.example.stronghold.model.GuiSetting;
 
 /*
  * Read notes for UnitTemplate
@@ -24,6 +25,7 @@ public class BuildingTemplate {
     private int happinessFactor = 0;
     private int housingSpace = 0;
     private Map<String, Map<String, Integer>> dropUnit = new HashMap<>();
+    private GuiSetting guiSetting = new GuiSetting();
 
     public BuildingBuilder getBuilder() {
         return Building.builder()
@@ -36,7 +38,8 @@ public class BuildingTemplate {
                 .religionFactor(religionFactor)
                 .happinessFactor(happinessFactor)
                 .housingSpace(housingSpace)
-                .dropUnit(dropUnit);
+                .dropUnit(dropUnit)
+                .guiSetting(guiSetting);
     }
 
     public boolean canBeBuiltOn(String tileType) {

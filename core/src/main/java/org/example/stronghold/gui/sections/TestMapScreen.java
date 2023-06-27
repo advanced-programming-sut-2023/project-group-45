@@ -14,9 +14,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import org.example.stronghold.gui.StrongholdGame;
-import org.example.stronghold.model.GameData;
-import org.example.stronghold.model.GameMap;
-import org.example.stronghold.model.Tile;
+import org.example.stronghold.model.*;
 
 import java.util.Random;
 
@@ -113,10 +111,11 @@ public class TestMapScreen implements Screen {
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
-                if ((col == 1 && row == 2) || (col == 18 && row == 18)) // later check for buildings
-                    drawBuildingAt(batch, game.assetLoader.getTexture("buildings/Barracks.png"), col, row);
-                if (tile.getType().equals("tree"))
+                if (tile.getType().startsWith("tree"))
                     drawTreeAt(batch, game.assetLoader.getTexture("plants/oak.png"), col, row);
+                if (tile.getBuilding() != null) {
+                    drawBuildingAt(batch, tile.getBuilding(), col, row);
+                }
             }
         }
         batch.end();
@@ -134,13 +133,16 @@ public class TestMapScreen implements Screen {
         return vec3AtSubCell(column, row, 0, 0).sub(0, 8f * (tilePerUnit - 1), 0);
     }
 
-    public void drawBuildingAt(Batch batch, Texture texture, int column, int row) {
-        float margin = 10f;
-        float width = 30f * tilePerUnit - 2 * margin;
+    public void drawBuildingAt(Batch batch, Building building, int column, int row) {
+        GuiSetting guiSetting = building.getGuiSetting();
+        if (guiSetting.getAsset() == null)
+            return;
+        Texture texture = game.assetLoader.getTexture(guiSetting.getAsset());
+        float width = guiSetting.getPrefWidth();
         Vector3 position = vec3AtCell(column, row);
         batch.draw(
             texture,
-            position.x + margin, position.y + margin / 2,
+            position.x + guiSetting.getOffsetX(), position.y + guiSetting.getOffsetY(),
             width,
             texture.getHeight() * width / texture.getWidth()
         );

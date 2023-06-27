@@ -11,7 +11,7 @@
   "housingSpace": 10,
   "dropUnit": {},
   "guiSetting": {
-    "asset": "buildings/Barracks.png",
+    "asset": "buildings/Base.png",
     "prefWidth": 100,
     "offsetX": 10,
     "offsetY": 10

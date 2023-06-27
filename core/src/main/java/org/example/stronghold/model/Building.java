@@ -44,7 +44,7 @@ public class Building implements Serializable {
         this.dropUnit = dropUnit;
     }
 
-    public void destroy(Game game) {
+    public void destroy(GameData gameData) {
         owner.setPeasants(owner.getPeasants() + labors);
         labors = 0;
     }

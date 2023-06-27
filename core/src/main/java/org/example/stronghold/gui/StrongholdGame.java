@@ -6,11 +6,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import org.example.stronghold.gui.sections.LoginScreen;
 import org.example.stronghold.gui.sections.TestMapScreen;
 import org.example.stronghold.model.Database;
+import org.example.stronghold.model.GameData;
+import org.example.stronghold.model.User;
+import org.example.stronghold.model.template.BuildingTemplate;
+import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.TemplateDatabase;
+import org.example.stronghold.model.template.UnitTemplate;
 import org.example.stronghold.operator.Operators;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class StrongholdGame extends Game {
     public Skin skin, craftacularSkin;
@@ -37,7 +43,12 @@ public class StrongholdGame extends Game {
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
         assetLoader.loadAll();
 //        setScreen(new LoginScreen(this));
-        setScreen(new TestMapScreen(this, templateDatabase.getGameMapTemplates().get("test").build()));
+        List<User> users = database.getUsers().stream().limit(2).toList();
+        GameMapTemplate gameMapTemplate = templateDatabase.getGameMapTemplates().get("test");
+        UnitTemplate lordTemplate = templateDatabase.getUnitTemplates().get("Lord");
+        BuildingTemplate buildingTemplate = templateDatabase.getBuildingTemplates().get("Base");
+        GameData gameData = new GameData(users, gameMapTemplate, lordTemplate, buildingTemplate);
+        setScreen(new TestMapScreen(this, gameData));
     }
 
     @Override

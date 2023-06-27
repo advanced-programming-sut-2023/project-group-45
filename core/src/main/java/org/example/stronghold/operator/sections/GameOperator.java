@@ -19,7 +19,7 @@ import lombok.Data;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.Database;
-import org.example.stronghold.model.Game;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Navigation;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Tile;
@@ -47,7 +47,7 @@ public class GameOperator {
         }
     }
 
-    public Game startGame(Map<String, Object> req) throws OperatorException {
+    public GameData startGame(Map<String, Object> req) throws OperatorException {
         GameMapTemplate gameMapTemplate = getReqAs(req, "map", GameMapTemplate.class);
         List<User> users = getReqAs(req, "users", List.class);
         checkExpression(users.size() >= 2, Type.INVALID_GAME_PARAMETERS);
@@ -60,11 +60,11 @@ public class GameOperator {
                 Type.UNIT_NOT_FOUND);
         BuildingTemplate baseTemplate = checkNotNull(templateDatabase.getBuildingTemplates()
                 .get("Base"), Type.BUILDING_NOT_FOUND);
-        return new Game(users, gameMapTemplate, lordTemplate, baseTemplate);
+        return new GameData(users, gameMapTemplate, lordTemplate, baseTemplate);
     }
 
-    private void assignLabor(Game game) {
-        for (Building building : game.getBuildings()) {
+    private void assignLabor(GameData gameData) {
+        for (Building building : gameData.getBuildings()) {
             Player player = building.getOwner();
             if (building.getLabors() < building.getMaxLabors() && building.getHitPoints() > 0) {
                 int workersToAssign = building.getMaxLabors() - building.getLabors();
@@ -76,8 +76,8 @@ public class GameOperator {
         }
     }
 
-    private void manageSupplyChain(Game game) {
-        for (Building building : game.getBuildings()) {
+    private void manageSupplyChain(GameData gameData) {
+        for (Building building : gameData.getBuildings()) {
             if (building.getLabors() < building.getMaxLabors() || building.getHitPoints() <= 0
                     || building.getSupply().isEmpty()) {
                 continue;
@@ -93,10 +93,10 @@ public class GameOperator {
         }
     }
 
-    private void manageOverpopulate(Game game) {
-        for (Player player : game.getPlayers()) {
-            int housingSpace = game.getHousingSpace(player);
-            int totalPeasants = game.getTotalPeasants(player);
+    private void manageOverpopulate(GameData gameData) {
+        for (Player player : gameData.getPlayers()) {
+            int housingSpace = gameData.getHousingSpace(player);
+            int totalPeasants = gameData.getTotalPeasants(player);
             if (totalPeasants <= housingSpace) {
                 continue;
             }
@@ -107,7 +107,7 @@ public class GameOperator {
             if (totalPeasants <= housingSpace) {
                 continue;
             }
-            for (Building building : game.getBuildingsByOwner(player).toList()) {
+            for (Building building : gameData.getBuildingsByOwner(player).toList()) {
                 while (totalPeasants > housingSpace && building.getLabors() > 0) {
                     totalPeasants--;
                     building.setLabors(building.getLabors() - 1);
@@ -117,13 +117,13 @@ public class GameOperator {
         }
     }
 
-    private void manageFood(Game game) {
-        for (Player player : game.getPlayers()) {
-            int peasants = game.getTotalPeasants(player);
+    private void manageFood(GameData gameData) {
+        for (Player player : gameData.getPlayers()) {
+            int peasants = gameData.getTotalPeasants(player);
             int totalFoods = (int) (peasants * player.getFoodRation());
             while (totalFoods > 0) {
                 int minFood = totalFoods, nonZero = 0;
-                for (String food : Game.FOODS) {
+                for (String food : GameData.FOODS) {
                     int count = player.getResources().getOrDefault(food, 0);
                     if (count > 0) {
                         minFood = Math.min(minFood, count);
@@ -136,7 +136,7 @@ public class GameOperator {
                     break;
                 }
                 minFood = Math.min(minFood, (totalFoods + nonZero - 1) / nonZero);
-                for (String food : Game.FOODS) {
+                for (String food : GameData.FOODS) {
                     int count = player.getResources().getOrDefault(food, 0);
                     if (count <= 0) {
                         continue;
@@ -150,9 +150,9 @@ public class GameOperator {
         }
     }
 
-    private void manageTax(Game game) {
-        for (Player player : game.getPlayers()) {
-            int peasants = game.getTotalPeasants(player);
+    private void manageTax(GameData gameData) {
+        for (Player player : gameData.getPlayers()) {
+            int peasants = gameData.getTotalPeasants(player);
             int totalTax = (int) (peasants * player.getTaxPerPeasant());
             int golds = player.getResources().getOrDefault("gold", 0);
             if (golds + totalTax < 0) {
@@ -169,13 +169,13 @@ public class GameOperator {
         }
     }
 
-    private void managePopularity(Game game) {
-        for (Player player : game.getPlayers()) {
+    private void managePopularity(GameData gameData) {
+        for (Player player : gameData.getPlayers()) {
             int deltaPopularity = 0;
             deltaPopularity += player.getFoodDeltaPopularity();
             deltaPopularity += player.getTaxDeltaPopularity();
-            deltaPopularity += game.getReligion(player);
-            deltaPopularity += game.getHappiness(player);
+            deltaPopularity += gameData.getReligion(player);
+            deltaPopularity += gameData.getHappiness(player);
             player.setDeltaPopularity(deltaPopularity);
             int popularity = player.getPopularity();
             popularity = Math.max(0, Math.min(100, popularity + deltaPopularity));
@@ -183,7 +183,7 @@ public class GameOperator {
             log("popularity [delta=%s, popularity=%s, player=%s]", deltaPopularity, popularity,
                     player);
 
-            if (popularity >= 80 && game.getTotalPeasants(player) < game.getHousingSpace(player)) {
+            if (popularity >= 80 && gameData.getTotalPeasants(player) < gameData.getHousingSpace(player)) {
                 player.setPeasants(player.getPeasants() + 1);
                 log("peasant birth [popularity=%s, player=%]", popularity, player);
             }
@@ -194,15 +194,15 @@ public class GameOperator {
         }
     }
 
-    private void manageNavigation(Game game) {
-        Navigation navigation = new Navigation(game);
+    private void manageNavigation(GameData gameData) {
+        Navigation navigation = new Navigation(gameData);
         List<Unit> unitsToMove = new ArrayList<>();
         List<IntPair> positionsToMoveTo = new ArrayList<>();
-        for (int y = 0; y < game.getMap().getWidth(); y++) {
-            for (int x = 0; x < game.getMap().getHeight(); x++) {
+        for (int y = 0; y < gameData.getMap().getWidth(); y++) {
+            for (int x = 0; x < gameData.getMap().getHeight(); x++) {
                 final int finalX = x;
                 final int finalY = y;
-                game.getUnitsOnPosition(new IntPair(finalX, finalY))
+                gameData.getUnitsOnPosition(new IntPair(finalX, finalY))
                         .filter(u -> u.getGoal() != null)
                         .collect(groupingBy(Unit::getGoal))
                         .forEach((goal, units) -> {
@@ -229,7 +229,7 @@ public class GameOperator {
         }
     }
 
-    private void manageBuildingDamages(Game game, Map<Building, Integer> toDamage) {
+    private void manageBuildingDamages(GameData gameData, Map<Building, Integer> toDamage) {
         List<Building> destroyed = new ArrayList<>();
         for (Map.Entry<Building, Integer> entry : toDamage.entrySet()) {
             Building target = entry.getKey();
@@ -244,11 +244,11 @@ public class GameOperator {
         }
         for (Building building : destroyed) {
             log("destroy building [building=%s]", building);
-            building.destroy(game);
+            building.destroy(gameData);
         }
     }
 
-    private void manageUnitDamages(Game game, Map<Unit, Integer> toDamage) {
+    private void manageUnitDamages(GameData gameData, Map<Unit, Integer> toDamage) {
         List<Unit> died = new ArrayList<>();
         for (Map.Entry<Unit, Integer> entry : toDamage.entrySet()) {
             Unit target = entry.getKey();
@@ -263,38 +263,38 @@ public class GameOperator {
         }
         for (Unit unit : died) {
             log("kill unit [unit=%s]", unit);
-            unit.die(game);
+            unit.die(gameData);
             if (unit.getType().equals("Lord")) {
-                terminatePlayer(game, unit.getOwner());
+                terminatePlayer(gameData, unit.getOwner());
             }
         }
     }
 
-    private void manageAttacks(Game game) {
+    private void manageAttacks(GameData gameData) {
         Map<Unit, Integer> unitsToDamage = new HashMap<>();
         Map<Building, Integer> buildingsToDamage = new HashMap<>();
-        for (Unit unit : game.getUnits()) {
-            if (unit.getDamage(game) == 0) {
+        for (Unit unit : gameData.getUnits()) {
+            if (unit.getDamage(gameData) == 0) {
                 continue;
             }
-            List<Object> targetCandidates = game.getTargetsAround(unit, unit.getRange());
+            List<Object> targetCandidates = gameData.getTargetsAround(unit, unit.getRange());
             if (targetCandidates.isEmpty()) {
                 continue;
             }
             Object target = (targetCandidates.contains(unit.getAttackGoal()) ? unit.getAttackGoal()
                     : randomChoice(targetCandidates));
             if (target instanceof Unit targetUnit) {
-                addIntMap(unitsToDamage, targetUnit, unit.getDamage(game));
+                addIntMap(unitsToDamage, targetUnit, unit.getDamage(gameData));
             } else if (target instanceof Building targetBuilding) {
-                addIntMap(buildingsToDamage, targetBuilding, unit.getDamage(game));
+                addIntMap(buildingsToDamage, targetBuilding, unit.getDamage(gameData));
             }
         }
-        manageBuildingDamages(game, buildingsToDamage);
-        manageUnitDamages(game, unitsToDamage);
+        manageBuildingDamages(gameData, buildingsToDamage);
+        manageUnitDamages(gameData, unitsToDamage);
     }
 
-    private void manageVision(Game game) {
-        for (Unit unit : game.getUnits()) {
+    private void manageVision(GameData gameData) {
+        for (Unit unit : gameData.getUnits()) {
             if (unit.getAttackGoal() != null) {
                 continue;
             }
@@ -302,7 +302,7 @@ public class GameOperator {
             if (vision == 0) {
                 continue;
             }
-            List<Unit> visibleTargets = game.getTargetsAround(unit, vision).stream()
+            List<Unit> visibleTargets = gameData.getTargetsAround(unit, vision).stream()
                     .filter(obj -> obj instanceof Unit)
                     .map(obj -> (Unit) obj)
                     .toList();
@@ -316,22 +316,22 @@ public class GameOperator {
     }
 
     public void nextFrame(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
-        assignLabor(game);
-        manageSupplyChain(game);
-        manageFood(game);
-        manageTax(game);
-        managePopularity(game);
-        manageVision(game);
-        manageNavigation(game);
-        manageAttacks(game);
-        manageOverpopulate(game);
+        GameData gameData = getReqAs(req, "game", GameData.class);
+        assignLabor(gameData);
+        manageSupplyChain(gameData);
+        manageFood(gameData);
+        manageTax(gameData);
+        managePopularity(gameData);
+        manageVision(gameData);
+        manageNavigation(gameData);
+        manageAttacks(gameData);
+        manageOverpopulate(gameData);
     }
 
-    private void terminatePlayer(Game game, Player player) {
+    private void terminatePlayer(GameData gameData, Player player) {
         log("terminate player [player=%s]", player);
-        for (Building building : game.getBuildingsByOwner(player).toList()) {
-            game.getMap().getAt(building.getPosition()).setBuilding(null);
+        for (Building building : gameData.getBuildingsByOwner(player).toList()) {
+            gameData.getMap().getAt(building.getPosition()).setBuilding(null);
         }
         for (TradeRequest request : player.getIncomingTradeRequests()) {
             try {
@@ -342,22 +342,22 @@ public class GameOperator {
                 e.printStackTrace();
             }
         }
-        game.getUnits().removeIf(u -> u.getOwner().equals(player));
-        game.getBuildings().removeIf(b -> b.getOwner().equals(player));
-        game.getPlayers().remove(player);
+        gameData.getUnits().removeIf(u -> u.getOwner().equals(player));
+        gameData.getBuildings().removeIf(b -> b.getOwner().equals(player));
+        gameData.getPlayers().remove(player);
         player.setAlive(false);
         // todo: add scores to player.user
     }
 
     public void dropBuilding(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         Player player = getReqAs(req, "player", Player.class);
         String buildingType = getReqString(req, "building");
         checkExpression(!buildingType.equals("Base"), Type.BUILDING_NOT_FOUND);
         BuildingTemplate buildingTemplate = checkNotNull(templateDatabase.getBuildingTemplates()
                 .get(buildingType), Type.BUILDING_NOT_FOUND);
         IntPair position = getReqAs(req, "position", IntPair.class);
-        Tile tile = checkNotNull(game.getMap().getAt(position), Type.INVALID_POSITION);
+        Tile tile = checkNotNull(gameData.getMap().getAt(position), Type.INVALID_POSITION);
         checkExpression(tile.getBuilding() == null,
                 Type.INVALID_POSITION);
         checkExpression(buildingTemplate.canBeBuiltOn(tile.getType()), Type.INVALID_POSITION);
@@ -369,7 +369,7 @@ public class GameOperator {
                 .position(position)
                 .build();
         tile.setBuilding(building);
-        game.getBuildings().add(building);
+        gameData.getBuildings().add(building);
     }
 
     public void setFoodRate(Map<String, Object> req) throws OperatorException {
@@ -391,9 +391,9 @@ public class GameOperator {
         if (units.isEmpty()) {
             return;
         }
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
-        checkExpression(new Navigation(game).isWalkable(position), Type.INVALID_POSITION);
+        checkExpression(new Navigation(gameData).isWalkable(position), Type.INVALID_POSITION);
         units.forEach(unit -> unit.setNavigationGoal(position));
     }
 
@@ -402,9 +402,9 @@ public class GameOperator {
         if (units.isEmpty()) {
             return;
         }
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         IntPair[] path = getReqAs(req, "path", IntPair[].class);
-        checkExpression(new Navigation(game).isWalkable(path), Type.INVALID_POSITION);
+        checkExpression(new Navigation(gameData).isWalkable(path), Type.INVALID_POSITION);
         units.forEach(unit -> {
             unit.setNavigationGoal(path[0]);
             unit.setPatrol(path);
@@ -412,12 +412,12 @@ public class GameOperator {
     }
 
     public Unit attackUnit(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         Player player = getReqAs(req, "player", Player.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
         List<Unit> units = getReqAs(req, "units", List.class);
-        checkExpression(game.getMap().getAt(position) != null, Type.INVALID_GAME_PARAMETERS);
-        Unit target = game.getUnitsOnPosition(position)
+        checkExpression(gameData.getMap().getAt(position) != null, Type.INVALID_GAME_PARAMETERS);
+        Unit target = gameData.getUnitsOnPosition(position)
                 .filter(u -> !u.getOwner().equals(player))
                 .findFirst()
                 .orElse(null);
@@ -427,16 +427,16 @@ public class GameOperator {
     }
 
     public void repairBuilding(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         Player player = getReqAs(req, "player", Player.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
-        Building building = game.getBuildingsByOwner(player)
+        Building building = gameData.getBuildingsByOwner(player)
                 .filter(b -> b.getPosition().equals(position))
                 .findFirst()
                 .orElse(null);
         checkExpression(building != null, Type.INVALID_POSITION);
         int cost = (int) ((building.getMaxHitPoints() - building.getHitPoints()) * 0.1);
-        if (building.getOwner() != player && building.getHitPoints() == building.getMaxHitPoints() || !game.getTargetsAround(player,
+        if (building.getOwner() != player && building.getHitPoints() == building.getMaxHitPoints() || !gameData.getTargetsAround(player,
                 position, 2).isEmpty() || cost > player.getResources().get("stone")) {
             throw new OperatorException(Type.CANT_REPAIR);
         }
@@ -446,13 +446,13 @@ public class GameOperator {
 
     public void disbandUnits(Map<String, Object> req) throws OperatorException {
         List<Unit> units = getReqAs(req, "units", List.class);
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         if (units.isEmpty()) {
             return;
         }
         units.forEach(unit -> {
             unit.getOwner().setPeasants(unit.getOwner().getPeasants() + 1);
-            unit.die(game);
+            unit.die(gameData);
         });
     }
 
@@ -465,13 +465,13 @@ public class GameOperator {
     }
 
     public void dropUnit(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         Player player = getReqAs(req, "player", Player.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
         String unitType = getReqString(req, "type");
         UnitTemplate unitTemplate = checkNotNull(templateDatabase.getUnitTemplates().get(unitType),
                 Type.UNIT_NOT_FOUND);
-        Tile tile = checkNotNull(game.getMap().getAt(position), Type.INVALID_POSITION);
+        Tile tile = checkNotNull(gameData.getMap().getAt(position), Type.INVALID_POSITION);
         Building building = checkNotNull(tile.getBuilding(), Type.INVALID_POSITION);
         Map<String, Integer> cost = checkNotNull(building.getDropUnit().get(unitType),
                 Type.UNIT_NOT_FOUND);
@@ -481,28 +481,28 @@ public class GameOperator {
                 .owner(player)
                 .build();
         unit.setPosition(position);
-        game.getUnits().add(unit);
+        gameData.getUnits().add(unit);
     }
 
     public Unit buildEquipment(Map<String, Object> req) throws OperatorException {
-        Game game = getReqAs(req, "game", Game.class);
+        GameData gameData = getReqAs(req, "game", GameData.class);
         Player player = getReqAs(req, "player", Player.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
         String unitType = getReqString(req, "type");
         UnitTemplate unitTemplate = checkNotNull(templateDatabase.getUnitTemplates().get(unitType),
                 Type.UNIT_NOT_FOUND);
         checkExpression(unitTemplate.getEngineers() > 0, Type.UNIT_NOT_FOUND);
-        List<Unit> engineers = game.getUnitsOnPosition(position)
+        List<Unit> engineers = gameData.getUnitsOnPosition(position)
                 .filter(u -> u.getType().equals("Engineer"))
                 .limit(unitTemplate.getEngineers())
                 .toList();
         checkExpression(engineers.size() == unitTemplate.getEngineers(), Type.NOT_ENOUGH_ENGINEER);
-        engineers.forEach(u -> u.die(game));
+        engineers.forEach(u -> u.die(gameData));
         Unit unit = unitTemplate.getBuilder()
                 .owner(player)
                 .build();
         unit.setPosition(position);
-        game.getUnits().add(unit);
+        gameData.getUnits().add(unit);
         return unit;
     }
 }

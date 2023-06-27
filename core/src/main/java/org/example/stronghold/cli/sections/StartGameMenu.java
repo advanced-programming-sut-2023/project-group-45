@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import org.example.stronghold.model.Game;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.operator.OperatorException;
@@ -72,14 +72,14 @@ public class StartGameMenu extends Menu {
 
     private void startGame(Map<String, String> input) {
         try {
-            Game game = Operators.game.startGame(new HashMap<>() {{
+            GameData gameData = Operators.game.startGame(new HashMap<>() {{
                 put("map", gameMap);
                 put("users", new ArrayList<>(players) {{
                     add(starter);
                 }});
             }});
             System.out.println("Let's start the game!");
-            new FrameMenu(scanner, game).run();
+            new FrameMenu(scanner, gameData).run();
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

@@ -14,7 +14,7 @@ import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.UnitTemplate;
 
 @Data
-public class Game implements Serializable {
+public class GameData implements Serializable {
 
     public static final List<String> FOODS = ImmutableList.of("bread");
 
@@ -25,8 +25,8 @@ public class Game implements Serializable {
     private final List<Unit> units = new ArrayList<>();
     private Market market = new Market();
 
-    public Game(List<User> users, GameMapTemplate gameMapTemplate, UnitTemplate lordTemplate,
-            BuildingTemplate baseTemplate) {
+    public GameData(List<User> users, GameMapTemplate gameMapTemplate, UnitTemplate lordTemplate,
+                    BuildingTemplate baseTemplate) {
         this.mapTemplate = gameMapTemplate;
         this.map = gameMapTemplate.build();
         for (int i = 0; i < users.size(); i++) {

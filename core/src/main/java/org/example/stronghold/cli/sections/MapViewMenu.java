@@ -12,7 +12,7 @@ import static org.example.stronghold.context.MapUtils.getIntOpt;
 import java.util.Map;
 import java.util.Scanner;
 import org.example.stronghold.context.IntPair;
-import org.example.stronghold.model.Game;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Tile;
 import org.example.stronghold.cli.Menu;
 
@@ -20,13 +20,13 @@ public class MapViewMenu extends Menu {
 
     private static final int MAX_HEIGHT = 7, MAX_WIDTH = 20;
 
-    private final Game game;
+    private final GameData gameData;
     private int yStart = 0;
     private int xStart = 0;
 
-    public MapViewMenu(Scanner scanner, Game game) {
+    public MapViewMenu(Scanner scanner, GameData gameData) {
         super(scanner);
-        this.game = game;
+        this.gameData = gameData;
         addCommand("show", x -> this.showMap());
         addCommand("move", this::moveMap);
         this.showMap();
@@ -46,8 +46,8 @@ public class MapViewMenu extends Menu {
         if (input.containsKey("right")) {
             dx += getIntOpt(input, "right");
         }
-        if (yStart + dy < 0 || yStart + dy + MAX_HEIGHT > game.getMap().getHeight()
-                || xStart + dx < 0 || xStart + dx + MAX_WIDTH > game.getMap().getWidth()) {
+        if (yStart + dy < 0 || yStart + dy + MAX_HEIGHT > gameData.getMap().getHeight()
+                || xStart + dx < 0 || xStart + dx + MAX_WIDTH > gameData.getMap().getWidth()) {
             System.out.println("Cannot move that way");
             return;
         }
@@ -96,10 +96,10 @@ public class MapViewMenu extends Menu {
         for (int y = yStart; y < yStart + MAX_HEIGHT; y++) {
             System.out.print("│");
             for (int x = xStart; x < xStart + MAX_WIDTH; x++) {
-                Tile tile = game.getMap().getAt(x, y);
+                Tile tile = gameData.getMap().getAt(x, y);
                 setColorByTile(tile);
                 System.out.print(tile.getType().equals("plain") ? "." : tile.getType().charAt(0));
-                long unitCount = game.getUnitsOnPosition(new IntPair(x, y)).count();
+                long unitCount = gameData.getUnitsOnPosition(new IntPair(x, y)).count();
                 System.out.print(
                         unitCount == 0 ? ".." : unitCount < 10 ? "." + unitCount : unitCount);
                 resetColor();
@@ -109,7 +109,7 @@ public class MapViewMenu extends Menu {
             }
             System.out.print("│\n│");
             for (int x = xStart; x < xStart + MAX_WIDTH; x++) {
-                Tile tile = game.getMap().getAt(x, y);
+                Tile tile = gameData.getMap().getAt(x, y);
                 setColorByTile(tile);
                 System.out.print(tile.getBuilding() == null ? "..."
                         : tile.getBuilding().getType().substring(0, 3));

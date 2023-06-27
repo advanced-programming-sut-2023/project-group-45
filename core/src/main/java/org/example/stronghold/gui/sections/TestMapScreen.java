@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
 import org.example.stronghold.model.Tile;
 
@@ -25,12 +26,14 @@ public class TestMapScreen implements Screen {
     IsometricTiledMapRenderer renderer;
     OrthographicCamera camera;
     static final int tilePerUnit = 4;
+    GameData gameData;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
 
-    public TestMapScreen(StrongholdGame game, GameMap gameMap) {
+    public TestMapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
-        this.gameMap = gameMap;
+        this.gameData = gameData;
+        this.gameMap = gameData.getMap();
     }
 
     public void setTileAt(int column, int row, int id) {
@@ -100,6 +103,7 @@ public class TestMapScreen implements Screen {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         camera.update();
         renderer.setView(camera);
         renderer.render();

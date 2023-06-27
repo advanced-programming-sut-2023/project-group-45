@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import org.example.stronghold.context.IntPair;
-import org.example.stronghold.model.Game;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.operator.OperatorException;
@@ -19,13 +19,13 @@ import org.example.stronghold.cli.Menu;
 
 public class UnitMenu extends Menu {
 
-    private final Game game;
+    private final GameData gameData;
     private final Player player;
     private final List<Unit> selection = new ArrayList<>();
 
-    public UnitMenu(Scanner scanner, Game game, Player player) {
+    public UnitMenu(Scanner scanner, GameData gameData, Player player) {
         super(scanner);
-        this.game = game;
+        this.gameData = gameData;
         this.player = player;
         addCommand("show-selection", this::showSelection);
         addCommand("select-at", this::selectPosition);
@@ -52,7 +52,7 @@ public class UnitMenu extends Menu {
 
     private void selectPosition(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
-        List<Unit> selected = game.getUnits().stream()
+        List<Unit> selected = gameData.getUnits().stream()
                 .filter(u -> u.getPosition().equals(position))
                 .filter(u -> u.getOwner() == player)
                 .toList();
@@ -67,7 +67,7 @@ public class UnitMenu extends Menu {
 
     private void selectType(Map<String, String> input) {
         String type = getOpt(input, "type");
-        List<Unit> selected = game.getUnits().stream()
+        List<Unit> selected = gameData.getUnits().stream()
                 .filter(u -> u.getType().equals(type))
                 .filter(u -> u.getOwner() == player)
                 .toList();
@@ -88,7 +88,7 @@ public class UnitMenu extends Menu {
         IntPair goal = getIntPairOpt(input, "x", "y");
         try {
             Operators.game.setNavigationGoal(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("units", selection);
                 put("position", goal);
             }});
@@ -102,7 +102,7 @@ public class UnitMenu extends Menu {
         IntPair[] path = {getIntPairOpt(input, "x1", "y1"), getIntPairOpt(input, "x2", "y2")};
         try {
             Operators.game.setPatrol(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("units", selection);
                 put("path", path);
             }});
@@ -116,7 +116,7 @@ public class UnitMenu extends Menu {
         IntPair position = getIntPairOpt(input, "x", "y");
         try {
             Unit unit = Operators.game.attackUnit(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("player", player);
                 put("units", selection);
                 put("position", position);
@@ -144,7 +144,7 @@ public class UnitMenu extends Menu {
     private void disband(Map<String, String> input) {
         try {
             Operators.game.disbandUnits(new HashMap<>() {{
-                put("game", game);
+                put("game", gameData);
                 put("units", selection);
             }});
             System.out.println("Units disbanded successfully");

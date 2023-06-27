@@ -21,7 +21,7 @@ public class TestMapScreen implements Screen {
     TiledMap tiledMap;
     IsometricTiledMapRenderer renderer;
     OrthographicCamera camera;
-    Texture barracks;
+    Texture barracks, oak;
     TiledMapTileSets tileSets;
     TiledMapTileLayer tileLayer;
     static final int tilePerUnit = 4;
@@ -36,7 +36,7 @@ public class TestMapScreen implements Screen {
     public void setTileAt(int column, int row, int id) {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(tileSets.getTile(id));
-        tileLayer.setCell(column, row, cell);
+        tileLayer.setCell(row, column, cell); // xy coords in TiledMapTileLayer isn't the same as GameMap
     }
 
     public int getTileIdByType(String tileType) {
@@ -91,6 +91,7 @@ public class TestMapScreen implements Screen {
         });
 
         barracks = new Texture(Gdx.files.internal("buildings/Barracks.png"));
+        oak = new Texture(Gdx.files.internal("plants/oak.png"));
     }
 
     @Override
@@ -108,17 +109,31 @@ public class TestMapScreen implements Screen {
 
         Batch batch = renderer.getBatch();
         batch.begin();
-        drawTextureAt(batch, barracks, 4, 2);
-        drawTextureAt(batch, barracks, 3, 1);
-        drawTextureAt(batch, barracks, 3, 3);
+        for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
+            for (int row = 0; row < gameMap.getHeight(); row++) {
+                Tile tile = gameMap.getAt(col, row);
+                if ((col == 1 && row == 2) || (col == 18 && row == 18)) // later check for buildings
+                    drawBuildingAt(batch, barracks, col, row);
+                if (tile.getType().equals("tree"))
+                    drawTreeAt(batch, oak, col, row);
+            }
+        }
         batch.end();
     }
 
-    public Vector3 vec3AtCell(int column, int row) {
-        return new Vector3(15f * tilePerUnit * (column + row), 8f * tilePerUnit * (column - row) - 8f * (tilePerUnit - 1), 0);
+    public Vector3 vec3AtSubCell(int column, int row, int i, int j) {
+        return new Vector3(
+            15f * (tilePerUnit * (column + row) + i + j),
+            8f * (tilePerUnit * (column - row) + i - j),
+            0
+        );
     }
 
-    public void drawTextureAt(Batch batch, Texture texture, int column, int row) {
+    public Vector3 vec3AtCell(int column, int row) {
+        return vec3AtSubCell(column, row, 0, 0).sub(0, 8f * (tilePerUnit - 1), 0);
+    }
+
+    public void drawBuildingAt(Batch batch, Texture texture, int column, int row) {
         float margin = 10f;
         float width = 30f * tilePerUnit - 2 * margin;
         Vector3 position = vec3AtCell(column, row);
@@ -128,6 +143,23 @@ public class TestMapScreen implements Screen {
             width,
             texture.getHeight() * width / texture.getWidth()
         );
+    }
+
+    public void drawTreeAt(Batch batch, Texture texture, int column, int row) {
+        float width = 60f;
+        float height = texture.getHeight() * width / texture.getWidth();
+        for (int i = tilePerUnit - 2; i >= 0; i -= 2) { // back to front
+            for (int j = 0; j < tilePerUnit; j += 2) {
+                Vector3 position = vec3AtSubCell(column, row, i, j);
+                batch.draw(
+                    texture,
+                    position.x + 10f,
+                    position.y,
+                    width,
+                    height
+                );
+            }
+        }
     }
 
     @Override

@@ -1,6 +1,9 @@
 package org.example.stronghold.gui.sections;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,32 +11,31 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.model.GameMap;
 import org.example.stronghold.model.Tile;
 
 import java.util.Random;
 
 public class TestMapScreen implements Screen {
-    final Game game;
+    final StrongholdGame game;
     TiledMap tiledMap;
     IsometricTiledMapRenderer renderer;
     OrthographicCamera camera;
-    Texture barracks, oak;
-    TiledMapTileSets tileSets;
-    TiledMapTileLayer tileLayer;
     static final int tilePerUnit = 4;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
 
-    public TestMapScreen(Game game, GameMap gameMap) {
+    public TestMapScreen(StrongholdGame game, GameMap gameMap) {
         this.game = game;
         this.gameMap = gameMap;
     }
 
     public void setTileAt(int column, int row, int id) {
+        TiledMapTileSets tileSets = tiledMap.getTileSets();
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(tileSets.getTile(id));
         tileLayer.setCell(row, column, cell); // xy coords in TiledMapTileLayer isn't the same as GameMap
@@ -63,9 +65,7 @@ public class TestMapScreen implements Screen {
     public void show() {
         camera = new OrthographicCamera();
         camera.zoom = 1;
-        tiledMap = new TmxMapLoader().load("tiled-maps/80x80.tmx");
-        tileSets = tiledMap.getTileSets();
-        tileLayer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        tiledMap = game.assetLoader.getTiledMap("tiled-maps/80x80.tmx");
 
         for (int col = 0; col < gameMap.getWidth(); col++) {
             for (int row = 0; row < gameMap.getHeight(); row++) {
@@ -89,9 +89,6 @@ public class TestMapScreen implements Screen {
                 return false;
             }
         });
-
-        barracks = new Texture(Gdx.files.internal("buildings/Barracks.png"));
-        oak = new Texture(Gdx.files.internal("plants/oak.png"));
     }
 
     @Override
@@ -113,9 +110,9 @@ public class TestMapScreen implements Screen {
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
                 if ((col == 1 && row == 2) || (col == 18 && row == 18)) // later check for buildings
-                    drawBuildingAt(batch, barracks, col, row);
+                    drawBuildingAt(batch, game.assetLoader.getTexture("buildings/Barracks.png"), col, row);
                 if (tile.getType().equals("tree"))
-                    drawTreeAt(batch, oak, col, row);
+                    drawTreeAt(batch, game.assetLoader.getTexture("plants/oak.png"), col, row);
             }
         }
         batch.end();
@@ -186,6 +183,5 @@ public class TestMapScreen implements Screen {
     @Override
     public void dispose() {
         renderer.dispose();
-        tiledMap.dispose();
     }
 }

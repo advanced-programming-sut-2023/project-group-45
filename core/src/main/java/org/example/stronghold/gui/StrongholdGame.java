@@ -18,6 +18,7 @@ public class StrongholdGame extends Game {
     private File templateDatabaseRoot;
     private Database database;
     private TemplateDatabase templateDatabase;
+    public final AssetLoader assetLoader = new AssetLoader();
 
     @Override
     public void create() {
@@ -34,6 +35,7 @@ public class StrongholdGame extends Game {
 
         skin = new Skin(Gdx.files.internal("default/uiskin.json"));
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
+        assetLoader.loadAll();
         setScreen(new TestMapScreen(this, templateDatabase.getGameMapTemplates().get("test").build()));
     }
 
@@ -41,6 +43,7 @@ public class StrongholdGame extends Game {
     public void dispose() {
         skin.dispose();
         craftacularSkin.dispose();
+        assetLoader.dispose();
 
         try {
             database.toFile(databaseFile);

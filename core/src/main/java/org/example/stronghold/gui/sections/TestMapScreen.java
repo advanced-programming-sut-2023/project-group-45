@@ -139,7 +139,7 @@ public class TestMapScreen implements Screen {
 
     @Override
     public void show() {
-        controlPanel = new ControlPanel(150, game);
+        controlPanel = new ControlPanel(120, game);
         controlPanel.create();
 
         camera = new OrthographicCamera();
@@ -181,7 +181,7 @@ public class TestMapScreen implements Screen {
         mapViewport.update(width, height);
         camera.setToOrtho(false, width, height);
         renderer.setView(camera);
-        controlPanel.resize(width);
+        controlPanel.resize(width, height);
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {

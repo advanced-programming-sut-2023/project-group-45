@@ -5,8 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
@@ -17,19 +16,19 @@ import org.example.stronghold.gui.StrongholdGame;
 
 @Data
 public class ControlPanel implements Disposable {
-    private static final boolean DEBUG = true;
+
+    private static final boolean DEBUG = false;
     final int height;
     final StrongholdGame game;
     Viewport viewport;
     Stage stage;
     Table layoutTable, selectTable;
-    Stack mainPane;
+    Container<Actor> mainPane;
     Texture dirt;
     public PopupWindow popup;
 
     public void setPanel(Actor actor) {
-        mainPane.clearChildren();
-        mainPane.addActor(actor);
+        mainPane.setActor(actor);
     }
 
     public void create() {
@@ -46,8 +45,10 @@ public class ControlPanel implements Disposable {
         selectTable = new Table();
         layoutTable.add(selectTable).width(300);
 
-        mainPane = new Stack();
-        layoutTable.add(mainPane).growX().row();
+        mainPane = new Container<>();
+        mainPane.pad(5);
+        mainPane.fill();
+        layoutTable.add(mainPane).grow().row();
 
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
         stage.addActor(popup);

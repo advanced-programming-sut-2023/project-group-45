@@ -38,7 +38,6 @@ public class TilePanel extends Table {
 
     private void create() {
         align(Align.left);
-        pad(10);
         addLabel(String.format("(%d,%d) %s", column, row, tile.getType()));
         addLabel(getBuildingText());
     }

@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
-import lombok.Data;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import lombok.Data;
 
 @Data
 public class AssetLoader implements Disposable {
+
     private final Map<String, Disposable> assets = new HashMap<>();
 
     public AssetLoader() {
@@ -21,7 +21,7 @@ public class AssetLoader implements Disposable {
     }
 
     public void loadAll() {
-        loadFromRoots(this::loadTexture, "buildings/", "plants/");
+        loadFromRoots(this::loadTexture, "buildings/", "plants/", "captcha/");
         loadFromRoots(this::loadTiledMap, "tiled-maps/");
         loadTexture(Gdx.files.internal("craftacular/dirt.png"));
     }
@@ -30,11 +30,12 @@ public class AssetLoader implements Disposable {
         assets.put(file.path(), new Texture(file));
     }
 
-    private void loadFromRoots(Consumer<FileHandle> loader, String ...roots) {
+    private void loadFromRoots(Consumer<FileHandle> loader, String... roots) {
         for (String root : roots) {
             FileHandle[] files = Gdx.files.internal(root).list();
-            for (FileHandle file : files)
+            for (FileHandle file : files) {
                 loader.accept(file);
+            }
         }
     }
 

@@ -36,6 +36,7 @@ public class TestMapScreen implements Screen {
     GameData gameData;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
+    float hoverX, hoverY;
     int hoverCol = -1, hoverRow = -1;
 
     public TestMapScreen(StrongholdGame game, GameData gameData) {
@@ -113,7 +114,9 @@ public class TestMapScreen implements Screen {
             @Override
             public boolean mouseMoved(int screenX, int screenY) {
                 Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
-                IntPair cell = subCellAtVec3(worldCoords);
+                hoverX = worldCoords.x;
+                hoverY = worldCoords.y;
+                IntPair cell = cellAtVec3(worldCoords);
                 hoverCol = cell.x();
                 hoverRow = cell.y();
                 return false;
@@ -188,28 +191,15 @@ public class TestMapScreen implements Screen {
         }
     }
 
-    private float getBuildingHeight(Building building) {
-        GuiSetting guiSetting = building.getGuiSetting();
-        if (guiSetting.getAsset() == null) {
-            return 8f * tilePerUnit;
-        }
-        Texture texture = game.assetLoader.getTexture(guiSetting.getAsset());
-        float width = guiSetting.getPrefWidth();
-        return texture.getHeight() * width / texture.getWidth();
-    }
-
     private void drawHoverDetail(Batch batch) {
-        if (hoverCol < 0 || hoverCol >= 80 || hoverRow < 0 || hoverRow >= 80)
+        if (hoverCol < 0 || hoverCol >= gameMap.getWidth() || hoverRow < 0 || hoverRow >= gameMap.getHeight())
             return; // out of map
-        int col = hoverCol / tilePerUnit, row = hoverRow / tilePerUnit;
-        Tile tile = gameMap.getAt(col, row);
+        Tile tile = gameMap.getAt(hoverCol, hoverRow);
         if (tile.getBuilding() == null)
             return;
         Building building = tile.getBuilding();
         Label label = new Label(building.getType() + " " + building.getHitPoints(), game.skin);
-        Vector3 position = vec3AtCell(col, row);
-        position.x += 15f * tilePerUnit;
-        position.y += getBuildingHeight(building);
+        Vector3 position = new Vector3(hoverX, hoverY + 20, 0);
         label.setPosition(position.x, position.y, Align.center);
         label.draw(batch, 1);
     }

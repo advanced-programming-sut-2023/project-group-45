@@ -14,7 +14,7 @@ import org.example.stronghold.cli.sections.AuthMenu;
 import org.example.stronghold.context.HashMode;
 import org.example.stronghold.context.HashedString;
 import org.example.stronghold.gui.Captcha;
-import org.example.stronghold.gui.FormScreen;
+import org.example.stronghold.gui.components.FormScreen;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.model.User;

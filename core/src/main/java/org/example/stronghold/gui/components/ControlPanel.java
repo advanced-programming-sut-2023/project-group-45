@@ -1,30 +1,36 @@
-package org.example.stronghold.gui;
+package org.example.stronghold.gui.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import lombok.Data;
+import org.example.stronghold.gui.StrongholdGame;
 
 @Data
 public class ControlPanel implements Disposable {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     final int height;
     final StrongholdGame game;
     Viewport viewport;
     Stage stage;
     Table layoutTable, selectTable;
-    ScrollPane mainPane;
+    Stack mainPane;
     Texture dirt;
     public PopupWindow popup;
+
+    public void setPanel(Actor actor) {
+        mainPane.clearChildren();
+        mainPane.addActor(actor);
+    }
 
     public void create() {
         viewport = new FitViewport(Gdx.graphics.getWidth(), height);
@@ -40,7 +46,7 @@ public class ControlPanel implements Disposable {
         selectTable = new Table();
         layoutTable.add(selectTable).width(300);
 
-        mainPane = new ScrollPane(null);
+        mainPane = new Stack();
         layoutTable.add(mainPane).growX().row();
 
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);

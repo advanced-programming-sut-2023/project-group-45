@@ -24,8 +24,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Random;
 import org.example.stronghold.context.IntPair;
-import org.example.stronghold.gui.ControlPanel;
+import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.panels.TilePanel;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
@@ -148,16 +149,20 @@ public class TestMapScreen implements Screen {
             if (button != Buttons.LEFT) {
                 return false;
             }
-            selectCol = -1;
-            selectRow = -1;
-            if (notInMap()) {
-                return false;
+            try {
+                selectCol = -1;
+                selectRow = -1;
+                if (notInMap()) {
+                    return false;
+                }
+                Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+                IntPair cell = cellAtVec3(worldVec);
+                selectCol = cell.x();
+                selectRow = cell.y();
+                return true;
+            } finally {
+                setPanelOnSelect();
             }
-            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
-            IntPair cell = cellAtVec3(worldVec);
-            selectCol = cell.x();
-            selectRow = cell.y();
-            return true;
         }
     }
 
@@ -208,6 +213,15 @@ public class TestMapScreen implements Screen {
         camera.setToOrtho(false, width, height);
         renderer.setView(camera);
         controlPanel.resize(width, height);
+    }
+
+    private void setPanelOnSelect() {
+        if (notInsideMap(selectCol, selectRow)) {
+            controlPanel.setPanel(null);
+            return;
+        }
+        Tile tile = gameMap.getAt(selectCol, selectRow);
+        controlPanel.setPanel(new TilePanel(game.skin, selectCol, selectRow, tile));
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
@@ -261,12 +275,12 @@ public class TestMapScreen implements Screen {
         }
     }
 
-    public boolean isInsideMap(int col, int row) {
-        return col >= 0 && col < gameMap.getWidth() && row >= 0 && row < gameMap.getHeight();
+    public boolean notInsideMap(int col, int row) {
+        return col < 0 || col >= gameMap.getWidth() || row < 0 || row >= gameMap.getHeight();
     }
 
     private void drawHoverDetail(Batch batch) {
-        if (!isInsideMap(hoverCol, hoverRow)) {
+        if (notInsideMap(hoverCol, hoverRow)) {
             return; // out of map
         }
         Tile tile = gameMap.getAt(hoverCol, hoverRow);
@@ -281,7 +295,7 @@ public class TestMapScreen implements Screen {
     }
 
     private void drawSelectedCell() {
-        if (!isInsideMap(selectCol, selectRow)) {
+        if (notInsideMap(selectCol, selectRow)) {
             return;
         }
         Vector3 cellVec = vec3AtCell(selectCol, selectRow)

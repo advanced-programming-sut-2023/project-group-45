@@ -1,4 +1,4 @@
-package org.example.stronghold.gui;
+package org.example.stronghold.gui.components;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 

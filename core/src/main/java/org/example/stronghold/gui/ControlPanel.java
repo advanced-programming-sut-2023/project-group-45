@@ -24,6 +24,7 @@ public class ControlPanel implements Disposable {
     Table layoutTable, selectTable;
     ScrollPane mainPane;
     Texture dirt;
+    public PopupWindow popup;
 
     public void create() {
         viewport = new FitViewport(Gdx.graphics.getWidth(), height);
@@ -41,6 +42,9 @@ public class ControlPanel implements Disposable {
 
         mainPane = new ScrollPane(null);
         layoutTable.add(mainPane).growX().row();
+
+        popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
+        stage.addActor(popup);
 
         selectTable.add(new TextButton("Buildings", game.skin));
         selectTable.add(new TextButton("Popularity", game.skin));

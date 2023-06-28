@@ -2,6 +2,7 @@ package org.example.stronghold.gui.sections;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -133,6 +134,20 @@ public class TestMapScreen implements Screen {
             IntPair cell = cellAtVec3(worldVec);
             hoverCol = cell.x();
             hoverRow = cell.y();
+            return true;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            if (button != Buttons.LEFT)
+                return false;
+            if (notInMap())
+                return false;
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            IntPair cell = cellAtVec3(worldVec);
+            int col = cell.x(), row = cell.y();
+            Tile tile = gameMap.getAt(col, row);
+            controlPanel.popup.pop(tile.toString());
             return true;
         }
     }

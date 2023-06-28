@@ -124,7 +124,7 @@ public class TestMapScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
             float scale = camera.zoom * 2;
             camera.translate(-Gdx.input.getDeltaX() * scale, Gdx.input.getDeltaY() * scale);
         }

@@ -13,12 +13,16 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
-import org.example.stronghold.gui.StrongholdGame;
-import org.example.stronghold.model.*;
-
 import java.util.Random;
+import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.model.Building;
+import org.example.stronghold.model.GameData;
+import org.example.stronghold.model.GameMap;
+import org.example.stronghold.model.GuiSetting;
+import org.example.stronghold.model.Tile;
 
 public class TestMapScreen implements Screen {
+
     final StrongholdGame game;
     TiledMap tiledMap;
     IsometricTiledMapRenderer renderer;
@@ -39,26 +43,35 @@ public class TestMapScreen implements Screen {
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(tileSets.getTile(id));
-        tileLayer.setCell(row, column, cell); // xy coords in TiledMapTileLayer isn't the same as GameMap
+        // xy coords in TiledMapTileLayer isn't the same as GameMap
+        tileLayer.setCell(row, column, cell);
     }
 
     public int getTileIdByType(String tileType) {
-        if (tileType.equals("farmland"))
+        if (tileType.equals("farmland")) {
             return 1090 + tileRandomizer.nextInt(1161, 1309);
-        if (tileType.equals("water"))
+        }
+        if (tileType.equals("water")) {
             return 1 + tileRandomizer.nextInt(649, 742);
-        if (tileType.equals("oil"))
+        }
+        if (tileType.equals("oil")) {
             return 1090 + tileRandomizer.nextInt(37, 148);
-        if (tileType.equals("plain"))
+        }
+        if (tileType.equals("plain")) {
             return 1090 + tileRandomizer.nextInt(908, 1036);
-        if (tileType.equals("rock"))
+        }
+        if (tileType.equals("rock")) {
             return 1090 + tileRandomizer.nextInt(148, 288);
-        if (tileType.equals("iron"))
+        }
+        if (tileType.equals("iron")) {
             return 2459 + tileRandomizer.nextInt(414, 491);
-        if (tileType.equals("stone"))
+        }
+        if (tileType.equals("stone")) {
             return 2459 + tileRandomizer.nextInt(0, 69);
-        if (tileType.equals("tree"))
+        }
+        if (tileType.equals("tree")) {
             return 1090 + tileRandomizer.nextInt(444, 592);
+        }
         return 149; // total white as unknown tile
     }
 
@@ -73,7 +86,8 @@ public class TestMapScreen implements Screen {
                 Tile tile = gameMap.getAt(col, row);
                 for (int i = 0; i < tilePerUnit; i++) {
                     for (int j = 0; j < tilePerUnit; j++) {
-                        setTileAt(tilePerUnit * col + i, tilePerUnit * row + j, getTileIdByType(tile.getType()));
+                        setTileAt(tilePerUnit * col + i, tilePerUnit * row + j,
+                            getTileIdByType(tile.getType()));
                     }
                 }
             }
@@ -111,8 +125,9 @@ public class TestMapScreen implements Screen {
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
-                if (tile.getType().startsWith("tree"))
+                if (tile.getType().startsWith("tree")) {
                     drawTreeAt(batch, game.assetLoader.getTexture("plants/oak.png"), col, row);
+                }
                 if (tile.getBuilding() != null) {
                     drawBuildingAt(batch, tile.getBuilding(), col, row);
                 }
@@ -135,8 +150,9 @@ public class TestMapScreen implements Screen {
 
     public void drawBuildingAt(Batch batch, Building building, int column, int row) {
         GuiSetting guiSetting = building.getGuiSetting();
-        if (guiSetting.getAsset() == null)
+        if (guiSetting.getAsset() == null) {
             return;
+        }
         Texture texture = game.assetLoader.getTexture(guiSetting.getAsset());
         float width = guiSetting.getPrefWidth();
         Vector3 position = vec3AtCell(column, row);

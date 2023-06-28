@@ -15,9 +15,7 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
-import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.model.Building;
@@ -192,11 +190,14 @@ public class TestMapScreen implements Screen {
     }
 
     private void drawHoverDetail(Batch batch) {
-        if (hoverCol < 0 || hoverCol >= gameMap.getWidth() || hoverRow < 0 || hoverRow >= gameMap.getHeight())
+        if (hoverCol < 0 || hoverCol >= gameMap.getWidth() || hoverRow < 0
+            || hoverRow >= gameMap.getHeight()) {
             return; // out of map
+        }
         Tile tile = gameMap.getAt(hoverCol, hoverRow);
-        if (tile.getBuilding() == null)
+        if (tile.getBuilding() == null) {
             return;
+        }
         Building building = tile.getBuilding();
         Label label = new Label(building.getType() + " " + building.getHitPoints(), game.skin);
         Vector3 position = new Vector3(hoverX, hoverY + 20, 0);

@@ -42,13 +42,13 @@ public class StrongholdGame extends Game {
         skin = new Skin(Gdx.files.internal("default/uiskin.json"));
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
         assetLoader.loadAll();
-        setScreen(new LoginScreen(this));
-//        List<User> users = database.getUsers().stream().limit(2).toList();
-//        GameMapTemplate gameMapTemplate = templateDatabase.getGameMapTemplates().get("test");
-//        UnitTemplate lordTemplate = templateDatabase.getUnitTemplates().get("Lord");
-//        BuildingTemplate buildingTemplate = templateDatabase.getBuildingTemplates().get("Base");
-//        GameData gameData = new GameData(users, gameMapTemplate, lordTemplate, buildingTemplate);
-//        setScreen(new TestMapScreen(this, gameData));
+//        setScreen(new LoginScreen(this));
+        List<User> users = database.getUsers().stream().limit(2).toList();
+        GameMapTemplate gameMapTemplate = templateDatabase.getGameMapTemplates().get("test");
+        UnitTemplate lordTemplate = templateDatabase.getUnitTemplates().get("Lord");
+        BuildingTemplate buildingTemplate = templateDatabase.getBuildingTemplates().get("Base");
+        GameData gameData = new GameData(users, gameMapTemplate, lordTemplate, buildingTemplate);
+        setScreen(new TestMapScreen(this, gameData));
     }
 
     @Override

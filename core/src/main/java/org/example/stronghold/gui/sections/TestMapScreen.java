@@ -13,7 +13,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
+import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
+import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
@@ -31,6 +36,7 @@ public class TestMapScreen implements Screen {
     GameData gameData;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
+    int hoverCol = -1, hoverRow = -1;
 
     public TestMapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -38,7 +44,7 @@ public class TestMapScreen implements Screen {
         this.gameMap = gameData.getMap();
     }
 
-    public void setTileAt(int column, int row, int id) {
+    private void setTileAt(int column, int row, int id) {
         TiledMapTileSets tileSets = tiledMap.getTileSets();
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -47,7 +53,7 @@ public class TestMapScreen implements Screen {
         tileLayer.setCell(row, column, cell);
     }
 
-    public int getTileIdByType(String tileType) {
+    private int getTileIdByType(String tileType) {
         if (tileType.equals("farmland")) {
             return 1090 + tileRandomizer.nextInt(1161, 1309);
         }
@@ -103,6 +109,15 @@ public class TestMapScreen implements Screen {
                 camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
                 return false;
             }
+
+            @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
+                IntPair cell = subCellAtVec3(worldCoords);
+                hoverCol = cell.x();
+                hoverRow = cell.y();
+                return false;
+            }
         });
     }
 
@@ -120,8 +135,46 @@ public class TestMapScreen implements Screen {
         renderer.setView(camera);
         renderer.render();
 
+        drawOverMapLayer();
+    }
+
+    private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
+        return new Vector3(
+            15f * (tilePerUnit * (column + row) + i + j),
+            8f * (tilePerUnit * (column - row) + i - j),
+            0
+        );
+    }
+
+    private static Vector3 vec3AtCell(int column, int row) {
+        return vec3AtSubCell(column, row, 0, 0).sub(0, 8f * (tilePerUnit - 1), 0);
+    }
+
+    private static IntPair subCellAtVec3(Vector3 vector) {
+        float rowFactor = 8f / 15 * vector.x - vector.y;
+        int row = (int) Math.floor((rowFactor + 8) / 16);
+        float colFactor = 8f / 15 * vector.x + vector.y;
+        int col = (int) Math.floor((colFactor - 8) / 16);
+        return new IntPair(col, row);
+    }
+
+    private static IntPair cellAtVec3(Vector3 vector) {
+        IntPair subCell = subCellAtVec3(vector);
+        return new IntPair(
+            subCell.x() / tilePerUnit,
+            subCell.y() / tilePerUnit
+        );
+    }
+
+    private void drawOverMapLayer() {
         Batch batch = renderer.getBatch();
         batch.begin();
+        drawEntities(batch);
+        drawHoverDetail(batch);
+        batch.end();
+    }
+
+    private void drawEntities(Batch batch) {
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
@@ -133,22 +186,35 @@ public class TestMapScreen implements Screen {
                 }
             }
         }
-        batch.end();
     }
 
-    public Vector3 vec3AtSubCell(int column, int row, int i, int j) {
-        return new Vector3(
-            15f * (tilePerUnit * (column + row) + i + j),
-            8f * (tilePerUnit * (column - row) + i - j),
-            0
-        );
+    private float getBuildingHeight(Building building) {
+        GuiSetting guiSetting = building.getGuiSetting();
+        if (guiSetting.getAsset() == null) {
+            return 8f * tilePerUnit;
+        }
+        Texture texture = game.assetLoader.getTexture(guiSetting.getAsset());
+        float width = guiSetting.getPrefWidth();
+        return texture.getHeight() * width / texture.getWidth();
     }
 
-    public Vector3 vec3AtCell(int column, int row) {
-        return vec3AtSubCell(column, row, 0, 0).sub(0, 8f * (tilePerUnit - 1), 0);
+    private void drawHoverDetail(Batch batch) {
+        if (hoverCol < 0 || hoverCol >= 80 || hoverRow < 0 || hoverRow >= 80)
+            return; // out of map
+        int col = hoverCol / tilePerUnit, row = hoverRow / tilePerUnit;
+        Tile tile = gameMap.getAt(col, row);
+        if (tile.getBuilding() == null)
+            return;
+        Building building = tile.getBuilding();
+        Label label = new Label(building.getType() + " " + building.getHitPoints(), game.skin);
+        Vector3 position = vec3AtCell(col, row);
+        position.x += 15f * tilePerUnit;
+        position.y += getBuildingHeight(building);
+        label.setPosition(position.x, position.y, Align.center);
+        label.draw(batch, 1);
     }
 
-    public void drawBuildingAt(Batch batch, Building building, int column, int row) {
+    private void drawBuildingAt(Batch batch, Building building, int column, int row) {
         GuiSetting guiSetting = building.getGuiSetting();
         if (guiSetting.getAsset() == null) {
             return;
@@ -164,7 +230,7 @@ public class TestMapScreen implements Screen {
         );
     }
 
-    public void drawTreeAt(Batch batch, Texture texture, int column, int row) {
+    private void drawTreeAt(Batch batch, Texture texture, int column, int row) {
         float width = 60f;
         float height = texture.getHeight() * width / texture.getWidth();
         for (int i = tilePerUnit - 2; i >= 0; i -= 2) { // back to front

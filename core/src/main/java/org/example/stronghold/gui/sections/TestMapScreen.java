@@ -3,6 +3,8 @@ package org.example.stronghold.gui.sections;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,8 +17,14 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Random;
+import java.util.Vector;
+import javax.swing.text.View;
 import org.example.stronghold.context.IntPair;
+import org.example.stronghold.gui.ControlPanel;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
@@ -30,12 +38,14 @@ public class TestMapScreen implements Screen {
     TiledMap tiledMap;
     IsometricTiledMapRenderer renderer;
     OrthographicCamera camera;
+    Viewport mapViewport;
     static final int tilePerUnit = 4;
     GameData gameData;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
     float hoverX, hoverY;
     int hoverCol = -1, hoverRow = -1;
+    ControlPanel controlPanel;
 
     public TestMapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -80,12 +90,7 @@ public class TestMapScreen implements Screen {
         return 149; // total white as unknown tile
     }
 
-    @Override
-    public void show() {
-        camera = new OrthographicCamera();
-        camera.zoom = 1;
-        tiledMap = game.assetLoader.getTiledMap("tiled-maps/80x80.tmx");
-
+    private void setupTiles() {
         for (int col = 0; col < gameMap.getWidth(); col++) {
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
@@ -97,29 +102,60 @@ public class TestMapScreen implements Screen {
                 }
             }
         }
+    }
+
+    // this class can access private members of TestMapScreen, it isn't a static class
+    class MapInputProcessor extends InputAdapter {
+        private boolean notInMap(int screenY) {
+            return screenY >= Gdx.graphics.getHeight() - controlPanel.getHeight();
+        }
+
+        private boolean notInMap() {
+            return notInMap(Gdx.input.getY());
+        }
+
+        @Override
+        public boolean scrolled(float amountX, float amountY) {
+            if (notInMap())
+                return false;
+            camera.zoom += amountY * 0.1f;
+            camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
+            return true;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            if (notInMap())
+                return false;
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            hoverX = worldVec.x;
+            hoverY = worldVec.y;
+            IntPair cell = cellAtVec3(worldVec);
+            hoverCol = cell.x();
+            hoverRow = cell.y();
+            return true;
+        }
+    }
+
+    @Override
+    public void show() {
+        controlPanel = new ControlPanel(150, game);
+        controlPanel.create();
+
+        camera = new OrthographicCamera();
+        mapViewport = new ScreenViewport(camera);
+        camera.zoom = 1;
+        tiledMap = game.assetLoader.getTiledMap("tiled-maps/80x80.tmx");
+
+        setupTiles();
 
         renderer = new IsometricTiledMapRenderer(tiledMap);
         renderer.setView(camera);
 
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            @Override
-            public boolean scrolled(float amountX, float amountY) {
-                camera.zoom += amountY * 0.1f;
-                camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
-                return false;
-            }
-
-            @Override
-            public boolean mouseMoved(int screenX, int screenY) {
-                Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
-                hoverX = worldCoords.x;
-                hoverY = worldCoords.y;
-                IntPair cell = cellAtVec3(worldCoords);
-                hoverCol = cell.x();
-                hoverRow = cell.y();
-                return false;
-            }
-        });
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new MapInputProcessor());
+        multiplexer.addProcessor(controlPanel.getStage());
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
@@ -132,11 +168,20 @@ public class TestMapScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        mapViewport.apply();
         camera.update();
         renderer.setView(camera);
         renderer.render();
-
         drawOverMapLayer();
+        controlPanel.render();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        mapViewport.update(width, height);
+        camera.setToOrtho(false, width, height);
+        renderer.setView(camera);
+        controlPanel.resize(width);
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
@@ -239,12 +284,6 @@ public class TestMapScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
-        renderer.setView(camera);
-    }
-
-    @Override
     public void pause() {
 
     }
@@ -262,5 +301,6 @@ public class TestMapScreen implements Screen {
     @Override
     public void dispose() {
         renderer.dispose();
+        controlPanel.dispose();
     }
 }

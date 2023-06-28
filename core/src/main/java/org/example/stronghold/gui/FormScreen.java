@@ -61,7 +61,7 @@ public abstract class FormScreen implements Screen {
     @Override
     public void render(float delta) {
         drawBackground();
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.act();
         stage.draw();
     }
 

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import org.example.stronghold.gui.sections.LoginScreen;
 import org.example.stronghold.gui.sections.MapScreen;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.GameData;
@@ -43,7 +44,14 @@ public class StrongholdGame extends Game {
         skin = new Skin(Gdx.files.internal("default/uiskin.json"));
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
         assetLoader.loadAll();
-//        setScreen(new LoginScreen(this));
+        setLoginScreen();
+    }
+
+    private void setLoginScreen() {
+        setScreen(new LoginScreen(this));
+    }
+
+    private void setMapScreen() {
         try {
             List<User> users = database.getUsers().stream().limit(2).toList();
             GameMapTemplate gameMapTemplate = templateDatabase.getGameMapTemplates().get("test");

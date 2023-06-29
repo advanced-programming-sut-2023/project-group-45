@@ -1,7 +1,6 @@
 package org.example.stronghold.gui.sections;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -9,14 +8,15 @@ import com.badlogic.gdx.utils.Align;
 import java.util.HashMap;
 import org.example.stronghold.context.HashMode;
 import org.example.stronghold.context.HashedString;
-import org.example.stronghold.gui.FormScreen;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.components.FormScreen;
 import org.example.stronghold.model.User;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
 public class ProfileScreen extends FormScreen {
+
     Label usernameLabel, nicknameLabel, sloganLabel, emailLabel;
 
     TextField usernameField, passwordField, nicknameField, sloganField, emailField, currentPasswordField;
@@ -63,7 +63,8 @@ public class ProfileScreen extends FormScreen {
         table.add(applyButton).align(Align.center).minWidth(400).row();
 
         popup.label.setColor(Color.RED);
-        logoutButton.addListener(new SimpleChangeListener(() -> game.setScreen(new LoginScreen(game))));
+        logoutButton.addListener(
+            new SimpleChangeListener(() -> game.setScreen(new LoginScreen(game))));
         applyButton.addListener(new SimpleChangeListener(this::apply));
     }
 
@@ -71,11 +72,14 @@ public class ProfileScreen extends FormScreen {
         try {
             HashMap<String, Object> req = new HashMap<>() {{
                 put("user", user);
-                put("old-password", HashedString.fromPlain(currentPasswordField.getText()).withMode(HashMode.SHA256));
-                if(passwordField.getText().isEmpty()) {
-                    put("new-password", HashedString.fromPlain(currentPasswordField.getText()).withMode(HashMode.SHA256));
+                put("old-password", HashedString.fromPlain(currentPasswordField.getText())
+                    .withMode(HashMode.SHA256));
+                if (passwordField.getText().isEmpty()) {
+                    put("new-password", HashedString.fromPlain(currentPasswordField.getText())
+                        .withMode(HashMode.SHA256));
                 } else {
-                    put("new-password", HashedString.fromPlain(passwordField.getText()).withMode(HashMode.SHA256));
+                    put("new-password",
+                        HashedString.fromPlain(passwordField.getText()).withMode(HashMode.SHA256));
                 }
                 put("new-username", usernameField.getText());
                 put("new-email", emailField.getText());

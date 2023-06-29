@@ -251,6 +251,11 @@ public class MapScreen implements Screen {
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
+        // returns location of *
+        //   /\
+        //  /  \
+        //  \  /
+        // * \/
         return new Vector3(
             15f * (tilePerUnit * (column + row) + i + j),
             8f * (tilePerUnit * (column - row) + i - j),

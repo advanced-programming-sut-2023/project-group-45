@@ -12,10 +12,8 @@ import org.example.stronghold.gui.sections.MapScreen;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.User;
-import org.example.stronghold.model.template.BuildingTemplate;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.TemplateDatabase;
-import org.example.stronghold.model.template.UnitTemplate;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
@@ -44,7 +42,7 @@ public class StrongholdGame extends Game {
         skin = new Skin(Gdx.files.internal("default/uiskin.json"));
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
         assetLoader.loadAll();
-        setLoginScreen();
+        setMapScreen();
     }
 
     private void setLoginScreen() {

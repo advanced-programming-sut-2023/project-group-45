@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.HashMap;
 import java.util.Random;
+import lombok.Getter;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.ControlPanel;
@@ -46,6 +47,7 @@ public class MapScreen implements Screen {
     OrthographicCamera camera;
     Viewport mapViewport;
     static final int tilePerUnit = 4;
+    @Getter
     GameData gameData;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
@@ -55,6 +57,7 @@ public class MapScreen implements Screen {
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
     public String toBeBuiltType;
+    @Getter
     public Player myself;
 
     public MapScreen(StrongholdGame game, GameData gameData) {

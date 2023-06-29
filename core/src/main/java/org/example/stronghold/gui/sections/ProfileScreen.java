@@ -62,13 +62,13 @@ public class ProfileScreen extends FormScreen {
         table.add(logoutButton).align(Align.center).minWidth(400);
         table.add(applyButton).align(Align.center).minWidth(400).row();
 
-        popup.label.setColor(Color.RED);
         logoutButton.addListener(
             new SimpleChangeListener(() -> game.setScreen(new LoginScreen(game))));
         applyButton.addListener(new SimpleChangeListener(this::apply));
     }
 
     private void apply() {
+        // todo: check for password strength?
         try {
             HashMap<String, Object> req = new HashMap<>() {{
                 put("user", user);
@@ -87,12 +87,15 @@ public class ProfileScreen extends FormScreen {
                 put("new-slogan", sloganField.getText());
             }};
             Operators.profile.changePassword(req);
-            Operators.profile.changeUsername(req);
-            Operators.profile.changeEmail(req);
+            if (!req.get("new-username").equals(user.getUsername()))
+                Operators.profile.changeUsername(req);
+            if (!req.get("new-email").equals(user.getEmail()))
+                Operators.profile.changeEmail(req);
             Operators.profile.changeNickname(req);
             Operators.profile.changeSlogan(req);
+            popup.success("Done!");
         } catch (OperatorException e) {
-            popup.pop(e.getMessage());
+            popup.error(e.getMessage());
         }
     }
 

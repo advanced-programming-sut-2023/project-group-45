@@ -3,7 +3,7 @@ package org.example.stronghold.operator.sections;
 import static org.example.stronghold.context.MapUtils.getReqAs;
 import static org.example.stronghold.context.MapUtils.getReqString;
 import static org.example.stronghold.operator.OperatorPreconditions.checkEmailFormat;
-import static org.example.stronghold.operator.OperatorPreconditions.checkExpression;
+import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkIsNull;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUserExists;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
@@ -60,7 +60,7 @@ public class AuthOperator {
         }
         HashedString password = getReqAs(req, "password", HashedString.class);
         User user = checkUserExists(database, username);
-        checkExpression(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);
+        checkTrue(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);
         return updateStayLoggedInUser(req, user);
     }
 
@@ -70,7 +70,7 @@ public class AuthOperator {
         String securityQuestion = getReqString(req, "security-question");
         String securityAnswer = getReqString(req, "security-answer");
         User user = checkUserExists(database, username);
-        checkExpression(
+        checkTrue(
                 securityQuestion.equals(user.getSecurityQuestion()) &&
                         securityAnswer.equals(user.getSecurityAnswer()),
                 Type.INCORRECT_SECURITY_QA

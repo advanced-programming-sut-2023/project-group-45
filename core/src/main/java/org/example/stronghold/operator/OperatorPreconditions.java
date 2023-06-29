@@ -6,7 +6,7 @@ import org.example.stronghold.operator.OperatorException.Type;
 
 public class OperatorPreconditions {
 
-    public static void checkExpression(boolean expression, Type exceptionType)
+    public static void checkTrue(boolean expression, Type exceptionType)
             throws OperatorException {
         if (!expression) {
             throw new OperatorException(exceptionType);
@@ -14,11 +14,11 @@ public class OperatorPreconditions {
     }
 
     public static void checkIsNull(Object obj, Type exceptionType) throws OperatorException {
-        checkExpression(obj == null, exceptionType);
+        checkTrue(obj == null, exceptionType);
     }
 
     public static <T> T checkNotNull(T t, Type exceptionType) throws OperatorException {
-        checkExpression(t != null, exceptionType);
+        checkTrue(t != null, exceptionType);
         return t;
     }
 
@@ -28,11 +28,11 @@ public class OperatorPreconditions {
     }
 
     public static void checkUsernameFormat(String username) throws OperatorException {
-        checkExpression(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
+        checkTrue(username.matches("[A-Za-z0-9_]+"), Type.INVALID_USERNAME);
     }
 
     public static void checkEmailFormat(String email) throws OperatorException {
-        checkExpression(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
+        checkTrue(email.matches("[A-Za-z0-9_.]+@[A-Za-z0-9_.]+\\.[A-Za-z0-9_]+"),
                 Type.INVALID_EMAIL);
     }
 }

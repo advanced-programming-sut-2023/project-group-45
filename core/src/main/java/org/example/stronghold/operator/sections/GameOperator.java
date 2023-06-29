@@ -7,7 +7,7 @@ import static org.example.stronghold.context.MapUtils.getReqAs;
 import static org.example.stronghold.context.MapUtils.getReqString;
 import static org.example.stronghold.context.MapUtils.randomChoice;
 import static org.example.stronghold.context.MapUtils.subtractIntMap;
-import static org.example.stronghold.operator.OperatorPreconditions.checkExpression;
+import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkNotNull;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUserExists;
 
@@ -50,8 +50,8 @@ public class GameOperator {
     public GameData startGame(Map<String, Object> req) throws OperatorException {
         GameMapTemplate gameMapTemplate = getReqAs(req, "map", GameMapTemplate.class);
         List<User> users = getReqAs(req, "users", List.class);
-        checkExpression(users.size() >= 2, Type.INVALID_GAME_PARAMETERS);
-        checkExpression(users.size() <= gameMapTemplate.getBases().size(),
+        checkTrue(users.size() >= 2, Type.INVALID_GAME_PARAMETERS);
+        checkTrue(users.size() <= gameMapTemplate.getBases().size(),
                 Type.INVALID_GAME_PARAMETERS);
         for (User user : users) {
             checkUserExists(database, user.getUsername());
@@ -353,15 +353,15 @@ public class GameOperator {
         GameData gameData = getReqAs(req, "game", GameData.class);
         Player player = getReqAs(req, "player", Player.class);
         String buildingType = getReqString(req, "building");
-        checkExpression(!buildingType.equals("Base"), Type.BUILDING_NOT_FOUND);
+        checkTrue(!buildingType.equals("Base"), Type.BUILDING_NOT_FOUND);
         BuildingTemplate buildingTemplate = checkNotNull(templateDatabase.getBuildingTemplates()
                 .get(buildingType), Type.BUILDING_NOT_FOUND);
         IntPair position = getReqAs(req, "position", IntPair.class);
         Tile tile = checkNotNull(gameData.getMap().getAt(position), Type.INVALID_POSITION);
-        checkExpression(tile.getBuilding() == null,
+        checkTrue(tile.getBuilding() == null,
                 Type.INVALID_POSITION);
-        checkExpression(buildingTemplate.canBeBuiltOn(tile.getType()), Type.INVALID_POSITION);
-        checkExpression(geqIntMap(player.getResources(), buildingTemplate.getBuildCost()),
+        checkTrue(buildingTemplate.canBeBuiltOn(tile.getType()), Type.INVALID_POSITION);
+        checkTrue(geqIntMap(player.getResources(), buildingTemplate.getBuildCost()),
                 Type.NOT_ENOUGH_RESOURCE);
         subtractIntMap(player.getResources(), buildingTemplate.getBuildCost());
         Building building = buildingTemplate.getBuilder()
@@ -375,14 +375,14 @@ public class GameOperator {
     public void setFoodRate(Map<String, Object> req) throws OperatorException {
         Player player = getReqAs(req, "player", Player.class);
         int foodRate = getReqAs(req, "rate", Integer.class);
-        checkExpression(foodRate >= -2 && foodRate <= 2, Type.INVALID_GAME_PARAMETERS);
+        checkTrue(foodRate >= -2 && foodRate <= 2, Type.INVALID_GAME_PARAMETERS);
         player.setFoodRate(foodRate);
     }
 
     public void setTaxRate(Map<String, Object> req) throws OperatorException {
         Player player = getReqAs(req, "player", Player.class);
         int taxRate = getReqAs(req, "rate", Integer.class);
-        checkExpression(taxRate >= -3 && taxRate <= 8, Type.INVALID_GAME_PARAMETERS);
+        checkTrue(taxRate >= -3 && taxRate <= 8, Type.INVALID_GAME_PARAMETERS);
         player.setTaxRate(taxRate);
     }
 
@@ -393,7 +393,7 @@ public class GameOperator {
         }
         GameData gameData = getReqAs(req, "game", GameData.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
-        checkExpression(new Navigation(gameData).isWalkable(position), Type.INVALID_POSITION);
+        checkTrue(new Navigation(gameData).isWalkable(position), Type.INVALID_POSITION);
         units.forEach(unit -> unit.setNavigationGoal(position));
     }
 
@@ -404,7 +404,7 @@ public class GameOperator {
         }
         GameData gameData = getReqAs(req, "game", GameData.class);
         IntPair[] path = getReqAs(req, "path", IntPair[].class);
-        checkExpression(new Navigation(gameData).isWalkable(path), Type.INVALID_POSITION);
+        checkTrue(new Navigation(gameData).isWalkable(path), Type.INVALID_POSITION);
         units.forEach(unit -> {
             unit.setNavigationGoal(path[0]);
             unit.setPatrol(path);
@@ -416,12 +416,12 @@ public class GameOperator {
         Player player = getReqAs(req, "player", Player.class);
         IntPair position = getReqAs(req, "position", IntPair.class);
         List<Unit> units = getReqAs(req, "units", List.class);
-        checkExpression(gameData.getMap().getAt(position) != null, Type.INVALID_GAME_PARAMETERS);
+        checkTrue(gameData.getMap().getAt(position) != null, Type.INVALID_GAME_PARAMETERS);
         Unit target = gameData.getUnitsOnPosition(position)
                 .filter(u -> !u.getOwner().equals(player))
                 .findFirst()
                 .orElse(null);
-        checkExpression(target != null, Type.INVALID_POSITION);
+        checkTrue(target != null, Type.INVALID_POSITION);
         units.forEach(unit -> unit.setAttackGoal(target));
         return target;
     }
@@ -434,7 +434,7 @@ public class GameOperator {
                 .filter(b -> b.getPosition().equals(position))
                 .findFirst()
                 .orElse(null);
-        checkExpression(building != null, Type.INVALID_POSITION);
+        checkTrue(building != null, Type.INVALID_POSITION);
         int cost = (int) ((building.getMaxHitPoints() - building.getHitPoints()) * 0.1);
         if (building.getOwner() != player && building.getHitPoints() == building.getMaxHitPoints() || !gameData.getTargetsAround(player,
                 position, 2).isEmpty() || cost > player.getResources().get("stone")) {
@@ -459,7 +459,7 @@ public class GameOperator {
     public void setUnitMode(Map<String, Object> req) throws OperatorException {
         List<Unit> units = getReqAs(req, "units", List.class);
         String mode = getReqString(req, "mode");
-        checkExpression(List.of("standing", "defensive", "offensive").contains(mode),
+        checkTrue(List.of("standing", "defensive", "offensive").contains(mode),
                 Type.INVALID_GAME_PARAMETERS);
         units.forEach(unit -> unit.setMode(mode));
     }
@@ -475,7 +475,7 @@ public class GameOperator {
         Building building = checkNotNull(tile.getBuilding(), Type.INVALID_POSITION);
         Map<String, Integer> cost = checkNotNull(building.getDropUnit().get(unitType),
                 Type.UNIT_NOT_FOUND);
-        checkExpression(geqIntMap(player.getResources(), cost), Type.NOT_ENOUGH_RESOURCE);
+        checkTrue(geqIntMap(player.getResources(), cost), Type.NOT_ENOUGH_RESOURCE);
         subtractIntMap(player.getResources(), cost);
         Unit unit = unitTemplate.getBuilder()
                 .owner(player)
@@ -491,12 +491,12 @@ public class GameOperator {
         String unitType = getReqString(req, "type");
         UnitTemplate unitTemplate = checkNotNull(templateDatabase.getUnitTemplates().get(unitType),
                 Type.UNIT_NOT_FOUND);
-        checkExpression(unitTemplate.getEngineers() > 0, Type.UNIT_NOT_FOUND);
+        checkTrue(unitTemplate.getEngineers() > 0, Type.UNIT_NOT_FOUND);
         List<Unit> engineers = gameData.getUnitsOnPosition(position)
                 .filter(u -> u.getType().equals("Engineer"))
                 .limit(unitTemplate.getEngineers())
                 .toList();
-        checkExpression(engineers.size() == unitTemplate.getEngineers(), Type.NOT_ENOUGH_ENGINEER);
+        checkTrue(engineers.size() == unitTemplate.getEngineers(), Type.NOT_ENOUGH_ENGINEER);
         engineers.forEach(u -> u.die(gameData));
         Unit unit = unitTemplate.getBuilder()
                 .owner(player)

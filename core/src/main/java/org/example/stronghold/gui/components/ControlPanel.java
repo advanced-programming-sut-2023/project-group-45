@@ -3,6 +3,7 @@ package org.example.stronghold.gui.components;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -10,14 +11,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.function.Supplier;
 import lombok.Data;
+import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.panels.BuildPanel;
 import org.example.stronghold.gui.sections.TestMapScreen;
 
 @Data
 public class ControlPanel implements Disposable {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     final StrongholdGame game;
     final TestMapScreen screen;
     final int height;
@@ -30,6 +34,16 @@ public class ControlPanel implements Disposable {
 
     public void setPanel(Panel panel) {
         mainPane.setActor(panel);
+    }
+
+    public void switchPanelOnChange(Actor actor, Supplier<Panel> supplier) {
+        actor.addListener(new SimpleChangeListener(() -> setPanel(supplier.get())));
+    }
+
+    private void addPanelButton(String text, Supplier<Panel> supplier) {
+        TextButton button = new TextButton(text, game.skin);
+        switchPanelOnChange(button, supplier);
+        selectTable.add(button);
     }
 
     public void create() {
@@ -54,9 +68,14 @@ public class ControlPanel implements Disposable {
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
         stage.addActor(popup);
 
-        selectTable.add(new TextButton("Buildings", game.skin));
-        selectTable.add(new TextButton("Popularity", game.skin));
-        selectTable.add(new TextButton("Tax", game.skin));
+        addPanelButton("Report", () -> null);
+        addPanelButton("Build", () -> new BuildPanel(this));
+        addPanelButton("Food", () -> null);
+        addPanelButton("Popularity", () -> null);
+        selectTable.row();
+        addPanelButton("Tax", () -> null);
+        addPanelButton("Fear", () -> null);
+        addPanelButton("Trade", () -> null);
 
         stage.setDebugAll(DEBUG);
     }

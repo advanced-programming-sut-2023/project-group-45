@@ -41,10 +41,11 @@ public class BuildingPanel extends Panel {
     }
 
     private String getTitle() {
-        return String.format("%s's %s (%d HP) (%d Labor)",
+        return String.format("%s's %s (%d HP) (%d/%d Labor)",
             building.getOwner().getUser().getUsername(), building.getType(),
             building.getHitPoints(),
-            building.getLabors()
+            building.getLabors(),
+            building.getMaxLabors()
         );
     }
 

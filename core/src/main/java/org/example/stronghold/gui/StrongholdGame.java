@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.example.stronghold.gui.sections.TestMapScreen;
+import org.example.stronghold.gui.sections.MapScreen;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.User;
@@ -47,7 +47,7 @@ public class StrongholdGame extends Game {
         UnitTemplate lordTemplate = templateDatabase.getUnitTemplates().get("Lord");
         BuildingTemplate buildingTemplate = templateDatabase.getBuildingTemplates().get("Base");
         GameData gameData = new GameData(users, gameMapTemplate, lordTemplate, buildingTemplate);
-        setScreen(new TestMapScreen(this, gameData));
+        setScreen(new MapScreen(this, gameData));
     }
 
     @Override

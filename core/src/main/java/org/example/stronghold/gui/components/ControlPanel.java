@@ -16,14 +16,14 @@ import lombok.Data;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.panels.BuildPanel;
-import org.example.stronghold.gui.sections.TestMapScreen;
+import org.example.stronghold.gui.sections.MapScreen;
 
 @Data
 public class ControlPanel implements Disposable {
 
     private static final boolean DEBUG = true;
     final StrongholdGame game;
-    final TestMapScreen screen;
+    final MapScreen screen;
     final int height;
     Viewport viewport;
     Stage stage;

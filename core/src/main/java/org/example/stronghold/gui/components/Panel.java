@@ -2,12 +2,12 @@ package org.example.stronghold.gui.components;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import org.example.stronghold.gui.StrongholdGame;
-import org.example.stronghold.gui.sections.TestMapScreen;
+import org.example.stronghold.gui.sections.MapScreen;
 
 public abstract class Panel extends Table {
 
     protected StrongholdGame game;
-    protected TestMapScreen screen;
+    protected MapScreen screen;
     protected ControlPanel controlPanel;
 
     public Panel(ControlPanel controlPanel) {

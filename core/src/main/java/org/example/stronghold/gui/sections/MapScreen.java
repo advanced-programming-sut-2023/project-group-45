@@ -19,7 +19,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -35,7 +34,7 @@ import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Tile;
 import org.example.stronghold.model.template.BuildingTemplate;
 
-public class TestMapScreen implements Screen {
+public class MapScreen implements Screen {
 
     final StrongholdGame game;
     TiledMap tiledMap;
@@ -53,7 +52,7 @@ public class TestMapScreen implements Screen {
     ShapeRenderer shapeRenderer;
     public String toBeBuiltType;
 
-    public TestMapScreen(StrongholdGame game, GameData gameData) {
+    public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
         this.gameMap = gameData.getMap();
@@ -156,8 +155,9 @@ public class TestMapScreen implements Screen {
             IntPair cell = cellAtVec3(worldVec);
             selectCol = cell.x();
             selectRow = cell.y();
-            if (buildToBeBuilt())
+            if (buildToBeBuilt()) {
                 return true;
+            }
             setPanelOnSelect();
             return true;
         }
@@ -213,8 +213,9 @@ public class TestMapScreen implements Screen {
     }
 
     private boolean buildToBeBuilt() {
-        if (toBeBuiltType == null)
+        if (toBeBuiltType == null) {
             return false;
+        }
         // todo: send to operator
         toBeBuiltType = null;
         selectRow = -1;

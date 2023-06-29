@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import java.util.HashMap;
+import org.example.stronghold.context.ClipboardUtils;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
@@ -17,6 +18,7 @@ public class BuildingPanel extends Panel {
     final int column;
     final int row;
     final Building building;
+    Table control, menu;
 
     public BuildingPanel(ControlPanel controlPanel, int column, int row, Building building) {
         super(controlPanel);
@@ -27,11 +29,14 @@ public class BuildingPanel extends Panel {
     }
 
     private void create() {
-        align(Align.left);
-        add(getTitle()).row();
+        control = new Table(game.skin);
+        menu = new Table(game.skin);
+        menu.align(Align.left);
+        add(control).growY();
+        add(menu).grow();
+        control.add(getTitle()).row();
         if (building.getOwner().equals(screen.myself)) {
             createControlButtons();
-            row();
         }
     }
 
@@ -44,16 +49,25 @@ public class BuildingPanel extends Panel {
     }
 
     private void createControlButtons() {
-        TextButton destroy, repair, undo;
+        Table row1 = new Table(game.skin);
+        Table row2 = new Table(game.skin);
+        TextButton destroy, repair, undo, copy;
         destroy = new TextButton("Destroy", game.skin);
         repair = new TextButton("Repair", game.skin);
         undo = new TextButton("Undo", game.skin);
-        Table table = new Table(game.skin);
-        table.add(destroy, repair, undo);
-        add(table).align(Align.left);
+        copy = new TextButton("Copy", game.skin);
+        row1.add(destroy);
+        row1.add(repair);
+        row2.add(undo);
+        row2.add(copy);
+        control.add(row1).row();
+        control.add(row2).row();
 
         destroy.addListener(new SimpleChangeListener(this::destroyBuilding));
         repair.addListener(new SimpleChangeListener(this::repairBuilding));
+        // hope they don't see this
+        undo.addListener(new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
+        copy.addListener(new SimpleChangeListener(this::copyBuilding));
     }
 
     private void destroyBuilding() {
@@ -82,5 +96,10 @@ public class BuildingPanel extends Panel {
         } catch (OperatorException e) {
             controlPanel.popup.error(e.getMessage());
         }
+    }
+
+    private void copyBuilding() {
+        ClipboardUtils.copyToClipboard(building.getType());
+        controlPanel.popup.success("Copied");
     }
 }

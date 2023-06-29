@@ -3,7 +3,9 @@ package org.example.stronghold.gui;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import org.example.stronghold.gui.sections.LoginScreen;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import org.example.stronghold.gui.sections.TestMapScreen;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.GameData;
@@ -14,16 +16,13 @@ import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.model.template.UnitTemplate;
 import org.example.stronghold.operator.Operators;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 public class StrongholdGame extends Game {
+
     public Skin skin, craftacularSkin;
     private File databaseFile;
     private File templateDatabaseRoot;
     private Database database;
-    private TemplateDatabase templateDatabase;
+    public TemplateDatabase templateDatabase;
     public final AssetLoader assetLoader = new AssetLoader();
 
     @Override

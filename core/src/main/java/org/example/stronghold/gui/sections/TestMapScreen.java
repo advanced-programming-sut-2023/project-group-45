@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -32,6 +33,7 @@ import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
 import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Tile;
+import org.example.stronghold.model.template.BuildingTemplate;
 
 public class TestMapScreen implements Screen {
 
@@ -49,6 +51,7 @@ public class TestMapScreen implements Screen {
     int selectCol = -1, selectRow = -1;
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
+    public String toBeBuiltType;
 
     public TestMapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -153,6 +156,8 @@ public class TestMapScreen implements Screen {
             IntPair cell = cellAtVec3(worldVec);
             selectCol = cell.x();
             selectRow = cell.y();
+            if (buildToBeBuilt())
+                return true;
             setPanelOnSelect();
             return true;
         }
@@ -207,6 +212,17 @@ public class TestMapScreen implements Screen {
         controlPanel.resize(width, height);
     }
 
+    private boolean buildToBeBuilt() {
+        if (toBeBuiltType == null)
+            return false;
+        // todo: send to operator
+        toBeBuiltType = null;
+        selectRow = -1;
+        selectCol = -1;
+        controlPanel.popup.error("not implemented");
+        return true;
+    }
+
     private void setPanelOnSelect() {
         if (notInsideMap(selectCol, selectRow)) {
             controlPanel.setPanel(null);
@@ -257,11 +273,16 @@ public class TestMapScreen implements Screen {
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
+                if (tile.getBuilding() != null) {
+                    drawBuildingAt(batch, tile.getBuilding().getGuiSetting(), col, row);
+                    continue;
+                }
+                if (toBeBuiltType != null && col == hoverCol && row == hoverRow) {
+                    drawToBeBuilt(batch, col, row);
+                    continue;
+                }
                 if (tile.getType().startsWith("tree")) {
                     drawTreeAt(batch, game.assetLoader.getTexture("plants/oak.png"), col, row);
-                }
-                if (tile.getBuilding() != null) {
-                    drawBuildingAt(batch, tile.getBuilding(), col, row);
                 }
             }
         }
@@ -299,8 +320,7 @@ public class TestMapScreen implements Screen {
         shapeRenderer.end();
     }
 
-    private void drawBuildingAt(Batch batch, Building building, int column, int row) {
-        GuiSetting guiSetting = building.getGuiSetting();
+    private void drawBuildingAt(Batch batch, GuiSetting guiSetting, int column, int row) {
         if (guiSetting.getAsset() == null) {
             return;
         }
@@ -313,6 +333,11 @@ public class TestMapScreen implements Screen {
             width,
             texture.getHeight() * width / texture.getWidth()
         );
+    }
+
+    private void drawToBeBuilt(Batch batch, int column, int row) {
+        BuildingTemplate building = game.templateDatabase.getBuildingTemplates().get(toBeBuiltType);
+        drawBuildingAt(batch, building.getGuiSetting(), column, row);
     }
 
     private void drawTreeAt(Batch batch, Texture texture, int column, int row) {

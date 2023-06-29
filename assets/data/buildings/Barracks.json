@@ -45,5 +45,11 @@
       "armour": 1,
       "horse": 1
     }
+  },
+  "guiSetting": {
+    "asset": "buildings/Barracks.png",
+    "prefWidth": 100,
+    "offsetX": 10,
+    "offsetY": 10
   }
 }

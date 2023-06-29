@@ -68,6 +68,7 @@ public class LoginScreen extends FormScreen {
                 put("stay-logged-in", stayLoggedIn.isChecked());
             }});
             log("Logged in as %s", user);
+            game.setScreen(new ProfileScreen(game, user));
             // todo: switch to profile screen
         } catch (OperatorException e) {
             popup.pop(e.getMessage());

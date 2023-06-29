@@ -121,6 +121,7 @@ public class RegisterScreen extends FormScreen {
                 put("nickname", nicknameField.getText());
             }});
             log("registered as %s", user);
+            game.setScreen(new LoginScreen(game));
         } catch (OperatorException e) {
             popup.pop(e.getMessage());
         }

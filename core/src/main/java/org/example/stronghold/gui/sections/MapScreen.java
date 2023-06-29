@@ -2,12 +2,17 @@ package org.example.stronghold.gui.sections;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
@@ -15,29 +20,39 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Random;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.components.ControlPanel;
+import org.example.stronghold.gui.panels.TilePanel;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
 import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Tile;
+import org.example.stronghold.model.template.BuildingTemplate;
 
-public class TestMapScreen implements Screen {
+public class MapScreen implements Screen {
 
     final StrongholdGame game;
     TiledMap tiledMap;
     IsometricTiledMapRenderer renderer;
     OrthographicCamera camera;
+    Viewport mapViewport;
     static final int tilePerUnit = 4;
     GameData gameData;
     GameMap gameMap;
     final Random tileRandomizer = new Random(42);
     float hoverX, hoverY;
     int hoverCol = -1, hoverRow = -1;
+    int selectCol = -1, selectRow = -1;
+    ControlPanel controlPanel;
+    ShapeRenderer shapeRenderer;
+    public String toBeBuiltType;
 
-    public TestMapScreen(StrongholdGame game, GameData gameData) {
+    public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
         this.gameMap = gameData.getMap();
@@ -80,12 +95,7 @@ public class TestMapScreen implements Screen {
         return 149; // total white as unknown tile
     }
 
-    @Override
-    public void show() {
-        camera = new OrthographicCamera();
-        camera.zoom = 1;
-        tiledMap = game.assetLoader.getTiledMap("tiled-maps/80x80.tmx");
-
+    private void setupTiles() {
         for (int col = 0; col < gameMap.getWidth(); col++) {
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
@@ -97,34 +107,88 @@ public class TestMapScreen implements Screen {
                 }
             }
         }
+    }
+
+    // this class can access private members of TestMapScreen, it isn't a static class
+    class MapInputProcessor extends InputAdapter {
+
+        private boolean notInMap(int screenY) {
+            return screenY >= Gdx.graphics.getHeight() - controlPanel.getHeight();
+        }
+
+        private boolean notInMap() {
+            return notInMap(Gdx.input.getY());
+        }
+
+        @Override
+        public boolean scrolled(float amountX, float amountY) {
+            if (notInMap()) {
+                return false;
+            }
+            camera.zoom += amountY * 0.1f;
+            camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
+            return true;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            hoverCol = -1;
+            hoverRow = -1;
+            if (notInMap()) {
+                return false;
+            }
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            hoverX = worldVec.x;
+            hoverY = worldVec.y;
+            IntPair cell = cellAtVec3(worldVec);
+            hoverCol = cell.x();
+            hoverRow = cell.y();
+            return true;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            if (button != Buttons.LEFT || notInMap(screenY)) {
+                return false;
+            }
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            IntPair cell = cellAtVec3(worldVec);
+            selectCol = cell.x();
+            selectRow = cell.y();
+            if (buildToBeBuilt()) {
+                return true;
+            }
+            setPanelOnSelect();
+            return true;
+        }
+    }
+
+    @Override
+    public void show() {
+        controlPanel = new ControlPanel(game, this, 140);
+        controlPanel.create();
+
+        camera = new OrthographicCamera();
+        mapViewport = new ScreenViewport(camera);
+        camera.zoom = 1;
+        tiledMap = game.assetLoader.getTiledMap("tiled-maps/80x80.tmx");
+
+        setupTiles();
 
         renderer = new IsometricTiledMapRenderer(tiledMap);
         renderer.setView(camera);
 
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            @Override
-            public boolean scrolled(float amountX, float amountY) {
-                camera.zoom += amountY * 0.1f;
-                camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
-                return false;
-            }
+        shapeRenderer = new ShapeRenderer();
 
-            @Override
-            public boolean mouseMoved(int screenX, int screenY) {
-                Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
-                hoverX = worldCoords.x;
-                hoverY = worldCoords.y;
-                IntPair cell = cellAtVec3(worldCoords);
-                hoverCol = cell.x();
-                hoverRow = cell.y();
-                return false;
-            }
-        });
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new MapInputProcessor());
+        multiplexer.addProcessor(controlPanel.getStage());
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
             float scale = camera.zoom * 2;
             camera.translate(-Gdx.input.getDeltaX() * scale, Gdx.input.getDeltaY() * scale);
         }
@@ -132,11 +196,41 @@ public class TestMapScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        mapViewport.apply();
         camera.update();
         renderer.setView(camera);
         renderer.render();
-
         drawOverMapLayer();
+        controlPanel.render();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        mapViewport.update(width, height);
+        camera.setToOrtho(false, width, height);
+        renderer.setView(camera);
+        controlPanel.resize(width, height);
+    }
+
+    private boolean buildToBeBuilt() {
+        if (toBeBuiltType == null) {
+            return false;
+        }
+        // todo: send to operator
+        toBeBuiltType = null;
+        selectRow = -1;
+        selectCol = -1;
+        controlPanel.popup.error("not implemented");
+        return true;
+    }
+
+    private void setPanelOnSelect() {
+        if (notInsideMap(selectCol, selectRow)) {
+            controlPanel.setPanel(null);
+            return;
+        }
+        Tile tile = gameMap.getAt(selectCol, selectRow);
+        controlPanel.setPanel(new TilePanel(controlPanel, selectCol, selectRow, tile));
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
@@ -173,25 +267,34 @@ public class TestMapScreen implements Screen {
         drawEntities(batch);
         drawHoverDetail(batch);
         batch.end();
+        drawSelectedCell();
     }
 
     private void drawEntities(Batch batch) {
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
+                if (tile.getBuilding() != null) {
+                    drawBuildingAt(batch, tile.getBuilding().getGuiSetting(), col, row);
+                    continue;
+                }
+                if (toBeBuiltType != null && col == hoverCol && row == hoverRow) {
+                    drawToBeBuilt(batch, col, row);
+                    continue;
+                }
                 if (tile.getType().startsWith("tree")) {
                     drawTreeAt(batch, game.assetLoader.getTexture("plants/oak.png"), col, row);
-                }
-                if (tile.getBuilding() != null) {
-                    drawBuildingAt(batch, tile.getBuilding(), col, row);
                 }
             }
         }
     }
 
+    public boolean notInsideMap(int col, int row) {
+        return col < 0 || col >= gameMap.getWidth() || row < 0 || row >= gameMap.getHeight();
+    }
+
     private void drawHoverDetail(Batch batch) {
-        if (hoverCol < 0 || hoverCol >= gameMap.getWidth() || hoverRow < 0
-            || hoverRow >= gameMap.getHeight()) {
+        if (notInsideMap(hoverCol, hoverRow)) {
             return; // out of map
         }
         Tile tile = gameMap.getAt(hoverCol, hoverRow);
@@ -205,8 +308,20 @@ public class TestMapScreen implements Screen {
         label.draw(batch, 1);
     }
 
-    private void drawBuildingAt(Batch batch, Building building, int column, int row) {
-        GuiSetting guiSetting = building.getGuiSetting();
+    private void drawSelectedCell() {
+        if (notInsideMap(selectCol, selectRow)) {
+            return;
+        }
+        Vector3 cellVec = vec3AtCell(selectCol, selectRow)
+            .add(15f * tilePerUnit, 8f * tilePerUnit, 0);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.circle(cellVec.x, cellVec.y, 5);
+        shapeRenderer.end();
+    }
+
+    private void drawBuildingAt(Batch batch, GuiSetting guiSetting, int column, int row) {
         if (guiSetting.getAsset() == null) {
             return;
         }
@@ -219,6 +334,11 @@ public class TestMapScreen implements Screen {
             width,
             texture.getHeight() * width / texture.getWidth()
         );
+    }
+
+    private void drawToBeBuilt(Batch batch, int column, int row) {
+        BuildingTemplate building = game.templateDatabase.getBuildingTemplates().get(toBeBuiltType);
+        drawBuildingAt(batch, building.getGuiSetting(), column, row);
     }
 
     private void drawTreeAt(Batch batch, Texture texture, int column, int row) {
@@ -239,12 +359,6 @@ public class TestMapScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
-        renderer.setView(camera);
-    }
-
-    @Override
     public void pause() {
 
     }
@@ -262,5 +376,6 @@ public class TestMapScreen implements Screen {
     @Override
     public void dispose() {
         renderer.dispose();
+        controlPanel.dispose();
     }
 }

@@ -12,5 +12,11 @@
   "religionFactor": 0,
   "happinessFactor": 0,
   "housingSpace": 0,
-  "dropUnit": {}
+  "dropUnit": {},
+  "guiSetting": {
+    "asset": "buildings/Quarry.png",
+    "prefWidth": 100,
+    "offsetX": 10,
+    "offsetY": 10
+  }
 }

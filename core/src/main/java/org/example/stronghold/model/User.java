@@ -23,4 +23,5 @@ public class User implements Serializable {
     private String slogan;
     private String securityQuestion;
     private String securityAnswer;
+    private int score;
 }

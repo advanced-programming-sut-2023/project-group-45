@@ -80,7 +80,7 @@ public class MarketPanel extends Panel {
     private void buy() {
         try {
             Operators.economy.buyMarketItem(buildMap());
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             popupWindow.pop(e.getMessage());
         }
     }
@@ -88,7 +88,7 @@ public class MarketPanel extends Panel {
     private void sell() {
         try {
             Operators.economy.sellMarketItem(buildMap());
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             popupWindow.pop(e.getMessage());
         }
     }

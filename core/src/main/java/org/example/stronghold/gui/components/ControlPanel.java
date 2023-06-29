@@ -17,6 +17,7 @@ import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.panels.BuildPanel;
 import org.example.stronghold.gui.panels.MarketPanel;
+import org.example.stronghold.gui.panels.TradePanel;
 import org.example.stronghold.gui.sections.MapScreen;
 import org.example.stronghold.model.GameData;
 
@@ -78,7 +79,7 @@ public class ControlPanel implements Disposable {
         addPanelButton("Market", () -> new MarketPanel(this));
         addPanelButton("Tax", () -> null);
         addPanelButton("Fear", () -> null);
-        addPanelButton("Trade", () -> null);
+        addPanelButton("Trade", () -> new TradePanel(this));
 
         stage.setDebugAll(DEBUG);
     }

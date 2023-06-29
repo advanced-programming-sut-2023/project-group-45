@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.HashMap;
 import java.util.Random;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.StrongholdGame;
@@ -31,8 +32,11 @@ import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
 import org.example.stronghold.model.GuiSetting;
+import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Tile;
 import org.example.stronghold.model.template.BuildingTemplate;
+import org.example.stronghold.operator.OperatorException;
+import org.example.stronghold.operator.Operators;
 
 public class MapScreen implements Screen {
 
@@ -51,11 +55,14 @@ public class MapScreen implements Screen {
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
     public String toBeBuiltType;
+    public Player myself;
 
     public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
         this.gameMap = gameData.getMap();
+        // todo: get user in constructor
+        this.myself = gameData.getPlayers().get(0);
     }
 
     private void setTileAt(int column, int row, int id) {
@@ -216,12 +223,22 @@ public class MapScreen implements Screen {
         if (toBeBuiltType == null) {
             return false;
         }
-        // todo: send to operator
-        toBeBuiltType = null;
-        selectRow = -1;
-        selectCol = -1;
-        controlPanel.popup.error("not implemented");
-        return true;
+        try {
+            Operators.game.dropBuilding(new HashMap<>() {{
+                put("game", gameData);
+                put("player", myself);
+                put("building", toBeBuiltType);
+                put("position", new IntPair(selectCol, selectRow));
+            }});
+            toBeBuiltType = null;
+            return false; // update panel
+        } catch (OperatorException e) {
+            controlPanel.popup.error(e.getMessage());
+            return true; // keep trying
+        } finally {
+            selectRow = -1;
+            selectCol = -1;
+        }
     }
 
     private void setPanelOnSelect() {

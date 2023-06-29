@@ -3,7 +3,7 @@ package org.example.stronghold.operator.sections;
 import static org.example.stronghold.context.MapUtils.getReqAs;
 import static org.example.stronghold.context.MapUtils.getReqString;
 import static org.example.stronghold.operator.OperatorPreconditions.checkEmailFormat;
-import static org.example.stronghold.operator.OperatorPreconditions.checkExpression;
+import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkIsNull;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
@@ -24,7 +24,7 @@ public final class ProfileOperator {
         User user = getReqAs(req, "user", User.class);
         HashedString oldPassword = getReqAs(req, "old-password", HashedString.class);
         HashedString newPassword = getReqAs(req, "new-password", HashedString.class);
-        checkExpression(user.getPassword().equals(oldPassword), Type.INCORRECT_PASSWORD);
+        checkTrue(user.getPassword().equals(oldPassword), Type.INCORRECT_PASSWORD);
         user.setPassword(newPassword);
     }
 

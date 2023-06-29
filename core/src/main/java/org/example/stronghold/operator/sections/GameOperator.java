@@ -372,6 +372,17 @@ public class GameOperator {
         gameData.getBuildings().add(building);
     }
 
+    public void destroyBuilding(Map<String, Object> req) throws OperatorException {
+        GameData gameData = getReqAs(req, "game", GameData.class);
+        Building building = getReqAs(req, "building", Building.class);
+        Player player = getReqAs(req, "player", Player.class);
+        checkTrue(building.getOwner().equals(player), Type.INVALID_GAME_PARAMETERS);
+        checkTrue(!building.getType().equals("Base"), Type.BUILDING_NOT_FOUND);
+        gameData.getMap().getAt(building.getPosition()).setBuilding(null);
+        gameData.getBuildings().remove(building);
+        building.destroy(gameData);
+    }
+
     public void setFoodRate(Map<String, Object> req) throws OperatorException {
         Player player = getReqAs(req, "player", Player.class);
         int foodRate = getReqAs(req, "rate", Integer.class);

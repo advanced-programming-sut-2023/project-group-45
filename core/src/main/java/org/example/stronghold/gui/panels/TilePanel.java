@@ -1,6 +1,5 @@
 package org.example.stronghold.gui.panels;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
@@ -21,7 +20,7 @@ public class TilePanel extends Panel {
     }
 
     private void addLabel(String text) {
-        add(new Label(text, game.skin)).align(Align.left).row();
+        add(text).align(Align.left).row();
     }
 
     private String getBuildingText() {

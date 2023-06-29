@@ -1,6 +1,7 @@
 package org.example.stronghold.model.template;
 
 import lombok.Data;
+import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Unit;
 
 /*
@@ -16,6 +17,7 @@ public class UnitTemplate {
     private boolean canClimb = false, canDig = false;
     private int vision = 5;
     private int engineers = 0;
+    private GuiSetting guiSetting = new GuiSetting();
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()
@@ -26,6 +28,7 @@ public class UnitTemplate {
                 .damage(damage)
                 .canClimb(canClimb)
                 .canDig(canDig)
-                .vision(vision);
+                .vision(vision)
+                .guiSetting(guiSetting);
     }
 }

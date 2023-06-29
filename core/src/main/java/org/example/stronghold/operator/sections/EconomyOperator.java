@@ -3,7 +3,7 @@ package org.example.stronghold.operator.sections;
 import static org.example.stronghold.context.MapUtils.addIntMap;
 import static org.example.stronghold.context.MapUtils.getReqAs;
 import static org.example.stronghold.context.MapUtils.getReqString;
-import static org.example.stronghold.operator.OperatorPreconditions.checkExpression;
+import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 
 import java.util.Map;
 import lombok.Data;
@@ -27,8 +27,8 @@ public final class EconomyOperator {
         int amount = getReqAs(req, "amount", Integer.class);
         int price = getReqAs(req, "price", Integer.class);
         String message = getReqString(req, "message");
-        checkExpression(amount > 0 && price >= 0, Type.INVALID_GAME_PARAMETERS);
-        checkExpression(player.getResources().get(item) >= amount, Type.NOT_ENOUGH_RESOURCE);
+        checkTrue(amount > 0 && price >= 0, Type.INVALID_GAME_PARAMETERS);
+        checkTrue(player.getResources().get(item) >= amount, Type.NOT_ENOUGH_RESOURCE);
         TradeRequest tradeRequest = new TradeRequest(player, target, item, amount, price, message);
         addIntMap(player.getResources(), item, -amount);
         player.getActiveTradeRequests().add(tradeRequest);
@@ -39,7 +39,7 @@ public final class EconomyOperator {
         TradeRequest tradeRequest = getReqAs(req, "request", TradeRequest.class);
         Player player = tradeRequest.getReceiver();
         Player sender = tradeRequest.getSender();
-        checkExpression(player.getGold() >= tradeRequest.getPrice(), Type.NOT_ENOUGH_GOLD);
+        checkTrue(player.getGold() >= tradeRequest.getPrice(), Type.NOT_ENOUGH_GOLD);
         addIntMap(player.getResources(), tradeRequest.getItem(), tradeRequest.getAmount());
         player.setGold(player.getGold() - tradeRequest.getPrice());
         sender.setGold(tradeRequest.getSender().getGold() + tradeRequest.getPrice());
@@ -64,7 +64,7 @@ public final class EconomyOperator {
         Player player = getReqAs(req, "player", Player.class);
         GameData gameData = getReqAs(req, "game", GameData.class);
         Market market = gameData.getMarket();
-        checkExpression(player.getGold() < amount * market.getPrices().get(item).x(),
+        checkTrue(player.getGold() < amount * market.getPrices().get(item).x(),
                 Type.NOT_ENOUGH_GOLD);
         addIntMap(player.getResources(), item, amount);
         player.setGold(player.getGold() - amount * market.getPrices().get(item).x());
@@ -76,7 +76,7 @@ public final class EconomyOperator {
         Player player = getReqAs(req, "player", Player.class);
         GameData gameData = getReqAs(req, "game", GameData.class);
         Market market = gameData.getMarket();
-        checkExpression(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
+        checkTrue(player.getResources().get(item) < amount, Type.NOT_ENOUGH_RESOURCE);
         addIntMap(player.getResources(), item, -amount);
         player.setGold(player.getGold() + amount * market.getPrices().get(item).y());
     }

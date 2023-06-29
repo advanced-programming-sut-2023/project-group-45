@@ -7,5 +7,8 @@
   "canClimb": true,
   "canDig": false,
   "vision": 5,
-  "engineers": 0
+  "engineers": 0,
+  "guiSetting": {
+    "asset": "units/Lord.png"
+  }
 }

@@ -1,4 +1,4 @@
-package org.example.stronghold.gui;
+package org.example.stronghold.gui.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.example.stronghold.gui.StrongholdGame;
 
 public abstract class FormScreen implements Screen {
     final protected StrongholdGame game;
@@ -61,7 +62,7 @@ public abstract class FormScreen implements Screen {
     @Override
     public void render(float delta) {
         drawBackground();
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.act();
         stage.draw();
     }
 

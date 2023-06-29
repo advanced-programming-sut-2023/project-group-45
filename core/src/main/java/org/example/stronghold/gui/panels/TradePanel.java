@@ -104,9 +104,9 @@ public class TradePanel extends Panel {
                     "price", Integer.parseInt(priceField.getText())
                 );
                 Operators.economy.requestTrade(req);
-                popupWindow.pop("Success");
+                popupWindow.success("Success");
             } catch (Exception e) {
-                popupWindow.pop(e.getMessage());
+                popupWindow.error(e.getMessage());
             }
         }));
     }
@@ -131,17 +131,17 @@ public class TradePanel extends Panel {
             accept.addListener(new SimpleChangeListener(() -> {
                 try {
                     Operators.economy.acceptTrade(ImmutableMap.of("request", tradeRequest));
-                    popupWindow.pop("Success");
+                    popupWindow.success("Success");
                 } catch (OperatorException e) {
-                    popupWindow.pop(e.getMessage());
+                    popupWindow.error(e.getMessage());
                 }
             }));
             reject.addListener(new SimpleChangeListener(() -> {
                 try {
                     Operators.economy.deleteTrade(ImmutableMap.of("request", tradeRequest));
-                    popupWindow.pop("Success");
+                    popupWindow.success("Success");
                 } catch (OperatorException e) {
-                    popupWindow.pop(e.getMessage());
+                    popupWindow.error(e.getMessage());
                 }
             }));
         }
@@ -164,9 +164,9 @@ public class TradePanel extends Panel {
             cancel.addListener(new SimpleChangeListener(() -> {
                 try {
                     Operators.economy.deleteTrade(ImmutableMap.of("request", tradeRequest));
-                    popupWindow.pop("Success");
+                    popupWindow.success("Success");
                 } catch (OperatorException e) {
-                    popupWindow.pop(e.getMessage());
+                    popupWindow.error(e.getMessage());
                 }
             }));
         }

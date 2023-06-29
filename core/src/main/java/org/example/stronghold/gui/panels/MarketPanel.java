@@ -80,16 +80,18 @@ public class MarketPanel extends Panel {
     private void buy() {
         try {
             Operators.economy.buyMarketItem(buildMap());
+            popupWindow.success("Success");
         } catch (Exception e) {
-            popupWindow.pop(e.getMessage());
+            popupWindow.error(e.getMessage());
         }
     }
 
     private void sell() {
         try {
             Operators.economy.sellMarketItem(buildMap());
+            popupWindow.success("Success");
         } catch (Exception e) {
-            popupWindow.pop(e.getMessage());
+            popupWindow.error(e.getMessage());
         }
     }
 }

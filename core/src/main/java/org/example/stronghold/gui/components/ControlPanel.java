@@ -3,7 +3,6 @@ package org.example.stronghold.gui.components;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,22 +12,24 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import lombok.Data;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.sections.TestMapScreen;
 
 @Data
 public class ControlPanel implements Disposable {
 
     private static final boolean DEBUG = false;
-    final int height;
     final StrongholdGame game;
+    final TestMapScreen screen;
+    final int height;
     Viewport viewport;
     Stage stage;
     Table layoutTable, selectTable;
-    Container<Actor> mainPane;
+    Container<Panel> mainPane;
     Texture dirt;
     public PopupWindow popup;
 
-    public void setPanel(Actor actor) {
-        mainPane.setActor(actor);
+    public void setPanel(Panel panel) {
+        mainPane.setActor(panel);
     }
 
     public void create() {

@@ -24,8 +24,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Random;
 import org.example.stronghold.context.IntPair;
-import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.panels.TilePanel;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
@@ -146,29 +146,21 @@ public class TestMapScreen implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            if (button != Buttons.LEFT) {
+            if (button != Buttons.LEFT || notInMap(screenY)) {
                 return false;
             }
-            try {
-                selectCol = -1;
-                selectRow = -1;
-                if (notInMap()) {
-                    return false;
-                }
-                Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
-                IntPair cell = cellAtVec3(worldVec);
-                selectCol = cell.x();
-                selectRow = cell.y();
-                return true;
-            } finally {
-                setPanelOnSelect();
-            }
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            IntPair cell = cellAtVec3(worldVec);
+            selectCol = cell.x();
+            selectRow = cell.y();
+            setPanelOnSelect();
+            return true;
         }
     }
 
     @Override
     public void show() {
-        controlPanel = new ControlPanel(120, game);
+        controlPanel = new ControlPanel(game, this, 140);
         controlPanel.create();
 
         camera = new OrthographicCamera();
@@ -221,7 +213,7 @@ public class TestMapScreen implements Screen {
             return;
         }
         Tile tile = gameMap.getAt(selectCol, selectRow);
-        controlPanel.setPanel(new TilePanel(game.skin, selectCol, selectRow, tile));
+        controlPanel.setPanel(new TilePanel(controlPanel, selectCol, selectRow, tile));
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {

@@ -16,8 +16,10 @@ import org.example.stronghold.gui.components.Panel;
 public class BuildPanel extends Panel {
 
     public static final Map<String, List<String>> CATEGORIES = ImmutableMap.of(
-        "Farm", List.of("Quarry", "Barracks"),
-        "Military", List.of("Base")
+        "Farm", List.of("Quarry", "Wheat Farmer", "Bakery"),
+        "Military", List.of("Barracks"),
+        "Housing", List.of("Hovel"),
+        "Religious", List.of("Church")
     );
 
     Table categoryTable, buildingsTable;
@@ -54,7 +56,7 @@ public class BuildPanel extends Panel {
             btn.row();
             btn.add(building);
             btn.addListener(new SimpleChangeListener(() -> screen.toBeBuiltType = building));
-            buildingsTable.add(btn).height(100).width(70);
+            buildingsTable.add(btn).height(100).width(70).padLeft(20);
         }
     }
 }

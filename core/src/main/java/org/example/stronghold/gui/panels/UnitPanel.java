@@ -89,7 +89,8 @@ public class UnitPanel extends Panel {
                 stringBuilder.append(" - ");
             }
             first = false;
-            stringBuilder.append(String.format("%s %d",
+            stringBuilder.append(String.format("%s %s %d",
+                unit.getMode(),
                 unit.getType(),
                 unit.getHitPoints()
             ));
@@ -104,6 +105,7 @@ public class UnitPanel extends Panel {
                 put("mode", mode);
             }});
             controlPanel.popup.success("Changed mode to " + mode);
+            updateInfo();
         } catch (OperatorException e) {
             controlPanel.popup.error(e.getMessage());
         }

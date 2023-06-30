@@ -23,11 +23,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import lombok.Getter;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.ControlPanel;
+import org.example.stronghold.gui.panels.BuildingPanel;
 import org.example.stronghold.gui.panels.TilePanel;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
@@ -35,6 +37,7 @@ import org.example.stronghold.model.GameMap;
 import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Tile;
+import org.example.stronghold.model.Unit;
 import org.example.stronghold.model.template.BuildingTemplate;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
@@ -48,8 +51,9 @@ public class MapScreen implements Screen {
     Viewport mapViewport;
     static final int tilePerUnit = 4;
     @Getter
-    GameData gameData;
-    GameMap gameMap;
+    public GameData gameData;
+    @Getter
+    public GameMap gameMap;
     final Random tileRandomizer = new Random(42);
     float hoverX, hoverY;
     int hoverCol = -1, hoverRow = -1;
@@ -250,6 +254,11 @@ public class MapScreen implements Screen {
             return;
         }
         Tile tile = gameMap.getAt(selectCol, selectRow);
+        if (tile.getBuilding() != null) {
+            controlPanel.setPanel(
+                new BuildingPanel(controlPanel, selectCol, selectRow, tile.getBuilding()));
+            return;
+        }
         controlPanel.setPanel(new TilePanel(controlPanel, selectCol, selectRow, tile));
     }
 
@@ -286,6 +295,21 @@ public class MapScreen implements Screen {
         );
     }
 
+    private static Vector3 vec3AtPoint(float column, float row) {
+        // useful for drawing things on top of tiles
+        // different from the notion of cells
+        //   /\
+        //  /  \
+        // *    |
+        //  \  /
+        //   \/
+        return new Vector3(
+            15f * (tilePerUnit * (column + row)),
+            8f * (tilePerUnit * (column - row)) + 8f,
+            0
+        );
+    }
+
     private void drawOverMapLayer() {
         Batch batch = renderer.getBatch();
         batch.begin();
@@ -296,6 +320,7 @@ public class MapScreen implements Screen {
     }
 
     private void drawEntities(Batch batch) {
+        // building, tree
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
@@ -310,6 +335,12 @@ public class MapScreen implements Screen {
                 if (tile.getType().startsWith("tree")) {
                     drawTreeAt(batch, game.assetLoader.getTexture("plants/oak.png"), col, row);
                 }
+            }
+        }
+        // unit
+        for (int col = gameMap.getWidth() - 1; col >= 0; col--) {
+            for (int row = 0; row < gameMap.getHeight(); row++) {
+                drawUnitsAt(batch, col, row);
             }
         }
     }
@@ -344,6 +375,48 @@ public class MapScreen implements Screen {
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(cellVec.x, cellVec.y, 5);
         shapeRenderer.end();
+    }
+
+    private void drawUnitsAt(Batch batch, int column, int row) {
+        List<GuiSetting> units = gameData.getUnitsOnPosition(new IntPair(column, row))
+            .map(Unit::getGuiSetting)
+            .toList();
+        if (units.isEmpty()) {
+            return;
+        }
+        int n = 1;
+        if (units.size() > 1) {
+            n = 2;
+        }
+        if (units.size() > 4) {
+            n = (int) Math.ceil(Math.sqrt(units.size()));
+        }
+        int x = 1, y = 1;
+        for (GuiSetting unit : units) {
+            float uCol = column + (float) x / (n + 1);
+            float uRow = row + (float) y / (n + 1);
+            drawUnitAt(batch, unit, uCol, uRow);
+            x++;
+            if (x > n) {
+                x = 1;
+                y++;
+            }
+        }
+    }
+
+    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row) {
+        if (guiSetting.getAsset() == null) {
+            return;
+        }
+        Texture texture = game.assetLoader.getTexture(guiSetting.getAsset());
+        Vector3 position = vec3AtPoint(column, row);
+        float width = guiSetting.getPrefWidth();
+        batch.draw(
+            texture,
+            position.x - width / 2, position.y,
+            width,
+            texture.getHeight() * width / texture.getWidth()
+        );
     }
 
     private void drawBuildingAt(Batch batch, GuiSetting guiSetting, int column, int row) {

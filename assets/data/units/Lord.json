@@ -9,6 +9,7 @@
   "vision": 5,
   "engineers": 0,
   "guiSetting": {
-    "asset": "units/Lord.png"
+    "asset": "units/Lord.png",
+    "prefWidth": 20
   }
 }

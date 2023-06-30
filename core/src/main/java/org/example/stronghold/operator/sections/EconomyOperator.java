@@ -80,4 +80,5 @@ public final class EconomyOperator {
         addIntMap(player.getResources(), item, -amount);
         player.setGold(player.getGold() + amount * market.getPrices().get(item).y());
     }
+
 }

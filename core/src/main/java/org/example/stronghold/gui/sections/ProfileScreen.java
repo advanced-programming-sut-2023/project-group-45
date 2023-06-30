@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import java.util.HashMap;
+import org.example.stronghold.cli.sections.AuthMenu;
 import org.example.stronghold.context.HashMode;
 import org.example.stronghold.context.HashedString;
 import org.example.stronghold.gui.SimpleChangeListener;
@@ -68,7 +69,6 @@ public class ProfileScreen extends FormScreen {
     }
 
     private void apply() {
-        // todo: check for password strength?
         try {
             HashMap<String, Object> req = new HashMap<>() {{
                 put("user", user);
@@ -78,6 +78,9 @@ public class ProfileScreen extends FormScreen {
                     put("new-password", HashedString.fromPlain(currentPasswordField.getText())
                         .withMode(HashMode.SHA256));
                 } else {
+                    if(AuthMenu.isPasswordWeak(passwordField.getText())) {
+                        throw new Exception("Password is too weak!");
+                    }
                     put("new-password",
                         HashedString.fromPlain(passwordField.getText()).withMode(HashMode.SHA256));
                 }
@@ -94,7 +97,7 @@ public class ProfileScreen extends FormScreen {
             Operators.profile.changeNickname(req);
             Operators.profile.changeSlogan(req);
             popup.success("Done!");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             popup.error(e.getMessage());
         }
     }

@@ -30,7 +30,8 @@ public class UnitPanel extends Panel {
     }
 
     private void toggleUnit(Unit unit) {
-        if (units.contains(unit)) {
+        // equality of object is wrong, it comes from a bigger bug in the model
+        if (units.stream().anyMatch(u -> u == unit)) {
             units.remove(unit);
         } else {
             units.add(unit);

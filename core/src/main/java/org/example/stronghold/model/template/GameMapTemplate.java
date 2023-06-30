@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.GameMap;
+import org.example.stronghold.model.Market;
 
 /*
  * Read notes for UnitTemplate
@@ -19,6 +20,7 @@ public class GameMapTemplate {
     private List<IntPair> bases = new ArrayList<>();
     private Map<String, Integer> initialResources = new HashMap<>();
     private int initialPopulation = 10;
+    private Market market = new Market();
     private String[][] map;
 
     public GameMapTemplate(String name, int width, int height) {

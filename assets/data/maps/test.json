@@ -19,6 +19,18 @@
     "bow": 10
   },
   "initialPopulation": 20,
+  "market": {
+    "prices": {
+      "wood": {
+        "x": 10,
+        "y": 20
+      },
+      "stone": {
+        "x": 30,
+        "y": 20
+      }
+    }
+  },
   "map": [
     [
       "stone",

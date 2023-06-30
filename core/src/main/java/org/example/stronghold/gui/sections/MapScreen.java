@@ -64,6 +64,7 @@ public class MapScreen implements Screen {
     public String toBeBuiltType;
     @Getter
     public Player myself;
+    public boolean toBeTargeted = false;
 
     public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -178,6 +179,9 @@ public class MapScreen implements Screen {
             IntPair cell = cellAtVec3(worldVec);
             selectCol = cell.x();
             selectRow = cell.y();
+            if (targetToBeTargeted()) {
+                return true;
+            }
             if (buildToBeBuilt()) {
                 return true;
             }
@@ -235,16 +239,34 @@ public class MapScreen implements Screen {
         controlPanel.resize(width, height);
     }
 
+    private boolean targetToBeTargeted() {
+        if (notInsideMap(selectCol, selectRow)) {
+            return false;
+        }
+        if (!toBeTargeted) {
+            return false;
+        }
+        toBeTargeted = false;
+        if (!(controlPanel.getPanel() instanceof UnitPanel panel)) {
+            return false;
+        }
+        panel.setUnitTarget(selectCol, selectRow);
+        selectCol = -1;
+        selectRow = -1;
+        return true;
+    }
+
     private boolean toggleUnitSelection(int screenX, int screenY) {
         Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
         IntPair cell = cellAtVec3(worldVec);
         final int col = cell.x(), row = cell.y();
-        if (notInsideMap(col, row))
+        if (notInsideMap(col, row)) {
             return false;
+        }
         UnitPanel panel;
-        if (controlPanel.getPanel() instanceof UnitPanel unitPanel)
+        if (controlPanel.getPanel() instanceof UnitPanel unitPanel) {
             panel = unitPanel;
-        else {
+        } else {
             panel = new UnitPanel(controlPanel);
             controlPanel.setPanel(panel);
         }

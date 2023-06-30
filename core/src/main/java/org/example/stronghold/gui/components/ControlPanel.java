@@ -27,7 +27,7 @@ public class ControlPanel implements Disposable {
     final int height;
     Viewport viewport;
     Stage stage;
-    Table layoutTable, selectTable;
+    Table layoutTable, selectTable, lastRow;
     Container<Panel> mainPane;
     Texture dirt;
     public PopupWindow popup;
@@ -43,7 +43,12 @@ public class ControlPanel implements Disposable {
     private void addPanelButton(String text, Supplier<Panel> supplier) {
         TextButton button = new TextButton(text, game.skin);
         switchPanelOnChange(button, supplier);
-        selectTable.add(button);
+        lastRow.add(button);
+    }
+
+    private void finishSelectRow() {
+        selectTable.add(lastRow).row();
+        lastRow = new Table();
     }
 
     public void create() {
@@ -60,6 +65,8 @@ public class ControlPanel implements Disposable {
         selectTable = new Table();
         layoutTable.add(selectTable).width(300);
 
+        lastRow = new Table(); // select rows
+
         mainPane = new Container<>();
         mainPane.pad(5);
         mainPane.fill();
@@ -72,10 +79,11 @@ public class ControlPanel implements Disposable {
         addPanelButton("Build", () -> new BuildPanel(this));
         addPanelButton("Food", () -> null);
         addPanelButton("Popularity", () -> null);
-        selectTable.row();
+        finishSelectRow();
         addPanelButton("Tax", () -> null);
         addPanelButton("Fear", () -> null);
         addPanelButton("Trade", () -> null);
+        finishSelectRow();
 
         stage.setDebugAll(DEBUG);
     }

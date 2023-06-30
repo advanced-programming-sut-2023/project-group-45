@@ -31,6 +31,7 @@ import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.panels.BuildingPanel;
 import org.example.stronghold.gui.panels.TilePanel;
+import org.example.stronghold.gui.panels.UnitPanel;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
@@ -134,6 +135,8 @@ public class MapScreen implements Screen {
             return notInMap(Gdx.input.getY());
         }
 
+        // return true to capture the event; return false to pass the event to the control panel
+
         @Override
         public boolean scrolled(float amountX, float amountY) {
             if (notInMap()) {
@@ -162,7 +165,13 @@ public class MapScreen implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            if (button != Buttons.LEFT || notInMap(screenY)) {
+            if (notInMap(screenY)) {
+                return false;
+            }
+            if (button == Buttons.RIGHT) {
+                return toggleUnitSelection(screenX, screenY);
+            }
+            if (button != Buttons.LEFT) {
                 return false;
             }
             Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
@@ -224,6 +233,23 @@ public class MapScreen implements Screen {
         camera.setToOrtho(false, width, height);
         renderer.setView(camera);
         controlPanel.resize(width, height);
+    }
+
+    private boolean toggleUnitSelection(int screenX, int screenY) {
+        Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+        IntPair cell = cellAtVec3(worldVec);
+        final int col = cell.x(), row = cell.y();
+        if (notInsideMap(col, row))
+            return false;
+        UnitPanel panel;
+        if (controlPanel.getPanel() instanceof UnitPanel unitPanel)
+            panel = unitPanel;
+        else {
+            panel = new UnitPanel(controlPanel);
+            controlPanel.setPanel(panel);
+        }
+        panel.toggleCell(col, row);
+        return true;
     }
 
     private boolean buildToBeBuilt() {
@@ -366,11 +392,13 @@ public class MapScreen implements Screen {
     }
 
     private void drawHoverUnitDetail(Batch batch) {
-        if (notInsideMap(hoverCol, hoverRow))
+        if (notInsideMap(hoverCol, hoverRow)) {
             return;
+        }
         List<Unit> units = gameData.getUnitsOnPosition(new IntPair(hoverCol, hoverRow)).toList();
-        if (units.isEmpty())
+        if (units.isEmpty()) {
             return;
+        }
         final int column = hoverCol, row = hoverRow;
         int n = 1;
         if (units.size() > 1) {

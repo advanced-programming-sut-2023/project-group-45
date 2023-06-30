@@ -39,6 +39,10 @@ public class ControlPanel implements Disposable {
         mainPane.setActor(panel);
     }
 
+    public Panel getPanel() {
+        return mainPane.getActor();
+    }
+
     public void switchPanelOnChange(Actor actor, Supplier<Panel> supplier) {
         actor.addListener(new SimpleChangeListener(() -> setPanel(supplier.get())));
     }

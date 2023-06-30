@@ -26,7 +26,7 @@ public class GameData implements Serializable {
     private Market market = new Market();
 
     public GameData(List<User> users, GameMapTemplate gameMapTemplate, UnitTemplate lordTemplate,
-                    BuildingTemplate baseTemplate) {
+        BuildingTemplate baseTemplate) {
         this.mapTemplate = gameMapTemplate;
         this.map = gameMapTemplate.build();
         for (int i = 0; i < users.size(); i++) {
@@ -34,12 +34,12 @@ public class GameData implements Serializable {
             IntPair position = gameMapTemplate.getBases().get(i);
             Player player = new Player(user);
             Building base = baseTemplate.getBuilder()
-                    .owner(player)
-                    .position(position)
-                    .build();
+                .owner(player)
+                .position(position)
+                .build();
             Unit lord = lordTemplate.getBuilder()
-                    .owner(player)
-                    .build();
+                .owner(player)
+                .build();
             lord.setPosition(position);
             players.add(player);
             buildings.add(base);
@@ -52,41 +52,41 @@ public class GameData implements Serializable {
 
     public Stream<Unit> getUnitsOnPosition(IntPair position) {
         return units.stream()
-                .filter(unit -> unit.getPosition().equals(position));
+            .filter(unit -> unit.getPosition().equals(position));
     }
 
     public Stream<Building> getBuildingsByOwner(Player player) {
         return buildings.stream()
-                .filter(building -> building.getOwner().equals(player));
+            .filter(building -> building.getOwner().equals(player));
     }
 
     public int getTotalPeasants(Player player) {
         return player.getPeasants() + getBuildingsByOwner(player)
-                .mapToInt(Building::getLabors)
-                .sum();
+            .mapToInt(Building::getLabors)
+            .sum();
     }
 
     public Stream<Building> getFunctionalBuildingsByOwner(Player player) {
         return getBuildingsByOwner(player)
-                .filter(b -> b.getHitPoints() > 0 && b.getLabors() == b.getMaxLabors());
+            .filter(b -> b.getHitPoints() > 0 && b.getLabors() == b.getMaxLabors());
     }
 
     public int getReligion(Player player) {
         return getFunctionalBuildingsByOwner(player)
-                .mapToInt(Building::getReligionFactor)
-                .sum();
+            .mapToInt(Building::getReligionFactor)
+            .sum();
     }
 
     public int getHappiness(Player player) {
         return getFunctionalBuildingsByOwner(player)
-                .mapToInt(Building::getHappinessFactor)
-                .sum();
+            .mapToInt(Building::getHappinessFactor)
+            .sum();
     }
 
     public int getHousingSpace(Player player) {
         return getFunctionalBuildingsByOwner(player)
-                .mapToInt(Building::getHousingSpace)
-                .sum();
+            .mapToInt(Building::getHousingSpace)
+            .sum();
     }
 
     public List<Object> getTargetsAround(Player player, IntPair center, int range) {
@@ -102,14 +102,14 @@ public class GameData implements Serializable {
                     continue;
                 }
                 targetCandidates.addAll(getUnitsOnPosition(position)
-                        .filter(u -> !u.getOwner().equals(player))
-                        .toList());
+                    .filter(u -> !u.getOwner().equals(player))
+                    .toList());
                 if (tile.getBuilding() == null) {
                     continue;
                 }
                 Building building = tile.getBuilding();
                 if (!building.getOwner().equals(player)
-                        && building.getHitPoints() > 0) {
+                    && building.getHitPoints() > 0) {
                     targetCandidates.add(tile.getBuilding());
                 }
             }

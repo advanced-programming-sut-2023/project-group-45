@@ -1,5 +1,7 @@
 package org.example.stronghold.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +26,9 @@ public class User implements Serializable {
     private String securityQuestion;
     private String securityAnswer;
     private int score;
+
+    public FileHandle getAvatar() {
+        return Gdx.files.internal("avatars/" + username + ".jpg");
+    }
+
 }

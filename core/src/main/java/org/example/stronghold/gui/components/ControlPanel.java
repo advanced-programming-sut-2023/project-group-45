@@ -19,7 +19,6 @@ import org.example.stronghold.gui.panels.BuildPanel;
 import org.example.stronghold.gui.panels.MarketPanel;
 import org.example.stronghold.gui.panels.TradePanel;
 import org.example.stronghold.gui.sections.MapScreen;
-import org.example.stronghold.model.GameData;
 
 @Data
 public class ControlPanel implements Disposable {
@@ -28,12 +27,12 @@ public class ControlPanel implements Disposable {
     final StrongholdGame game;
     final MapScreen screen;
     final int height;
+    public PopupWindow popup;
     Viewport viewport;
     Stage stage;
     Table layoutTable, selectTable, lastRow;
     Container<Panel> mainPane;
     Texture dirt;
-    public PopupWindow popup;
 
     public void setPanel(Panel panel) {
         mainPane.setActor(panel);

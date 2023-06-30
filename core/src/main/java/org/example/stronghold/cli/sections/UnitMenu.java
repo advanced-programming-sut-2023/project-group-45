@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.Menu;
 
 public class UnitMenu extends Menu {
 
@@ -46,31 +46,31 @@ public class UnitMenu extends Menu {
         System.out.println("Selected units:");
         for (Unit unit : selection) {
             System.out.printf("- %s at (%d,%d)\n", unit.getType(), unit.getPosition().x(),
-                    unit.getPosition().y());
+                unit.getPosition().y());
         }
     }
 
     private void selectPosition(Map<String, String> input) {
         IntPair position = getIntPairOpt(input, "x", "y");
         List<Unit> selected = gameData.getUnits().stream()
-                .filter(u -> u.getPosition().equals(position))
-                .filter(u -> u.getOwner() == player)
-                .toList();
+            .filter(u -> u.getPosition().equals(position))
+            .filter(u -> u.getOwner() == player)
+            .toList();
         if (selected.isEmpty()) {
             System.out.println("No units at this position.");
             return;
         }
         selection.addAll(selected);
         System.out.printf("Selected %d units at (%d,%d)\n", selected.size(), position.x(),
-                position.y());
+            position.y());
     }
 
     private void selectType(Map<String, String> input) {
         String type = getOpt(input, "type");
         List<Unit> selected = gameData.getUnits().stream()
-                .filter(u -> u.getType().equals(type))
-                .filter(u -> u.getOwner() == player)
-                .toList();
+            .filter(u -> u.getType().equals(type))
+            .filter(u -> u.getOwner() == player)
+            .toList();
         if (selected.isEmpty()) {
             System.out.println("No units of this type.");
             return;
@@ -122,8 +122,8 @@ public class UnitMenu extends Menu {
                 put("position", position);
             }});
             System.out.println(
-                    "Units ordered to attack " + unit.getType() + " at (" + position.x() + ","
-                            + position.y() + ")");
+                "Units ordered to attack " + unit.getType() + " at (" + position.x() + ","
+                    + position.y() + ")");
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

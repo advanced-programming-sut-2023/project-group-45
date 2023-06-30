@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.Menu;
 
 public class StartGameMenu extends Menu {
 

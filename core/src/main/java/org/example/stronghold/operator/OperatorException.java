@@ -17,6 +17,7 @@ public class OperatorException extends Exception {
     public enum Type {
         NOT_UNIQUE_USERNAME,
         NOT_UNIQUE_EMAIL,
+        IO_EXCEPTION,
         USER_NOT_FOUND,
         INCORRECT_PASSWORD,
         INCORRECT_SECURITY_QA,

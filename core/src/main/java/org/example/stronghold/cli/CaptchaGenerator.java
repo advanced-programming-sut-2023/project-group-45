@@ -35,15 +35,6 @@ public class CaptchaGenerator {
         addNoise(this.rows);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String row : rows) {
-            sb.append(row).append('\n');
-        }
-        return sb.toString();
-    }
-
     public static int generateAnswer() {
         Random random = new Random();
         int n = random.nextInt(MIN_DIGITS, MAX_DIGITS + 1);
@@ -57,12 +48,12 @@ public class CaptchaGenerator {
 
     public static BufferedImage generateImage(String text) {
         BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT,
-                BufferedImage.TYPE_INT_RGB);
+            BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
         g.setFont(new Font("Comic Sans MS", Font.ITALIC, FONT_SIZE));
         Graphics2D graphics = (Graphics2D) g;
         graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         graphics.drawString(text, FONT_START, FONT_SIZE);
         return image;
     }
@@ -73,7 +64,7 @@ public class CaptchaGenerator {
             StringBuilder sb = new StringBuilder();
             for (int x = 0; x < image.getWidth(); x++) {
                 sb.append(image.getRGB(x, y) == -16777216 ? " "
-                        : image.getRGB(x, y) == -1 ? "#" : "*");
+                    : image.getRGB(x, y) == -1 ? "#" : "*");
             }
             String row = sb.toString().replaceAll(" *$", "");
             if (row.isEmpty()) {
@@ -95,6 +86,15 @@ public class CaptchaGenerator {
             }
             rows.set(y, sb.toString());
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (String row : rows) {
+            sb.append(row).append('\n');
+        }
+        return sb.toString();
     }
 
 }

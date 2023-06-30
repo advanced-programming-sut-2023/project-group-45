@@ -1,17 +1,12 @@
 package org.example.stronghold.gui.panels;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
@@ -19,20 +14,19 @@ import org.example.stronghold.gui.components.PopupWindow;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Market;
 import org.example.stronghold.model.Player;
-import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
 public class MarketPanel extends Panel {
 
     public static List<String> RESOURCES;
+    Table resourceTable, economyTable;
+    TextField amountField;
+    TextButton buyButton, sellButton;
     private GameData gameData;
     private Market market;
     private Player player;
     private ControlPanel controlPanel;
     private PopupWindow popupWindow;
-    Table resourceTable, economyTable;
-    TextField amountField;
-    TextButton buyButton, sellButton;
     private String resource;
 
     public MarketPanel(ControlPanel controlPanel) {

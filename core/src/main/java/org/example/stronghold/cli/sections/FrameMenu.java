@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.User;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.Menu;
 
 public class FrameMenu extends Menu {
 
@@ -33,7 +33,7 @@ public class FrameMenu extends Menu {
         if (gameData.getPlayers().size() == 1) {
             Player player = gameData.getPlayers().get(0);
             System.out.println("Game ended with " + player.getUser().getUsername()
-                    + " as the absolute winner!");
+                + " as the absolute winner!");
             return true;
         }
         return false;

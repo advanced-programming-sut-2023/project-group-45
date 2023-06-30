@@ -3,11 +3,15 @@ package org.example.stronghold.operator.sections;
 import static org.example.stronghold.context.MapUtils.getReqAs;
 import static org.example.stronghold.context.MapUtils.getReqString;
 import static org.example.stronghold.operator.OperatorPreconditions.checkEmailFormat;
-import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkIsNull;
+import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUserExists;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
+import com.badlogic.gdx.Gdx;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.context.HashedString;
@@ -36,11 +40,18 @@ public class AuthOperator {
         checkIsNull(database.getUserFromUsername(username), Type.NOT_UNIQUE_USERNAME);
         checkIsNull(database.getUserFromEmail(email), Type.NOT_UNIQUE_EMAIL);
         User user = User.builder()
-                .username(username)
-                .password(password)
-                .nickname(nickname)
-                .email(email)
-                .build();
+            .username(username)
+            .password(password)
+            .nickname(nickname)
+            .email(email)
+            .score(0)
+            .build();
+        try {
+            Files.copy(Gdx.files.internal("data/default_avatar.jpg").file().toPath(),
+                user.getAvatar().file().toPath());
+        } catch (IOException e) {
+            throw new OperatorException(Type.IO_EXCEPTION);
+        }
         database.getUsers().add(user);
         return user;
     }
@@ -48,7 +59,7 @@ public class AuthOperator {
     private User updateStayLoggedInUser(Map<String, Object> req, User user) {
         if (req.containsKey("stay-logged-in")) {
             database.setStayLoggedInUser(
-                    getReqAs(req, "stay-logged-in", Boolean.class) ? user : null);
+                getReqAs(req, "stay-logged-in", Boolean.class) ? user : null);
         }
         return user;
     }
@@ -71,10 +82,14 @@ public class AuthOperator {
         String securityAnswer = getReqString(req, "security-answer");
         User user = checkUserExists(database, username);
         checkTrue(
-                securityQuestion.equals(user.getSecurityQuestion()) &&
-                        securityAnswer.equals(user.getSecurityAnswer()),
-                Type.INCORRECT_SECURITY_QA
+            securityQuestion.equals(user.getSecurityQuestion()) &&
+                securityAnswer.equals(user.getSecurityAnswer()),
+            Type.INCORRECT_SECURITY_QA
         );
         user.setPassword(newPassword);
+    }
+
+    public List<User> getUsers() {
+        return database.getUsers();
     }
 }

@@ -67,7 +67,8 @@ public class BuildingPanel extends Panel {
         destroy.addListener(new SimpleChangeListener(this::destroyBuilding));
         repair.addListener(new SimpleChangeListener(this::repairBuilding));
         // hope they don't see this
-        undo.addListener(new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
+        undo.addListener(
+            new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
         copy.addListener(new SimpleChangeListener(this::copyBuilding));
     }
 

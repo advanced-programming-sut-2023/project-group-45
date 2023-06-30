@@ -6,18 +6,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
+import java.util.HashMap;
 import org.example.stronghold.context.HashMode;
 import org.example.stronghold.context.HashedString;
-import org.example.stronghold.gui.components.FormScreen;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
+import org.example.stronghold.gui.components.FormScreen;
 import org.example.stronghold.model.User;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
-import java.util.HashMap;
-
 public class LoginScreen extends FormScreen {
+
     Label usernameLabel, passwordLabel;
     TextField usernameField, passwordField;
     TextButton loginButton, registerButton, forgotPasswordButton;
@@ -55,7 +55,8 @@ public class LoginScreen extends FormScreen {
         popup.label.setColor(Color.RED);
 
         loginButton.addListener(new SimpleChangeListener(this::login));
-        registerButton.addListener(new SimpleChangeListener(() -> game.setScreen(new RegisterScreen(game))));
+        registerButton.addListener(
+            new SimpleChangeListener(() -> game.setScreen(new RegisterScreen(game))));
     }
 
     private void login() {

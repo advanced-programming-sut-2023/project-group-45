@@ -19,12 +19,12 @@ import org.example.stronghold.operator.Operators;
 
 public class StrongholdGame extends Game {
 
+    public final AssetLoader assetLoader = new AssetLoader();
     public Skin skin, craftacularSkin;
+    public TemplateDatabase templateDatabase;
     private File databaseFile;
     private File templateDatabaseRoot;
     private Database database;
-    public TemplateDatabase templateDatabase;
-    public final AssetLoader assetLoader = new AssetLoader();
 
     @Override
     public void create() {
@@ -42,7 +42,7 @@ public class StrongholdGame extends Game {
         skin = new Skin(Gdx.files.internal("default/uiskin.json"));
         craftacularSkin = new Skin(Gdx.files.internal("craftacular/craftacular-ui.json"));
         assetLoader.loadAll();
-        setMapScreen();
+        setLoginScreen();
     }
 
     private void setLoginScreen() {

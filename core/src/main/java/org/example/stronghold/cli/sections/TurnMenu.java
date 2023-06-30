@@ -9,6 +9,7 @@ import static org.example.stronghold.context.MapUtils.getOpt;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.context.ListPair;
 import org.example.stronghold.model.GameData;
@@ -17,7 +18,6 @@ import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.Menu;
 
 public class TurnMenu extends Menu {
 
@@ -189,7 +189,7 @@ public class TurnMenu extends Menu {
         try {
             Operators.economy.acceptTrade(new HashMap<>() {{
                 put("request", checkNotNull(player.getIncomingTradeRequests().get(id - 1),
-                        "Trade request " + id + " not found"));
+                    "Trade request " + id + " not found"));
             }});
             System.out.println("Trade request accepted successfully");
         } catch (OperatorException e) {
@@ -202,7 +202,7 @@ public class TurnMenu extends Menu {
         try {
             Operators.economy.deleteTrade(new HashMap<>() {{
                 put("request", checkNotNull(player.getIncomingTradeRequests().get(id - 1),
-                        "Trade request " + id + " not found"));
+                    "Trade request " + id + " not found"));
             }});
             System.out.println("Trade request rejected successfully");
         } catch (OperatorException e) {
@@ -215,7 +215,7 @@ public class TurnMenu extends Menu {
         try {
             Operators.economy.deleteTrade(new HashMap<>() {{
                 put("request", checkNotNull(player.getActiveTradeRequests().get(id - 1),
-                        "Trade request " + id + " not found"));
+                    "Trade request " + id + " not found"));
             }});
             System.out.println("Trade request cancelled successfully");
         } catch (OperatorException e) {
@@ -225,8 +225,8 @@ public class TurnMenu extends Menu {
 
     private Player getPlayerByUsername(String username) {
         return checkNotNull(gameData.getPlayers().stream()
-                .filter(player -> player.getUser().getUsername().equals(username))
-                .findFirst().orElse(null), "Player " + username + " not found");
+            .filter(player -> player.getUser().getUsername().equals(username))
+            .findFirst().orElse(null), "Player " + username + " not found");
     }
 
     private void mapView(Map<String, String> input) {
@@ -323,7 +323,7 @@ public class TurnMenu extends Menu {
                 copyOptTo(input, this, "type");
             }});
             System.out.println("Equipment " + unit.getType() +
-                    " built at (" + position.x() + "," + position.y() + ")");
+                " built at (" + position.x() + "," + position.y() + ")");
         } catch (OperatorException e) {
             System.out.println(e.getMessage());
         }

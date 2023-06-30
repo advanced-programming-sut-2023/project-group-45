@@ -2,7 +2,6 @@ package org.example.stronghold.context;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import lombok.Data;
 
 @Data
@@ -28,7 +27,7 @@ public class HashedString implements Serializable {
             return null;
         }
         String hashedContent = HashMode.toStringFunction.get(newMode)
-                .hashString(this.hashedContent);
+            .hashString(this.hashedContent);
         return new HashedString(newMode, hashedContent);
     }
 

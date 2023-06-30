@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class SimpleChangeListener extends ChangeListener {
+
     private final Runnable runnable;
 
     public SimpleChangeListener(Runnable runnable) {

@@ -1,6 +1,7 @@
 package org.example.stronghold.gui.panels;
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import java.util.HashMap;
 import org.example.stronghold.context.ClipboardUtils;
@@ -17,6 +18,8 @@ public class TilePanel extends Panel {
 
     private final int column, row;
     private final Tile tile;
+    TextField equipmentType;
+    TextButton buildEquipment;
 
     public TilePanel(ControlPanel controlPanel, int column, int row, Tile tile) {
         super(controlPanel);
@@ -43,9 +46,19 @@ public class TilePanel extends Panel {
         align(Align.left);
         addLabel(String.format("(%d,%d) %s", column, row, tile.getType()));
         addLabel(getBuildingText());
-        TextButton pasteBtn = new TextButton("Paste", game.skin);
+        TextButton pasteBtn = new TextButton("Paste building", game.skin);
         add(pasteBtn).align(Align.left).row();
         pasteBtn.addListener(new SimpleChangeListener(this::pasteBuilding));
+
+        if (hasEngineers()) {
+            equipmentType = new TextField("", game.skin);
+            buildEquipment = new TextButton("Build equipment", game.skin);
+
+            add(equipmentType).align(Align.left).width(200);
+            add(buildEquipment).align(Align.left).row();
+
+            buildEquipment.addListener(new SimpleChangeListener(this::buildTheEquipment));
+        }
     }
 
     private void pasteBuilding() {
@@ -69,6 +82,30 @@ public class TilePanel extends Panel {
             }});
             controlPanel.popup.success("Pasted");
             controlPanel.setPanel(null);
+        } catch (OperatorException e) {
+            controlPanel.popup.error(e.getMessage());
+        }
+    }
+
+    private boolean hasEngineers() {
+        return screen.gameData.getUnitsOnPosition(new IntPair(column, row))
+            .anyMatch(u -> u.getOwner().equals(screen.myself) && u.getType().equals("Engineer"));
+    }
+
+    private void buildTheEquipment() {
+        String type = equipmentType.getText().trim();
+        if (type.isEmpty()) {
+            controlPanel.popup.error("Equipment type is empty");
+            return;
+        }
+        try {
+            Operators.game.buildEquipment(new HashMap<>() {{
+                put("game", screen.gameData);
+                put("player", screen.myself);
+                put("position", new IntPair(column, row));
+                put("type", type);
+            }});
+            controlPanel.popup.success("Equipment built");
         } catch (OperatorException e) {
             controlPanel.popup.error(e.getMessage());
         }

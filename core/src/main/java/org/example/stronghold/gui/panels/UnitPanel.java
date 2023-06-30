@@ -66,10 +66,10 @@ public class UnitPanel extends Panel {
         add(info).growX().row();
 
         defensiveBtn = newModeButton("defensive");
-        offensiveBtn = newModeButton("offensive");
         standingBtn = newModeButton("standing");
+        offensiveBtn = newModeButton("offensive");
+        disbandBtn = newButton("disband", this::disbandUnits);
         moveBtn = newButton("move", null);
-        disbandBtn = newButton("disband", null);
         attackBtn = newButton("attack", null);
 
         banners = new Table(game.skin);
@@ -98,7 +98,7 @@ public class UnitPanel extends Panel {
         info.setText(stringBuilder);
     }
 
-    public void setMode(String mode) {
+    private void setMode(String mode) {
         try {
             Operators.game.setUnitMode(new HashMap<>() {{
                 put("units", units);
@@ -106,6 +106,19 @@ public class UnitPanel extends Panel {
             }});
             controlPanel.popup.success("Changed mode to " + mode);
             updateInfo();
+        } catch (OperatorException e) {
+            controlPanel.popup.error(e.getMessage());
+        }
+    }
+
+    private void disbandUnits() {
+        try {
+            Operators.game.disbandUnits(new HashMap<>() {{
+                put("units", units);
+                put("game", screen.gameData);
+            }});
+            controlPanel.popup.success("Disbanded units");
+            controlPanel.setPanel(null);
         } catch (OperatorException e) {
             controlPanel.popup.error(e.getMessage());
         }

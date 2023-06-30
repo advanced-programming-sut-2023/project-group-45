@@ -314,7 +314,8 @@ public class MapScreen implements Screen {
         Batch batch = renderer.getBatch();
         batch.begin();
         drawEntities(batch);
-        drawHoverDetail(batch);
+        drawHoverBuildingDetail(batch);
+        drawHoverUnitDetail(batch);
         batch.end();
         drawSelectedCell();
     }
@@ -349,7 +350,7 @@ public class MapScreen implements Screen {
         return col < 0 || col >= gameMap.getWidth() || row < 0 || row >= gameMap.getHeight();
     }
 
-    private void drawHoverDetail(Batch batch) {
+    private void drawHoverBuildingDetail(Batch batch) {
         if (notInsideMap(hoverCol, hoverRow)) {
             return; // out of map
         }
@@ -359,9 +360,40 @@ public class MapScreen implements Screen {
         }
         Building building = tile.getBuilding();
         Label label = new Label(building.getType() + " " + building.getHitPoints(), game.skin);
-        Vector3 position = new Vector3(hoverX, hoverY + 20, 0);
+        Vector3 position = new Vector3(hoverX, hoverY + 10, 0);
         label.setPosition(position.x, position.y, Align.center);
         label.draw(batch, 1);
+    }
+
+    private void drawHoverUnitDetail(Batch batch) {
+        if (notInsideMap(hoverCol, hoverRow))
+            return;
+        List<Unit> units = gameData.getUnitsOnPosition(new IntPair(hoverCol, hoverRow)).toList();
+        if (units.isEmpty())
+            return;
+        final int column = hoverCol, row = hoverRow;
+        int n = 1;
+        if (units.size() > 1) {
+            n = 2;
+        }
+        if (units.size() > 4) {
+            n = (int) Math.ceil(Math.sqrt(units.size()));
+        }
+        int x = 1, y = 1;
+        for (Unit unit : units) {
+            float uCol = column + (float) x / (n + 1);
+            float uRow = row + (float) y / (n + 1);
+            Label label = new Label(unit.getType() + " " + unit.getHitPoints(), game.skin);
+            Vector3 onScreen = vec3AtPoint(uCol, uRow);
+            Vector3 position = new Vector3(onScreen.x, onScreen.y + 50, 0);
+            label.setPosition(position.x, position.y, Align.center);
+            label.draw(batch, 1);
+            x++;
+            if (x > n) {
+                x = 1;
+                y++;
+            }
+        }
     }
 
     private void drawSelectedCell() {

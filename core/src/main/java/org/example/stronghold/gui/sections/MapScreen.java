@@ -266,8 +266,6 @@ public class MapScreen implements Screen {
             return;
         }
         IntPair cell = base.getPosition();
-        Vector3 vec3 = vec3AtCell(cell.x(), cell.y())
-            .add(15f * tilePerUnit, 8f * tilePerUnit, 0);
         focusCameraOn(cell.x() + 0.5f, cell.y() + 0.5f);
         selectCol = cell.x();
         selectRow = cell.y();

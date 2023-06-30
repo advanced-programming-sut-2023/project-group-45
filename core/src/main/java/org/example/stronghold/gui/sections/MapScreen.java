@@ -3,6 +3,7 @@ package org.example.stronghold.gui.sections;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -31,6 +33,7 @@ import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.panels.BuildingPanel;
 import org.example.stronghold.gui.panels.TilePanel;
+import org.example.stronghold.gui.panels.UnitPanel;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.GameMap;
@@ -63,6 +66,8 @@ public class MapScreen implements Screen {
     public String toBeBuiltType;
     @Getter
     public Player myself;
+    public boolean toBeTargeted = false;
+    private static final float buildingHeight = 40;
 
     public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -134,6 +139,8 @@ public class MapScreen implements Screen {
             return notInMap(Gdx.input.getY());
         }
 
+        // return true to capture the event; return false to pass the event to the control panel
+
         @Override
         public boolean scrolled(float amountX, float amountY) {
             if (notInMap()) {
@@ -162,13 +169,22 @@ public class MapScreen implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            if (button != Buttons.LEFT || notInMap(screenY)) {
+            if (notInMap(screenY)) {
+                return false;
+            }
+            if (button == Buttons.RIGHT) {
+                return toggleUnitSelection(screenX, screenY);
+            }
+            if (button != Buttons.LEFT) {
                 return false;
             }
             Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
             IntPair cell = cellAtVec3(worldVec);
             selectCol = cell.x();
             selectRow = cell.y();
+            if (targetToBeTargeted()) {
+                return true;
+            }
             if (buildToBeBuilt()) {
                 return true;
             }
@@ -206,6 +222,15 @@ public class MapScreen implements Screen {
             float scale = camera.zoom * 2;
             camera.translate(-Gdx.input.getDeltaX() * scale, Gdx.input.getDeltaY() * scale);
         }
+        // shortcuts
+        if (controlPanel.getStage().getKeyboardFocus() == null) {
+            if (Gdx.input.isKeyJustPressed(Keys.B)) {
+                focusOnBase();
+            }
+            if (Gdx.input.isKeyJustPressed(Keys.L)) {
+                focusOnLord();
+            }
+        }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -224,6 +249,77 @@ public class MapScreen implements Screen {
         camera.setToOrtho(false, width, height);
         renderer.setView(camera);
         controlPanel.resize(width, height);
+    }
+
+    private void focusCameraOn(float col, float row) {
+        Vector3 vec = vec3AtPoint(col, row);
+        camera.position.x = vec.x;
+        camera.position.y = vec.y;
+    }
+
+    private void focusOnBase() {
+        // move camera to center the base
+        Building base = gameData.getBuildingsByOwner(myself)
+            .filter(b -> b.getType().equals("Base"))
+            .findFirst()
+            .orElse(null);
+        if (base == null) {
+            controlPanel.popup.error("Base not found");
+            return;
+        }
+        IntPair cell = base.getPosition();
+        focusCameraOn(cell.x() + 0.5f, cell.y() + 0.5f);
+        selectCol = cell.x();
+        selectRow = cell.y();
+        setPanelOnSelect();
+    }
+
+    private void focusOnLord() {
+        Unit lord = gameData.getUnits().stream()
+            .filter(u -> u.getType().equals("Lord"))
+            .findFirst()
+            .orElse(null);
+        if (lord == null) {
+            controlPanel.popup.error("Lord not found");
+            return;
+        }
+        IntPair cell = lord.getPosition();
+        focusCameraOn(cell.x() + 0.5f, cell.y() + 0.5f);
+    }
+
+    private boolean targetToBeTargeted() {
+        if (notInsideMap(selectCol, selectRow)) {
+            return false;
+        }
+        if (!toBeTargeted) {
+            return false;
+        }
+        toBeTargeted = false;
+        if (!(controlPanel.getPanel() instanceof UnitPanel panel)) {
+            return false;
+        }
+        panel.setUnitTarget(selectCol, selectRow);
+        selectCol = -1;
+        selectRow = -1;
+        return true;
+    }
+
+    private boolean toggleUnitSelection(int screenX, int screenY) {
+        Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+        IntPair cell = cellAtVec3(worldVec);
+        final int col = cell.x(), row = cell.y();
+        if (notInsideMap(col, row)) {
+            return false;
+        }
+        UnitPanel panel;
+        if (controlPanel.getPanel() instanceof UnitPanel unitPanel) {
+            panel = unitPanel;
+        } else {
+            panel = new UnitPanel(controlPanel);
+            controlPanel.setPanel(panel);
+        }
+        panel.toggleCell(col, row);
+        return true;
     }
 
     private boolean buildToBeBuilt() {
@@ -314,7 +410,8 @@ public class MapScreen implements Screen {
         Batch batch = renderer.getBatch();
         batch.begin();
         drawEntities(batch);
-        drawHoverDetail(batch);
+        drawHoverBuildingDetail(batch);
+        drawHoverUnitDetail(batch);
         batch.end();
         drawSelectedCell();
     }
@@ -349,7 +446,7 @@ public class MapScreen implements Screen {
         return col < 0 || col >= gameMap.getWidth() || row < 0 || row >= gameMap.getHeight();
     }
 
-    private void drawHoverDetail(Batch batch) {
+    private void drawHoverBuildingDetail(Batch batch) {
         if (notInsideMap(hoverCol, hoverRow)) {
             return; // out of map
         }
@@ -359,9 +456,43 @@ public class MapScreen implements Screen {
         }
         Building building = tile.getBuilding();
         Label label = new Label(building.getType() + " " + building.getHitPoints(), game.skin);
-        Vector3 position = new Vector3(hoverX, hoverY + 20, 0);
+        Vector3 position = new Vector3(hoverX, hoverY + 10, 0);
         label.setPosition(position.x, position.y, Align.center);
         label.draw(batch, 1);
+    }
+
+    private void drawHoverUnitDetail(Batch batch) {
+        if (notInsideMap(hoverCol, hoverRow)) {
+            return;
+        }
+        List<Unit> units = gameData.getUnitsOnPosition(new IntPair(hoverCol, hoverRow)).toList();
+        if (units.isEmpty()) {
+            return;
+        }
+        final int column = hoverCol, row = hoverRow;
+        int n = 1;
+        if (units.size() > 1) {
+            n = 2;
+        }
+        if (units.size() > 4) {
+            n = (int) Math.ceil(Math.sqrt(units.size()));
+        }
+        boolean hasBuilding = gameMap.getAt(column, row).getBuilding() != null;
+        int x = 1, y = 1;
+        for (Unit unit : units) {
+            float uCol = column + (float) x / (n + 1);
+            float uRow = row + (float) y / (n + 1);
+            Label label = new Label(unit.getType() + " " + unit.getHitPoints(), game.skin);
+            Vector3 onScreen = vec3AtPoint(uCol, uRow);
+            Vector3 position = new Vector3(onScreen.x, onScreen.y + 50, 0);
+            label.setPosition(position.x, position.y + (hasBuilding ? buildingHeight : 0), Align.center);
+            label.draw(batch, 1);
+            x++;
+            if (x > n) {
+                x = 1;
+                y++;
+            }
+        }
     }
 
     private void drawSelectedCell() {
@@ -391,11 +522,12 @@ public class MapScreen implements Screen {
         if (units.size() > 4) {
             n = (int) Math.ceil(Math.sqrt(units.size()));
         }
+        boolean hasBuilding = gameMap.getAt(column, row).getBuilding() != null;
         int x = 1, y = 1;
         for (GuiSetting unit : units) {
             float uCol = column + (float) x / (n + 1);
             float uRow = row + (float) y / (n + 1);
-            drawUnitAt(batch, unit, uCol, uRow);
+            drawUnitAt(batch, unit, uCol, uRow, hasBuilding);
             x++;
             if (x > n) {
                 x = 1;
@@ -404,7 +536,7 @@ public class MapScreen implements Screen {
         }
     }
 
-    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row) {
+    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row, boolean hasBuilding) {
         if (guiSetting.getAsset() == null) {
             return;
         }
@@ -413,7 +545,7 @@ public class MapScreen implements Screen {
         float width = guiSetting.getPrefWidth();
         batch.draw(
             texture,
-            position.x - width / 2, position.y,
+            position.x - width / 2, position.y + (hasBuilding ? buildingHeight : 0),
             width,
             texture.getHeight() * width / texture.getWidth()
         );

@@ -1,7 +1,11 @@
 package org.example.stronghold.gui.panels;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import java.util.HashMap;
 import org.example.stronghold.context.ClipboardUtils;
@@ -69,6 +73,46 @@ public class BuildingPanel extends Panel {
         // hope they don't see this
         undo.addListener(new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
         copy.addListener(new SimpleChangeListener(this::copyBuilding));
+
+        if (!building.getDropUnit().isEmpty()) {
+            createMenu();
+        }
+    }
+
+    private void createMenu() {
+        for (String unit : building.getDropUnit().keySet()) {
+            Drawable unitImage = getUnitDrawable(unit);
+            if (unitImage == null)
+                continue;
+            ImageButton btn = new ImageButton(unitImage);
+            btn.setSkin(game.skin);
+            btn.addListener(new SimpleChangeListener(() -> dropUnit(unit)));
+            btn.row();
+            btn.add(unit).row();
+            menu.add(btn);
+        }
+
+    }
+
+    private Drawable getUnitDrawable(String unitType) {
+        Texture texture = game.assetLoader.getTexture("units/" + unitType + ".png");
+        if (texture == null)
+            return null;
+        return new TextureRegionDrawable(texture);
+    }
+
+    private void dropUnit(String unit) {
+        try {
+            Operators.game.dropUnit(new HashMap<>() {{
+                put("game", screen.gameData);
+                put("player", screen.myself);
+                put("position", new IntPair(column, row));
+                put("type", unit);
+            }});
+            controlPanel.popup.success("Unit dropped");
+        } catch (OperatorException e) {
+            controlPanel.popup.error(e.getMessage());
+        }
     }
 
     private void destroyBuilding() {

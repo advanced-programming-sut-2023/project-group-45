@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
@@ -17,9 +18,9 @@ import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.panels.BuildPanel;
 import org.example.stronghold.gui.panels.MarketPanel;
+import org.example.stronghold.gui.panels.OptionPanel;
 import org.example.stronghold.gui.panels.TradePanel;
 import org.example.stronghold.gui.sections.MapScreen;
-import org.example.stronghold.model.GameData;
 
 @Data
 public class ControlPanel implements Disposable {
@@ -37,6 +38,10 @@ public class ControlPanel implements Disposable {
 
     public void setPanel(Panel panel) {
         mainPane.setActor(panel);
+    }
+
+    public Panel getPanel() {
+        return mainPane.getActor();
     }
 
     public void switchPanelOnChange(Actor actor, Supplier<Panel> supplier) {
@@ -73,7 +78,10 @@ public class ControlPanel implements Disposable {
         mainPane = new Container<>();
         mainPane.pad(5);
         mainPane.fill();
-        layoutTable.add(mainPane).grow().row();
+        layoutTable.add(mainPane).grow();
+
+        Image minimap = new Image(game.assetLoader.getTexture("banners/minimap.png"));
+        layoutTable.add(minimap).width(2 * height);
 
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
         stage.addActor(popup);
@@ -87,6 +95,8 @@ public class ControlPanel implements Disposable {
         addPanelButton("Tax", () -> null);
         addPanelButton("Fear", () -> null);
         addPanelButton("Trade", () -> new TradePanel(this));
+        finishSelectRow();
+        addPanelButton("Options", () -> new OptionPanel(this));
         finishSelectRow();
 
         stage.setDebugAll(DEBUG);

@@ -23,12 +23,13 @@ public class GameData implements Serializable {
     private final GameMap map;
     private final List<Building> buildings = new ArrayList<>();
     private final List<Unit> units = new ArrayList<>();
-    private Market market = new Market();
+    private final Market market;
 
     public GameData(List<User> users, GameMapTemplate gameMapTemplate, UnitTemplate lordTemplate,
                     BuildingTemplate baseTemplate) {
         this.mapTemplate = gameMapTemplate;
         this.map = gameMapTemplate.build();
+        this.market = gameMapTemplate.getMarket();
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
             IntPair position = gameMapTemplate.getBases().get(i);

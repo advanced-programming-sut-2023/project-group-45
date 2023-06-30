@@ -7,5 +7,9 @@
   "canClimb": true,
   "canDig": true,
   "vision": 5,
-  "engineers": 0
+  "engineers": 0,
+  "guiSetting": {
+    "asset": "units/Archer.png",
+    "prefWidth": 20
+  }
 }

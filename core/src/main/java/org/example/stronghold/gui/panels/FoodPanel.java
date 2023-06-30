@@ -1,8 +1,6 @@
 package org.example.stronghold.gui.panels;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.google.common.collect.ImmutableMap;
 import org.example.stronghold.gui.SimpleChangeListener;
@@ -22,7 +20,8 @@ public class FoodPanel extends Panel {
     private final ControlPanel controlPanel;
     private final PopupWindow popupWindow;
     private Table table;
-    private TextField rateField;
+    private Slider rateSlider;
+    private Label rateLabel;
     private TextButton updateButton;
 
     public FoodPanel(ControlPanel controlPanel) {
@@ -34,13 +33,19 @@ public class FoodPanel extends Panel {
         create();
     }
 
+
+
     private void create() {
         table = new Table(game.skin);
         table.align(Align.left);
         add(table).grow();
-        rateField = new TextField(String.valueOf(player.getFoodRate()), game.skin);
+        rateSlider = new Slider(-2, 2, 1, false, game.skin);
+        rateSlider.setValue(player.getFoodRate());
+        rateLabel = new Label(String.format("Food rate: %d", player.getFoodRate()), game.skin);
+        rateLabel.setAlignment(Align.center);
         updateButton = new TextButton("Update", game.skin);
-        table.add(rateField).growX();
+        table.add(rateSlider).growX().row();
+        table.add(rateLabel).growX();
         table.add(updateButton).growX().row();
         updateButton.addListener(new SimpleChangeListener(this::update));
     }
@@ -48,13 +53,14 @@ public class FoodPanel extends Panel {
     private Map<String, Object> buildMap() {
         return ImmutableMap.of(
             "player", player,
-            "rate", Integer.parseInt(rateField.getText())
+            "rate", (int) rateSlider.getValue()
         );
     }
 
     private void update(){
         try {
             Operators.game.setFoodRate(buildMap());
+            rateLabel.setText(String.format("Food rate: %d", player.getFoodRate()));
             popupWindow.success("Success");
         } catch (Exception e) {
             popupWindow.error(e.getMessage());

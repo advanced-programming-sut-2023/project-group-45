@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -66,6 +67,7 @@ public class MapScreen implements Screen {
     @Getter
     public Player myself;
     public boolean toBeTargeted = false;
+    private static final float buildingHeight = 40;
 
     public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -475,6 +477,7 @@ public class MapScreen implements Screen {
         if (units.size() > 4) {
             n = (int) Math.ceil(Math.sqrt(units.size()));
         }
+        boolean hasBuilding = gameMap.getAt(column, row).getBuilding() != null;
         int x = 1, y = 1;
         for (Unit unit : units) {
             float uCol = column + (float) x / (n + 1);
@@ -482,7 +485,7 @@ public class MapScreen implements Screen {
             Label label = new Label(unit.getType() + " " + unit.getHitPoints(), game.skin);
             Vector3 onScreen = vec3AtPoint(uCol, uRow);
             Vector3 position = new Vector3(onScreen.x, onScreen.y + 50, 0);
-            label.setPosition(position.x, position.y, Align.center);
+            label.setPosition(position.x, position.y + (hasBuilding ? buildingHeight : 0), Align.center);
             label.draw(batch, 1);
             x++;
             if (x > n) {
@@ -519,11 +522,12 @@ public class MapScreen implements Screen {
         if (units.size() > 4) {
             n = (int) Math.ceil(Math.sqrt(units.size()));
         }
+        boolean hasBuilding = gameMap.getAt(column, row).getBuilding() != null;
         int x = 1, y = 1;
         for (GuiSetting unit : units) {
             float uCol = column + (float) x / (n + 1);
             float uRow = row + (float) y / (n + 1);
-            drawUnitAt(batch, unit, uCol, uRow);
+            drawUnitAt(batch, unit, uCol, uRow, hasBuilding);
             x++;
             if (x > n) {
                 x = 1;
@@ -532,7 +536,7 @@ public class MapScreen implements Screen {
         }
     }
 
-    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row) {
+    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row, boolean hasBuilding) {
         if (guiSetting.getAsset() == null) {
             return;
         }
@@ -541,7 +545,7 @@ public class MapScreen implements Screen {
         float width = guiSetting.getPrefWidth();
         batch.draw(
             texture,
-            position.x - width / 2, position.y,
+            position.x - width / 2, position.y + (hasBuilding ? buildingHeight : 0),
             width,
             texture.getHeight() * width / texture.getWidth()
         );

@@ -3,6 +3,7 @@ package org.example.stronghold.gui.sections;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -219,6 +220,15 @@ public class MapScreen implements Screen {
             float scale = camera.zoom * 2;
             camera.translate(-Gdx.input.getDeltaX() * scale, Gdx.input.getDeltaY() * scale);
         }
+        // shortcuts
+        if (controlPanel.getStage().getKeyboardFocus() == null) {
+            if (Gdx.input.isKeyJustPressed(Keys.B)) {
+                focusOnBase();
+            }
+            if (Gdx.input.isKeyJustPressed(Keys.L)) {
+                focusOnLord();
+            }
+        }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -237,6 +247,44 @@ public class MapScreen implements Screen {
         camera.setToOrtho(false, width, height);
         renderer.setView(camera);
         controlPanel.resize(width, height);
+    }
+
+    private void focusCameraOn(float col, float row) {
+        Vector3 vec = vec3AtPoint(col, row);
+        camera.position.x = vec.x;
+        camera.position.y = vec.y;
+    }
+
+    private void focusOnBase() {
+        // move camera to center the base
+        Building base = gameData.getBuildingsByOwner(myself)
+            .filter(b -> b.getType().equals("Base"))
+            .findFirst()
+            .orElse(null);
+        if (base == null) {
+            controlPanel.popup.error("Base not found");
+            return;
+        }
+        IntPair cell = base.getPosition();
+        Vector3 vec3 = vec3AtCell(cell.x(), cell.y())
+            .add(15f * tilePerUnit, 8f * tilePerUnit, 0);
+        focusCameraOn(cell.x() + 0.5f, cell.y() + 0.5f);
+        selectCol = cell.x();
+        selectRow = cell.y();
+        setPanelOnSelect();
+    }
+
+    private void focusOnLord() {
+        Unit lord = gameData.getUnits().stream()
+            .filter(u -> u.getType().equals("Lord"))
+            .findFirst()
+            .orElse(null);
+        if (lord == null) {
+            controlPanel.popup.error("Lord not found");
+            return;
+        }
+        IntPair cell = lord.getPosition();
+        focusCameraOn(cell.x() + 0.5f, cell.y() + 0.5f);
     }
 
     private boolean targetToBeTargeted() {

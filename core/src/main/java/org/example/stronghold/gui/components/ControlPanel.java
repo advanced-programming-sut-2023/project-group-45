@@ -79,7 +79,7 @@ public class ControlPanel implements Disposable {
         addPanelButton("Report", () -> null);
         addPanelButton("Build", () -> new BuildPanel(this));
         addPanelButton("Food", () -> new FoodPanel(this));
-        addPanelButton("Popularity", () -> null);
+        addPanelButton("Popularity", () -> new PopularityPanel(this));
         finishSelectRow();
         addPanelButton("Market", () -> new MarketPanel(this));
         addPanelButton("Tax", () -> new TaxPanel(this));

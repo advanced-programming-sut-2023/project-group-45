@@ -12,6 +12,7 @@ import org.example.stronghold.gui.StrongholdGame;
 
 public abstract class FormScreen implements Screen {
 
+    private final static boolean DEBUG = true;
     final protected StrongholdGame game;
     protected Stage stage;
     protected PopupWindow popup;
@@ -31,12 +32,13 @@ public abstract class FormScreen implements Screen {
     public final void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        stage.setDebugAll(DEBUG);
 
         dirt = game.assetLoader.getTexture("craftacular/dirt.png");
         dirt.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         titleTable = new Table();
-        table = new Table();
+        table = new Table(game.skin);
         stage.addActor(titleTable);
         titleTable.setFillParent(true);
         titleTable.add(new Label("STRONGHOLD", game.craftacularSkin, "title")).expandX().row();

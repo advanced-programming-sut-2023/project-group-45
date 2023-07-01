@@ -28,7 +28,7 @@ public class ProfileScreen extends FormScreen {
     private final User user;
     Label usernameLabel, nicknameLabel, sloganLabel, emailLabel;
     TextField usernameField, passwordField, nicknameField, sloganField, emailField, currentPasswordField, avatarPath;
-    TextButton applyButton, logoutButton;
+    TextButton applyButton, logoutButton, startGameButton;
     Table profileTable, scoreboardTable;
     ScrollPane scrollPane;
     Image avatarImage;
@@ -61,6 +61,7 @@ public class ProfileScreen extends FormScreen {
         emailLabel = new Label("Email:", game.skin);
         applyButton = new TextButton("Apply", game.skin);
         logoutButton = new TextButton("Logout", game.skin);
+        startGameButton = new TextButton("Start game", game.skin);
 
         scoreboardTable = new Table();
         Operators.auth.getUsers().sort((x, y) -> Integer.compare(y.getScore(), x.getScore()));
@@ -89,7 +90,8 @@ public class ProfileScreen extends FormScreen {
         profileTable.add(currentPasswordField).align(Align.right).minWidth(400);
         profileTable.add(passwordField).minWidth(400).growX().row();
         profileTable.add(logoutButton).align(Align.center).minWidth(400);
-        profileTable.add(applyButton).align(Align.center).minWidth(400).row();
+        profileTable.add(applyButton).align(Align.center).minWidth(400);
+        profileTable.add(startGameButton).align(Align.center).minWidth(400).row();
         table.add(profileTable).growX();
         table.add(scrollPane).maxHeight(500).growX().padTop(20).align(Align.topLeft).row();
 
@@ -97,6 +99,8 @@ public class ProfileScreen extends FormScreen {
         logoutButton.addListener(
             new SimpleChangeListener(() -> game.setScreen(new LoginScreen(game))));
         applyButton.addListener(new SimpleChangeListener(this::apply));
+        startGameButton.addListener(
+            new SimpleChangeListener(() -> game.setScreen(new StartGameScreen(game, user))));
     }
 
     private void generateSlogan() {

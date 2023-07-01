@@ -9,6 +9,7 @@ import static org.example.stronghold.operator.OperatorPreconditions.checkUserExi
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
 import com.badlogic.gdx.Gdx;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -47,6 +48,7 @@ public class AuthOperator {
             .score(0)
             .build();
         try {
+            Gdx.files.internal("avatars").file().mkdir();
             Files.copy(Gdx.files.internal("data/default_avatar.jpg").file().toPath(),
                 user.getAvatar().file().toPath());
         } catch (IOException e) {

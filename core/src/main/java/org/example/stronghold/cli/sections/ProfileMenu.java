@@ -19,8 +19,6 @@ import org.example.stronghold.operator.Operators;
 public class ProfileMenu extends Menu {
 
     private final static List<String> SLOGANS = List.of(
-        "We Are Number One! (RIP Stefan Karl)",
-        // copilot wtf?
         "I'm a little teapot, short and stout",
         "Here is my handle, here is my spout",
         "When I get all steamed up, hear me shout",
@@ -44,7 +42,7 @@ public class ProfileMenu extends Menu {
         addCommand("start-game", this::startGame);
     }
 
-    private static String generateSlogan() {
+    public static String generateSlogan() {
         Random random = new Random();
         return SLOGANS.get(random.nextInt(SLOGANS.size()));
     }

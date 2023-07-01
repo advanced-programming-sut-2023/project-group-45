@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import org.example.stronghold.gui.components.ControlPanel;
@@ -20,7 +19,6 @@ public class PopularityPanel extends Panel {
     private final ControlPanel controlPanel;
     private final PopupWindow popupWindow;
     private Table table;
-    private TextButton updateButton;
 
     public PopularityPanel(ControlPanel controlPanel) {
         super(controlPanel);
@@ -37,10 +35,10 @@ public class PopularityPanel extends Panel {
         table.add(label).growX();
     }
 
-    private Texture getTexture(int value){
-        if(value < 0){
+    private Texture getTexture(int value) {
+        if (value < 0) {
             return game.assetLoader.getTexture("others/sad.png");
-        } else if(value == 0){
+        } else if (value == 0) {
             return game.assetLoader.getTexture("others/normal.png");
         } else {
             return game.assetLoader.getTexture("others/happy.png");

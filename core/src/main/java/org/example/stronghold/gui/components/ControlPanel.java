@@ -17,7 +17,6 @@ import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.panels.*;
 import org.example.stronghold.gui.sections.MapScreen;
-import org.example.stronghold.model.GameData;
 
 @Data
 public class ControlPanel implements Disposable {
@@ -76,7 +75,7 @@ public class ControlPanel implements Disposable {
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
         stage.addActor(popup);
 
-        addPanelButton("Report", () -> null);
+        addPanelButton("Report", () -> new ReportPanel(this));
         addPanelButton("Build", () -> new BuildPanel(this));
         addPanelButton("Food", () -> new FoodPanel(this));
         addPanelButton("Popularity", () -> new PopularityPanel(this));

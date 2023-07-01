@@ -12,7 +12,7 @@ import org.example.stronghold.gui.StrongholdGame;
 
 public abstract class FormScreen implements Screen {
 
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
     final protected StrongholdGame game;
     protected Stage stage;
     protected PopupWindow popup;

@@ -29,7 +29,7 @@ import org.example.stronghold.gui.sections.MapScreen;
 @Data
 public class ControlPanel implements Disposable {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     final StrongholdGame game;
     final MapScreen screen;
     final int height;

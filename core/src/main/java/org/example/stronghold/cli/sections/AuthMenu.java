@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import org.example.stronghold.cli.CaptchaChecker;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.context.HashMode;
 import org.example.stronghold.context.HashedString;
 import org.example.stronghold.model.User;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.CaptchaChecker;
-import org.example.stronghold.cli.Menu;
 
 public class AuthMenu extends Menu {
 
@@ -57,7 +57,7 @@ public class AuthMenu extends Menu {
 
     public static boolean isPasswordWeak(String password) {
         return !password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={};':\"|,.<>?/]).{6,}$");
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={};':\"|,.<>?/]).{6,}$");
     }
 
     public static HashedString hashPassword(String plainPassword) {
@@ -69,7 +69,7 @@ public class AuthMenu extends Menu {
         if (getOpt(input, "password").equals("random")) {
             String password = generatePassword();
             System.out.println(
-                    "Your password is: " + password + "\nPlease re-enter your password here:");
+                "Your password is: " + password + "\nPlease re-enter your password here:");
             input.put("password-confirm", scanner.nextLine().trim());
             input.put("password", password);
         }
@@ -79,7 +79,7 @@ public class AuthMenu extends Menu {
         }
         if (isPasswordWeak(getOpt(input, "password"))) {
             System.out.println(
-                    "Password must contain at least one lowercase letter, one uppercase letter, one digit and one special character");
+                "Password must contain at least one lowercase letter, one uppercase letter, one digit and one special character");
             return;
         }
         copyOptTo(input, req, "username", "email", "nickname");

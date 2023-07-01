@@ -30,7 +30,7 @@ public class MapUtils {
             return false;
         }
         throw new IllegalArgumentException(
-                "Invalid boolean value for --" + key + ", got " + getOpt(map, key));
+            "Invalid boolean value for --" + key + ", got " + getOpt(map, key));
     }
 
     public static int getIntOpt(Map<String, String> map, String key) {
@@ -38,7 +38,7 @@ public class MapUtils {
             return Integer.parseInt(getOpt(map, key));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
-                    "Invalid integer value for --" + key + ", got " + getOpt(map, key));
+                "Invalid integer value for --" + key + ", got " + getOpt(map, key));
         }
     }
 

@@ -7,11 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import org.example.stronghold.context.ANSIColor;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.Menu;
 
 public class MapEditorMenu extends Menu {
 
@@ -34,7 +33,7 @@ public class MapEditorMenu extends Menu {
 
     private boolean isValidPosition(IntPair position) {
         return position.x() >= 0 && position.x() < gameMap.getWidth() && position.y() >= 0
-                && position.y() < gameMap.getHeight();
+            && position.y() < gameMap.getHeight();
     }
 
     private void saveMap(Map<String, String> input) {

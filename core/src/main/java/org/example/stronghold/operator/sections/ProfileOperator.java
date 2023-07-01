@@ -3,8 +3,8 @@ package org.example.stronghold.operator.sections;
 import static org.example.stronghold.context.MapUtils.getReqAs;
 import static org.example.stronghold.context.MapUtils.getReqString;
 import static org.example.stronghold.operator.OperatorPreconditions.checkEmailFormat;
-import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkIsNull;
+import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
 import java.util.Map;

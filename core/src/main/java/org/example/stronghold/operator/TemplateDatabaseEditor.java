@@ -29,7 +29,7 @@ public class TemplateDatabaseEditor {
                     int damage = Integer.parseInt(tokens[2]);
                     UnitTemplate unitTemplate = new UnitTemplate();
                     unitTemplate.setType(type);
-                    unitTemplate.setMaxHitPoints(maxHitPoints*10);
+                    unitTemplate.setMaxHitPoints(maxHitPoints * 10);
                     unitTemplate.setSpeed(speed);
                     unitTemplate.setRange(1);
                     unitTemplate.setDamage(damage);
@@ -42,10 +42,10 @@ public class TemplateDatabaseEditor {
                 case "list" -> {
                     if (tokens[1].equals("units")) {
                         unitTemplates.forEach((type, unitTemplate) -> System.out.println(
-                                type + " " + unitTemplate));
+                            type + " " + unitTemplate));
                     } else if (tokens[1].equals("buildings")) {
                         buildingTemplates.forEach((type, buildingTemplate) -> System.out.println(
-                                type + " " + buildingTemplate));
+                            type + " " + buildingTemplate));
                     }
                 }
                 case "addBuilding" -> {

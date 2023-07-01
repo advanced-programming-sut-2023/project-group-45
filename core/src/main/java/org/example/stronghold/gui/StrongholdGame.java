@@ -19,12 +19,12 @@ import org.example.stronghold.operator.Operators;
 
 public class StrongholdGame extends Game {
 
+    public final AssetLoader assetLoader = new AssetLoader();
     public Skin skin, craftacularSkin;
+    public TemplateDatabase templateDatabase;
     private File databaseFile;
     private File templateDatabaseRoot;
     private Database database;
-    public TemplateDatabase templateDatabase;
-    public final AssetLoader assetLoader = new AssetLoader();
 
     @Override
     public void create() {

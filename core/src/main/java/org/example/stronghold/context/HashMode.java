@@ -13,10 +13,10 @@ public enum HashMode implements Serializable {
 
     private static final HashStringFunction plainHashStringFunction = plain -> plain;
     public static final ImmutableMap<HashMode, HashStringFunction> toStringFunction
-            = ImmutableMap.of(
-            PLAIN, plainHashStringFunction,
-            SHA256, fromHashFunction(Hashing.sha256()),
-            SHA512, fromHashFunction(Hashing.sha512())
+        = ImmutableMap.of(
+        PLAIN, plainHashStringFunction,
+        SHA256, fromHashFunction(Hashing.sha256()),
+        SHA512, fromHashFunction(Hashing.sha512())
     );
 
     private static HashStringFunction fromHashFunction(final HashFunction function) {

@@ -16,7 +16,14 @@ import java.util.function.Supplier;
 import lombok.Data;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
-import org.example.stronghold.gui.panels.*;
+import org.example.stronghold.gui.panels.BuildPanel;
+import org.example.stronghold.gui.panels.FoodPanel;
+import org.example.stronghold.gui.panels.MarketPanel;
+import org.example.stronghold.gui.panels.OptionPanel;
+import org.example.stronghold.gui.panels.PopularityPanel;
+import org.example.stronghold.gui.panels.ReportPanel;
+import org.example.stronghold.gui.panels.TaxPanel;
+import org.example.stronghold.gui.panels.TradePanel;
 import org.example.stronghold.gui.sections.MapScreen;
 
 @Data
@@ -26,19 +33,19 @@ public class ControlPanel implements Disposable {
     final StrongholdGame game;
     final MapScreen screen;
     final int height;
+    public PopupWindow popup;
     Viewport viewport;
     Stage stage;
     Table layoutTable, selectTable, lastRow;
     Container<Panel> mainPane;
     Texture dirt;
-    public PopupWindow popup;
-
-    public void setPanel(Panel panel) {
-        mainPane.setActor(panel);
-    }
 
     public Panel getPanel() {
         return mainPane.getActor();
+    }
+
+    public void setPanel(Panel panel) {
+        mainPane.setActor(panel);
     }
 
     public void switchPanelOnChange(Actor actor, Supplier<Panel> supplier) {

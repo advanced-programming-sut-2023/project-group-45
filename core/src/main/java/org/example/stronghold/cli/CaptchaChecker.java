@@ -15,7 +15,7 @@ public class CaptchaChecker {
         loop:
         while (true) {
             System.out.print(
-                    "Enter captcha answer or type 'refresh' to refresh or 'cancel' to cancel: ");
+                "Enter captcha answer or type 'refresh' to refresh or 'cancel' to cancel: ");
             String input = scanner.nextLine();
             switch (input) {
                 case "refresh" -> refresh();

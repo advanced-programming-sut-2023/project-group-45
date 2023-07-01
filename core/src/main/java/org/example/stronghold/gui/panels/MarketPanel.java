@@ -12,7 +12,6 @@ import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
-import org.example.stronghold.gui.components.PopupWindow;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Market;
 import org.example.stronghold.model.Player;
@@ -21,13 +20,13 @@ import org.example.stronghold.operator.Operators;
 public class MarketPanel extends Panel {
 
     public static List<String> RESOURCES;
-    private GameData gameData;
-    private Market market;
-    private Player player;
     Table resourceTable, economyTable;
     TextField amountField;
     TextButton buyButton, sellButton;
     Label resourceInfo;
+    private final GameData gameData;
+    private final Market market;
+    private final Player player;
     private String resource;
 
     public MarketPanel(ControlPanel controlPanel) {

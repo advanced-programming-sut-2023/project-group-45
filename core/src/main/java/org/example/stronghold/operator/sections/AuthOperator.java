@@ -9,7 +9,6 @@ import static org.example.stronghold.operator.OperatorPreconditions.checkUserExi
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
 import com.badlogic.gdx.Gdx;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;

@@ -19,7 +19,7 @@ public enum ANSIColor {
     private final String brightBackground;
 
     ANSIColor(String foreground, String background, String brightBackground,
-            String brightForeground) {
+        String brightForeground) {
         this.foreground = foreground;
         this.brightForeground = brightForeground;
         this.background = background;

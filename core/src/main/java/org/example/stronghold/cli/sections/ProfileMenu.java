@@ -10,27 +10,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.Menu;
 
 public class ProfileMenu extends Menu {
 
     private final static List<String> SLOGANS = List.of(
-            "We Are Number One! (RIP Stefan Karl)",
-            // copilot wtf?
-            "I'm a little teapot, short and stout",
-            "Here is my handle, here is my spout",
-            "When I get all steamed up, hear me shout",
-            "Tip me over and pour me out!"
+        "We Are Number One! (RIP Stefan Karl)",
+        // copilot wtf?
+        "I'm a little teapot, short and stout",
+        "Here is my handle, here is my spout",
+        "When I get all steamed up, hear me shout",
+        "Tip me over and pour me out!"
     );
     private final static List<String> SECURITY_QUESTIONS = List.of(
-            // everyone already knows your top favorite
-            "What is your third favorite movie?",
-            "What is your third favorite food?",
-            "What is your third favorite color?"
+        // everyone already knows your top favorite
+        "What is your third favorite movie?",
+        "What is your third favorite food?",
+        "What is your third favorite color?"
     );
     private final User user;
 
@@ -103,7 +103,7 @@ public class ProfileMenu extends Menu {
         String newPassword = getOpt(input, "new-password");
         if (AuthMenu.isPasswordWeak(newPassword)) {
             System.out.println(
-                    "Password must contain at least one lowercase letter, one uppercase letter, one digit and one special character");
+                "Password must contain at least one lowercase letter, one uppercase letter, one digit and one special character");
             return;
         }
         req.put("old-password", AuthMenu.hashPassword(getOpt(input, "old-password")));
@@ -178,9 +178,9 @@ public class ProfileMenu extends Menu {
         GameMapTemplate gameMap;
         if (getBoolOpt(input, "new")) {
             gameMap = new GameMapTemplate(
-                    getOpt(input, "name"),
-                    getIntOpt(input, "width"),
-                    getIntOpt(input, "height")
+                getOpt(input, "name"),
+                getIntOpt(input, "width"),
+                getIntOpt(input, "height")
             );
         } else {
             try {

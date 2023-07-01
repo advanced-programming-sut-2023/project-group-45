@@ -71,7 +71,8 @@ public class BuildingPanel extends Panel {
         destroy.addListener(new SimpleChangeListener(this::destroyBuilding));
         repair.addListener(new SimpleChangeListener(this::repairBuilding));
         // hope they don't see this
-        undo.addListener(new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
+        undo.addListener(
+            new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
         copy.addListener(new SimpleChangeListener(this::copyBuilding));
 
         if (!building.getDropUnit().isEmpty()) {
@@ -82,8 +83,9 @@ public class BuildingPanel extends Panel {
     private void createMenu() {
         for (String unit : building.getDropUnit().keySet()) {
             Drawable unitImage = getUnitDrawable(unit);
-            if (unitImage == null)
+            if (unitImage == null) {
                 continue;
+            }
             ImageButton btn = new ImageButton(unitImage);
             btn.setSkin(game.skin);
             btn.addListener(new SimpleChangeListener(() -> dropUnit(unit)));
@@ -96,8 +98,9 @@ public class BuildingPanel extends Panel {
 
     private Drawable getUnitDrawable(String unitType) {
         Texture texture = game.assetLoader.getTexture("units/" + unitType + ".png");
-        if (texture == null)
+        if (texture == null) {
             return null;
+        }
         return new TextureRegionDrawable(texture);
     }
 

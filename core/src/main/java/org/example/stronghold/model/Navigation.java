@@ -14,11 +14,21 @@ public class Navigation {
     private static final List<String> WALKABLE_TILES = List.of("plain", "farmland");
     private final GameData gameData;
 
+    public static IntPair getBySpeed(List<IntPair> path, int speed) {
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
+        if (speed >= path.size()) {
+            return path.get(path.size() - 1);
+        }
+        return path.get(speed);
+    }
+
     public boolean isWalkable(IntPair position) {
         Tile tile = gameData.getMap().getAt(position);
         return tile != null && WALKABLE_TILES.contains(tile.getType()) &&
-                (tile.getBuilding() == null || tile.getBuilding().isHollow()
-                        || tile.getBuilding().getHitPoints() <= 0);
+            (tile.getBuilding() == null || tile.getBuilding().isHollow()
+                || tile.getBuilding().getHitPoints() <= 0);
     }
 
     public boolean isWalkable(IntPair[] path) {
@@ -60,15 +70,5 @@ public class Navigation {
         }
         path.add(end);
         return path;
-    }
-
-    public static IntPair getBySpeed(List<IntPair> path, int speed) {
-        if (path == null || path.isEmpty()) {
-            return null;
-        }
-        if (speed >= path.size()) {
-            return path.get(path.size() - 1);
-        }
-        return path.get(speed);
     }
 }

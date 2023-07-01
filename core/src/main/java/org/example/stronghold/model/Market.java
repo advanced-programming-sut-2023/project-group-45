@@ -9,5 +9,5 @@ import org.example.stronghold.context.IntPair;
 @Data
 public class Market implements Serializable {
 
-    private final Map<String, IntPair> Prices = new HashMap<>();
+    private final Map<String, IntPair> prices = new HashMap<>();
 }

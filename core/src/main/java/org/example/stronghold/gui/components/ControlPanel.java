@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
@@ -34,6 +35,10 @@ public class ControlPanel implements Disposable {
 
     public void setPanel(Panel panel) {
         mainPane.setActor(panel);
+    }
+
+    public Panel getPanel() {
+        return mainPane.getActor();
     }
 
     public void switchPanelOnChange(Actor actor, Supplier<Panel> supplier) {
@@ -70,7 +75,10 @@ public class ControlPanel implements Disposable {
         mainPane = new Container<>();
         mainPane.pad(5);
         mainPane.fill();
-        layoutTable.add(mainPane).grow().row();
+        layoutTable.add(mainPane).grow();
+
+        Image minimap = new Image(game.assetLoader.getTexture("banners/minimap.png"));
+        layoutTable.add(minimap).width(2 * height);
 
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
         stage.addActor(popup);
@@ -83,6 +91,8 @@ public class ControlPanel implements Disposable {
         addPanelButton("Market", () -> new MarketPanel(this));
         addPanelButton("Tax", () -> new TaxPanel(this));
         addPanelButton("Trade", () -> new TradePanel(this));
+        finishSelectRow();
+        addPanelButton("Options", () -> new OptionPanel(this));
         finishSelectRow();
 
         stage.setDebugAll(DEBUG);

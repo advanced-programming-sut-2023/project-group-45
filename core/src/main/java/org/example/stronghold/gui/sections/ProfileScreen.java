@@ -1,10 +1,15 @@
 package org.example.stronghold.gui.sections;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.HashMap;
 import org.example.stronghold.cli.sections.AuthMenu;
 import org.example.stronghold.context.HashMode;
@@ -13,16 +18,17 @@ import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.FormScreen;
 import org.example.stronghold.model.User;
-import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
 public class ProfileScreen extends FormScreen {
 
-    Label usernameLabel, nicknameLabel, sloganLabel, emailLabel;
-
-    TextField usernameField, passwordField, nicknameField, sloganField, emailField, currentPasswordField;
-    TextButton applyButton, logoutButton;
     private final User user;
+    Label usernameLabel, nicknameLabel, sloganLabel, emailLabel;
+    TextField usernameField, passwordField, nicknameField, sloganField, emailField, currentPasswordField, avatarPath;
+    TextButton applyButton, logoutButton;
+    Table profileTable, scoreboardTable;
+    ScrollPane scrollPane;
+    Image avatarImage;
 
     public ProfileScreen(StrongholdGame game, User user) {
         super(game);
@@ -31,11 +37,14 @@ public class ProfileScreen extends FormScreen {
 
     @Override
     public void formShow() {
+        profileTable = new Table();
+        avatarImage = new Image(new Texture(user.getAvatar()));
         usernameLabel = new Label("Username:", game.skin);
         usernameField = new TextField(user.getUsername(), game.skin);
         passwordField = new TextField("", game.skin);
         passwordField.setPasswordCharacter('*');
         passwordField.setPasswordMode(true);
+        avatarPath = new TextField("", game.skin);
         currentPasswordField = new TextField("", game.skin);
         currentPasswordField.setPasswordCharacter('*');
         currentPasswordField.setPasswordMode(true);
@@ -48,20 +57,35 @@ public class ProfileScreen extends FormScreen {
         applyButton = new TextButton("Apply", game.skin);
         logoutButton = new TextButton("Logout", game.skin);
 
-        table.pad(50);
-        table.defaults().spaceBottom(10).spaceRight(10);
-        table.add(usernameLabel).align(Align.left);
-        table.add(usernameField).growX().minWidth(400).row();
-        table.add(nicknameLabel).align(Align.left);
-        table.add(nicknameField).growX().row();
-        table.add(sloganLabel).align(Align.left);
-        table.add(sloganField).growX().row();
-        table.add(emailLabel).align(Align.left);
-        table.add(emailField).growX().row();
-        table.add(currentPasswordField).align(Align.right).minWidth(400);
-        table.add(passwordField).minWidth(400).growX().row();
-        table.add(logoutButton).align(Align.center).minWidth(400);
-        table.add(applyButton).align(Align.center).minWidth(400).row();
+        scoreboardTable = new Table();
+        Operators.auth.getUsers().sort((x, y) -> Integer.compare(y.getScore(), x.getScore()));
+        int i = 0;
+        for (User user : Operators.auth.getUsers()) {
+            scoreboardTable.add(new Label(++i + ".", game.skin)).align(Align.left);
+            scoreboardTable.add(new Label(user.getUsername(), game.skin)).align(Align.left);
+            scoreboardTable.add(new Label(String.valueOf(user.getScore()), game.skin))
+                .align(Align.right).minWidth(200).row();
+        }
+        scrollPane = new ScrollPane(scoreboardTable);
+
+        profileTable.pad(50);
+        profileTable.defaults().spaceBottom(10).spaceRight(10);
+        profileTable.add(avatarImage);
+        profileTable.add(avatarPath).growX().align(Align.bottom).row();
+        profileTable.add(usernameLabel).align(Align.left);
+        profileTable.add(usernameField).growX().minWidth(400).row();
+        profileTable.add(nicknameLabel).align(Align.left);
+        profileTable.add(nicknameField).growX().row();
+        profileTable.add(sloganLabel).align(Align.left);
+        profileTable.add(sloganField).growX().row();
+        profileTable.add(emailLabel).align(Align.left);
+        profileTable.add(emailField).growX().row();
+        profileTable.add(currentPasswordField).align(Align.right).minWidth(400);
+        profileTable.add(passwordField).minWidth(400).growX().row();
+        profileTable.add(logoutButton).align(Align.center).minWidth(400);
+        profileTable.add(applyButton).align(Align.center).minWidth(400).row();
+        table.add(profileTable).growX();
+        table.add(scrollPane).maxHeight(500).growX().row();
 
         logoutButton.addListener(
             new SimpleChangeListener(() -> game.setScreen(new LoginScreen(game))));
@@ -78,7 +102,7 @@ public class ProfileScreen extends FormScreen {
                     put("new-password", HashedString.fromPlain(currentPasswordField.getText())
                         .withMode(HashMode.SHA256));
                 } else {
-                    if(AuthMenu.isPasswordWeak(passwordField.getText())) {
+                    if (AuthMenu.isPasswordWeak(passwordField.getText())) {
                         throw new Exception("Password is too weak!");
                     }
                     put("new-password",
@@ -90,12 +114,19 @@ public class ProfileScreen extends FormScreen {
                 put("new-slogan", sloganField.getText());
             }};
             Operators.profile.changePassword(req);
-            if (!req.get("new-username").equals(user.getUsername()))
+            if (!req.get("new-username").equals(user.getUsername())) {
                 Operators.profile.changeUsername(req);
-            if (!req.get("new-email").equals(user.getEmail()))
+            }
+            if (!req.get("new-email").equals(user.getEmail())) {
                 Operators.profile.changeEmail(req);
+            }
             Operators.profile.changeNickname(req);
             Operators.profile.changeSlogan(req);
+            if (!avatarPath.getText().isEmpty()) {
+                Files.copy(new File(avatarPath.getText()).toPath(),
+                    user.getAvatar().file().toPath());
+                avatarImage = new Image(new Texture(user.getAvatar()));
+            }
             popup.success("Done!");
         } catch (Exception e) {
             popup.error(e.getMessage());

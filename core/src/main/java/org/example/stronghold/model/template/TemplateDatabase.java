@@ -2,7 +2,6 @@ package org.example.stronghold.model.template;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.File;
@@ -18,9 +17,9 @@ import lombok.Data;
 public class TemplateDatabase {
 
     private static final Gson GSON = new GsonBuilder()
-            .setPrettyPrinting()
-            .disableJdkUnsafe()
-            .create();
+        .setPrettyPrinting()
+        .disableJdkUnsafe()
+        .create();
     private final Map<String, UnitTemplate> unitTemplates = new HashMap<>();
     private final Map<String, BuildingTemplate> buildingTemplates = new HashMap<>();
     private final Map<String, GameMapTemplate> gameMapTemplates = new HashMap<>();
@@ -53,7 +52,7 @@ public class TemplateDatabase {
     }
 
     private <T> void populate(Map<String, T> templates, File root, String subPath, Class<T> clazz)
-            throws IOException {
+        throws IOException {
         File path = new File(root, subPath);
         if (!path.exists()) // same as empty directory
         {
@@ -67,8 +66,8 @@ public class TemplateDatabase {
     }
 
     private <T> void depopulate(Map<String, T> templates, File root, String subpath,
-            boolean overwrite)
-            throws IOException {
+        boolean overwrite)
+        throws IOException {
         File path = new File(root, subpath);
         for (String templateName : templates.keySet()) {
             File file = new File(path, templateName + ".json");

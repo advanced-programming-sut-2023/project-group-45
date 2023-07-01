@@ -40,16 +40,16 @@ public class Database implements Serializable {
 
     public User getUserFromUsername(String username) {
         return users.stream()
-                .filter(user -> user.getUsername().equals(username))
-                .findFirst()
-                .orElse(null);
+            .filter(user -> user.getUsername().equals(username))
+            .findFirst()
+            .orElse(null);
     }
 
     public User getUserFromEmail(String email) {
         return users.stream()
-                .filter(user -> user.getEmail().equals(email))
-                .findFirst()
-                .orElse(null);
+            .filter(user -> user.getEmail().equals(email))
+            .findFirst()
+            .orElse(null);
     }
 
     public boolean isStayLoggedInUsername(String username) {

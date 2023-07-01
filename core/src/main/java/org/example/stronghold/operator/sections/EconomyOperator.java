@@ -65,7 +65,7 @@ public final class EconomyOperator {
         GameData gameData = getReqAs(req, "game", GameData.class);
         Market market = gameData.getMarket();
         checkTrue(player.getGold() < amount * market.getPrices().get(item).x(),
-                Type.NOT_ENOUGH_GOLD);
+            Type.NOT_ENOUGH_GOLD);
         addIntMap(player.getResources(), item, amount);
         player.setGold(player.getGold() - amount * market.getPrices().get(item).x());
     }

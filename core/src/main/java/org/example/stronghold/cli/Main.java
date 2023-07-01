@@ -3,10 +3,10 @@ package org.example.stronghold.cli;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import org.example.stronghold.cli.sections.AuthMenu;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.operator.Operators;
-import org.example.stronghold.cli.sections.AuthMenu;
 
 public class Main {
 

@@ -29,17 +29,17 @@ public class BuildingTemplate {
 
     public BuildingBuilder getBuilder() {
         return Building.builder()
-                .type(type)
-                .maxHitPoints(maxHitPoints)
-                .isHollow(isHollow)
-                .maxLabors(maxLabors)
-                .consume(consume)
-                .supply(supply)
-                .religionFactor(religionFactor)
-                .happinessFactor(happinessFactor)
-                .housingSpace(housingSpace)
-                .dropUnit(dropUnit)
-                .guiSetting(guiSetting);
+            .type(type)
+            .maxHitPoints(maxHitPoints)
+            .isHollow(isHollow)
+            .maxLabors(maxLabors)
+            .consume(consume)
+            .supply(supply)
+            .religionFactor(religionFactor)
+            .happinessFactor(happinessFactor)
+            .housingSpace(housingSpace)
+            .dropUnit(dropUnit)
+            .guiSetting(guiSetting);
     }
 
     public boolean canBeBuiltOn(String tileType) {

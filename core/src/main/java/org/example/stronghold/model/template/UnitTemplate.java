@@ -21,14 +21,14 @@ public class UnitTemplate {
 
     public Unit.UnitBuilder getBuilder() {
         return Unit.builder()
-                .type(type)
-                .maxHitPoints(maxHitPoints)
-                .speed(speed)
-                .range(range)
-                .damage(damage)
-                .canClimb(canClimb)
-                .canDig(canDig)
-                .vision(vision)
-                .guiSetting(guiSetting);
+            .type(type)
+            .maxHitPoints(maxHitPoints)
+            .speed(speed)
+            .range(range)
+            .damage(damage)
+            .canClimb(canClimb)
+            .canDig(canDig)
+            .vision(vision)
+            .guiSetting(guiSetting);
     }
 }

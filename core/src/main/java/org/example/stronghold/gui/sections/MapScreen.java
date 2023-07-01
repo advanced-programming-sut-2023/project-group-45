@@ -23,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -47,27 +46,27 @@ import org.example.stronghold.operator.Operators;
 
 public class MapScreen implements Screen {
 
-    final StrongholdGame game;
-    TiledMap tiledMap;
-    IsometricTiledMapRenderer renderer;
-    OrthographicCamera camera;
-    Viewport mapViewport;
     static final int tilePerUnit = 4;
+    private static final float buildingHeight = 40;
+    final StrongholdGame game;
+    final Random tileRandomizer = new Random(42);
     @Getter
     public GameData gameData;
     @Getter
     public GameMap gameMap;
-    final Random tileRandomizer = new Random(42);
+    public String toBeBuiltType;
+    @Getter
+    public Player myself;
+    public boolean toBeTargeted = false;
+    TiledMap tiledMap;
+    IsometricTiledMapRenderer renderer;
+    OrthographicCamera camera;
+    Viewport mapViewport;
     float hoverX, hoverY;
     int hoverCol = -1, hoverRow = -1;
     int selectCol = -1, selectRow = -1;
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
-    public String toBeBuiltType;
-    @Getter
-    public Player myself;
-    public boolean toBeTargeted = false;
-    private static final float buildingHeight = 40;
 
     public MapScreen(StrongholdGame game, GameData gameData) {
         this.game = game;
@@ -75,6 +74,54 @@ public class MapScreen implements Screen {
         this.gameMap = gameData.getMap();
         // todo: get user in constructor
         this.myself = gameData.getPlayers().get(0);
+    }
+
+    private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
+        // returns location of *
+        //   /\
+        //  /  \
+        //  \  /
+        // * \/
+        return new Vector3(
+            15f * (tilePerUnit * (column + row) + i + j),
+            8f * (tilePerUnit * (column - row) + i - j),
+            0
+        );
+    }
+
+    private static Vector3 vec3AtCell(int column, int row) {
+        return vec3AtSubCell(column, row, 0, 0).sub(0, 8f * (tilePerUnit - 1), 0);
+    }
+
+    private static IntPair subCellAtVec3(Vector3 vector) {
+        float rowFactor = 8f / 15 * vector.x - vector.y;
+        int row = (int) Math.floor((rowFactor + 8) / 16);
+        float colFactor = 8f / 15 * vector.x + vector.y;
+        int col = (int) Math.floor((colFactor - 8) / 16);
+        return new IntPair(col, row);
+    }
+
+    private static IntPair cellAtVec3(Vector3 vector) {
+        IntPair subCell = subCellAtVec3(vector);
+        return new IntPair(
+            subCell.x() / tilePerUnit,
+            subCell.y() / tilePerUnit
+        );
+    }
+
+    private static Vector3 vec3AtPoint(float column, float row) {
+        // useful for drawing things on top of tiles
+        // different from the notion of cells
+        //   /\
+        //  /  \
+        // *    |
+        //  \  /
+        //   \/
+        return new Vector3(
+            15f * (tilePerUnit * (column + row)),
+            8f * (tilePerUnit * (column - row)) + 8f,
+            0
+        );
     }
 
     private void setTileAt(int column, int row, int id) {
@@ -125,71 +172,6 @@ public class MapScreen implements Screen {
                     }
                 }
             }
-        }
-    }
-
-    // this class can access private members of TestMapScreen, it isn't a static class
-    class MapInputProcessor extends InputAdapter {
-
-        private boolean notInMap(int screenY) {
-            return screenY >= Gdx.graphics.getHeight() - controlPanel.getHeight();
-        }
-
-        private boolean notInMap() {
-            return notInMap(Gdx.input.getY());
-        }
-
-        // return true to capture the event; return false to pass the event to the control panel
-
-        @Override
-        public boolean scrolled(float amountX, float amountY) {
-            if (notInMap()) {
-                return false;
-            }
-            camera.zoom += amountY * 0.1f;
-            camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
-            return true;
-        }
-
-        @Override
-        public boolean mouseMoved(int screenX, int screenY) {
-            hoverCol = -1;
-            hoverRow = -1;
-            if (notInMap()) {
-                return false;
-            }
-            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
-            hoverX = worldVec.x;
-            hoverY = worldVec.y;
-            IntPair cell = cellAtVec3(worldVec);
-            hoverCol = cell.x();
-            hoverRow = cell.y();
-            return true;
-        }
-
-        @Override
-        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            if (notInMap(screenY)) {
-                return false;
-            }
-            if (button == Buttons.RIGHT) {
-                return toggleUnitSelection(screenX, screenY);
-            }
-            if (button != Buttons.LEFT) {
-                return false;
-            }
-            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
-            IntPair cell = cellAtVec3(worldVec);
-            selectCol = cell.x();
-            selectRow = cell.y();
-            if (targetToBeTargeted()) {
-                return true;
-            }
-            if (buildToBeBuilt()) {
-                return true;
-            }
-            setPanelOnSelect();
-            return true;
         }
     }
 
@@ -358,54 +340,6 @@ public class MapScreen implements Screen {
         controlPanel.setPanel(new TilePanel(controlPanel, selectCol, selectRow, tile));
     }
 
-    private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
-        // returns location of *
-        //   /\
-        //  /  \
-        //  \  /
-        // * \/
-        return new Vector3(
-            15f * (tilePerUnit * (column + row) + i + j),
-            8f * (tilePerUnit * (column - row) + i - j),
-            0
-        );
-    }
-
-    private static Vector3 vec3AtCell(int column, int row) {
-        return vec3AtSubCell(column, row, 0, 0).sub(0, 8f * (tilePerUnit - 1), 0);
-    }
-
-    private static IntPair subCellAtVec3(Vector3 vector) {
-        float rowFactor = 8f / 15 * vector.x - vector.y;
-        int row = (int) Math.floor((rowFactor + 8) / 16);
-        float colFactor = 8f / 15 * vector.x + vector.y;
-        int col = (int) Math.floor((colFactor - 8) / 16);
-        return new IntPair(col, row);
-    }
-
-    private static IntPair cellAtVec3(Vector3 vector) {
-        IntPair subCell = subCellAtVec3(vector);
-        return new IntPair(
-            subCell.x() / tilePerUnit,
-            subCell.y() / tilePerUnit
-        );
-    }
-
-    private static Vector3 vec3AtPoint(float column, float row) {
-        // useful for drawing things on top of tiles
-        // different from the notion of cells
-        //   /\
-        //  /  \
-        // *    |
-        //  \  /
-        //   \/
-        return new Vector3(
-            15f * (tilePerUnit * (column + row)),
-            8f * (tilePerUnit * (column - row)) + 8f,
-            0
-        );
-    }
-
     private void drawOverMapLayer() {
         Batch batch = renderer.getBatch();
         batch.begin();
@@ -485,7 +419,8 @@ public class MapScreen implements Screen {
             Label label = new Label(unit.getType() + " " + unit.getHitPoints(), game.skin);
             Vector3 onScreen = vec3AtPoint(uCol, uRow);
             Vector3 position = new Vector3(onScreen.x, onScreen.y + 50, 0);
-            label.setPosition(position.x, position.y + (hasBuilding ? buildingHeight : 0), Align.center);
+            label.setPosition(position.x, position.y + (hasBuilding ? buildingHeight : 0),
+                Align.center);
             label.draw(batch, 1);
             x++;
             if (x > n) {
@@ -536,7 +471,8 @@ public class MapScreen implements Screen {
         }
     }
 
-    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row, boolean hasBuilding) {
+    private void drawUnitAt(Batch batch, GuiSetting guiSetting, float column, float row,
+        boolean hasBuilding) {
         if (guiSetting.getAsset() == null) {
             return;
         }
@@ -607,5 +543,70 @@ public class MapScreen implements Screen {
     public void dispose() {
         renderer.dispose();
         controlPanel.dispose();
+    }
+
+    // this class can access private members of TestMapScreen, it isn't a static class
+    class MapInputProcessor extends InputAdapter {
+
+        private boolean notInMap(int screenY) {
+            return screenY >= Gdx.graphics.getHeight() - controlPanel.getHeight();
+        }
+
+        private boolean notInMap() {
+            return notInMap(Gdx.input.getY());
+        }
+
+        // return true to capture the event; return false to pass the event to the control panel
+
+        @Override
+        public boolean scrolled(float amountX, float amountY) {
+            if (notInMap()) {
+                return false;
+            }
+            camera.zoom += amountY * 0.1f;
+            camera.zoom = Math.min(Math.max(camera.zoom, 0.5f), 1);
+            return true;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            hoverCol = -1;
+            hoverRow = -1;
+            if (notInMap()) {
+                return false;
+            }
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            hoverX = worldVec.x;
+            hoverY = worldVec.y;
+            IntPair cell = cellAtVec3(worldVec);
+            hoverCol = cell.x();
+            hoverRow = cell.y();
+            return true;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            if (notInMap(screenY)) {
+                return false;
+            }
+            if (button == Buttons.RIGHT) {
+                return toggleUnitSelection(screenX, screenY);
+            }
+            if (button != Buttons.LEFT) {
+                return false;
+            }
+            Vector3 worldVec = mapViewport.unproject(new Vector3(screenX, screenY, 0));
+            IntPair cell = cellAtVec3(worldVec);
+            selectCol = cell.x();
+            selectRow = cell.y();
+            if (targetToBeTargeted()) {
+                return true;
+            }
+            if (buildToBeBuilt()) {
+                return true;
+            }
+            setPanelOnSelect();
+            return true;
+        }
     }
 }

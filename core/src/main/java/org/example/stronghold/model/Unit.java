@@ -34,7 +34,7 @@ public class Unit implements Serializable {
      */
     @Builder(toBuilder = true)
     public Unit(String type, int maxHitPoints, int speed, int range, int damage, boolean canClimb,
-            boolean canDig, Player owner, int vision, GuiSetting guiSetting) {
+        boolean canDig, Player owner, int vision, GuiSetting guiSetting) {
         this.maxHitPoints = maxHitPoints;
         this.speed = speed;
         this.range = range;

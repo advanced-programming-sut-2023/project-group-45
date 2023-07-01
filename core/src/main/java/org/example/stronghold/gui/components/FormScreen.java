@@ -11,18 +11,19 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.stronghold.gui.StrongholdGame;
 
 public abstract class FormScreen implements Screen {
+
     final protected StrongholdGame game;
     protected Stage stage;
     protected PopupWindow popup;
+    protected Table table;
     Texture dirt;
     Table titleTable;
-    protected Table table;
 
     public FormScreen(StrongholdGame game) {
         this.game = game;
     }
 
-    protected void log(String format, Object ...objects) {
+    protected void log(String format, Object... objects) {
         Gdx.app.log(getClass().getSimpleName(), String.format(format, objects));
     }
 

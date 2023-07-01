@@ -11,10 +11,10 @@ import static org.example.stronghold.context.MapUtils.getIntOpt;
 
 import java.util.Map;
 import java.util.Scanner;
+import org.example.stronghold.cli.Menu;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Tile;
-import org.example.stronghold.cli.Menu;
 
 public class MapViewMenu extends Menu {
 
@@ -29,30 +29,6 @@ public class MapViewMenu extends Menu {
         this.gameData = gameData;
         addCommand("show", x -> this.showMap());
         addCommand("move", this::moveMap);
-        this.showMap();
-    }
-
-    private void moveMap(Map<String, String> input) {
-        int dy = 0, dx = 0;
-        if (input.containsKey("up")) {
-            dy -= getIntOpt(input, "up");
-        }
-        if (input.containsKey("down")) {
-            dy += getIntOpt(input, "down");
-        }
-        if (input.containsKey("left")) {
-            dx -= getIntOpt(input, "left");
-        }
-        if (input.containsKey("right")) {
-            dx += getIntOpt(input, "right");
-        }
-        if (yStart + dy < 0 || yStart + dy + MAX_HEIGHT > gameData.getMap().getHeight()
-                || xStart + dx < 0 || xStart + dx + MAX_WIDTH > gameData.getMap().getWidth()) {
-            System.out.println("Cannot move that way");
-            return;
-        }
-        yStart += dy;
-        xStart += dx;
         this.showMap();
     }
 
@@ -89,6 +65,30 @@ public class MapViewMenu extends Menu {
         System.out.print(RESET);
     }
 
+    private void moveMap(Map<String, String> input) {
+        int dy = 0, dx = 0;
+        if (input.containsKey("up")) {
+            dy -= getIntOpt(input, "up");
+        }
+        if (input.containsKey("down")) {
+            dy += getIntOpt(input, "down");
+        }
+        if (input.containsKey("left")) {
+            dx -= getIntOpt(input, "left");
+        }
+        if (input.containsKey("right")) {
+            dx += getIntOpt(input, "right");
+        }
+        if (yStart + dy < 0 || yStart + dy + MAX_HEIGHT > gameData.getMap().getHeight()
+            || xStart + dx < 0 || xStart + dx + MAX_WIDTH > gameData.getMap().getWidth()) {
+            System.out.println("Cannot move that way");
+            return;
+        }
+        yStart += dy;
+        xStart += dx;
+        this.showMap();
+    }
+
     private void showMap() {
         int length = 4 * MAX_WIDTH - 1;
         String startPos = "(" + xStart + "," + yStart + ")";
@@ -101,7 +101,7 @@ public class MapViewMenu extends Menu {
                 System.out.print(tile.getType().equals("plain") ? "." : tile.getType().charAt(0));
                 long unitCount = gameData.getUnitsOnPosition(new IntPair(x, y)).count();
                 System.out.print(
-                        unitCount == 0 ? ".." : unitCount < 10 ? "." + unitCount : unitCount);
+                    unitCount == 0 ? ".." : unitCount < 10 ? "." + unitCount : unitCount);
                 resetColor();
                 if (x + 1 != xStart + MAX_WIDTH) {
                     System.out.print("│");
@@ -112,7 +112,7 @@ public class MapViewMenu extends Menu {
                 Tile tile = gameData.getMap().getAt(x, y);
                 setColorByTile(tile);
                 System.out.print(tile.getBuilding() == null ? "..."
-                        : tile.getBuilding().getType().substring(0, 3));
+                    : tile.getBuilding().getType().substring(0, 3));
                 resetColor();
                 if (x + 1 != xStart + MAX_WIDTH) {
                     System.out.print("│");

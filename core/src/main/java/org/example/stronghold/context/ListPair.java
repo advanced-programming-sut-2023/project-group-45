@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class ListPair<K, V> {
+
     private final List<K> keys = new ArrayList<>();
     private final List<V> values = new ArrayList<>();
 

@@ -17,7 +17,7 @@ public abstract class Menu {
     }
 
     protected final void addCommand(String commandName,
-            Consumer<Map<String, String>> function) {
+        Consumer<Map<String, String>> function) {
         commands.put(commandName, function);
     }
 

@@ -1,8 +1,12 @@
 package org.example.stronghold.gui.panels;
 
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
@@ -10,8 +14,6 @@ import org.example.stronghold.gui.components.PopupWindow;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.operator.Operators;
-
-import java.util.Map;
 
 public class FoodPanel extends Panel {
 
@@ -32,7 +34,6 @@ public class FoodPanel extends Panel {
         this.popupWindow = controlPanel.getPopup();
         create();
     }
-
 
 
     private void create() {
@@ -57,7 +58,7 @@ public class FoodPanel extends Panel {
         );
     }
 
-    private void update(){
+    private void update() {
         try {
             Operators.game.setFoodRate(buildMap());
             rateLabel.setText(String.format("Food rate: %d", player.getFoodRate()));

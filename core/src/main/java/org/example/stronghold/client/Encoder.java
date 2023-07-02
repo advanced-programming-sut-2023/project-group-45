@@ -1,5 +1,7 @@
 package org.example.stronghold.client;
 
+import java.util.List;
+import java.util.Map;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
@@ -37,5 +39,31 @@ public class Encoder {
     public static Object encodeIntoIdOrDefault(Object obj) {
         Object res = encodeIntoId(obj);
         return res == null ? obj : res;
+    }
+
+    public static void encodeOperatorRequest(Map<String, Object> req) {
+        encodeSingle(req, "user");
+        encodeSingle(req, "map");
+        encodeList(req, "users");
+        encodeList(req, "units");
+        encodeSingle(req, "game");
+        encodeSingle(req, "player");
+        encodeSingle(req, "building");
+        encodeSingle(req, "target");
+        encodeSingle(req, "request");
+    }
+
+    private static void encodeSingle(Map<String, Object> req, String key) {
+        if (!req.containsKey(key))
+            return;
+        req.put(key, encodeIntoIdOrDefault(req.get(key)));
+    }
+
+    private static void encodeList(Map<String, Object> req, String key) {
+        if (!req.containsKey(key))
+            return;
+        req.put(key, ((List<?>) req.get(key)).stream()
+            .map(Encoder::encodeIntoIdOrDefault)
+            .toList());
     }
 }

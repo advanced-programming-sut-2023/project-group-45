@@ -75,10 +75,17 @@ public class Connection {
     }
 
     public Object sendOperatorRequest(String operator, String method, Map<String, Object> request) throws Exception {
+        try {
+            request = new HashMap<>(request);
+            Encoder.encodeOperatorRequest(request);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Encoder failed: " + e.getMessage());
+        }
+        Map<String, Object> finalRequest = request;
         return sendRequestOrThrow(new HashMap<>() {{
             put("what", operator);
             put("method", method);
-            put("data", request);
+            put("data", finalRequest);
         }}).get("data");
     }
 }

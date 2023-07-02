@@ -10,19 +10,10 @@ import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Player;
 
 public class ReportPanel extends Panel {
-
-    private final GameData gameData;
-    private final Player player;
-    private final ControlPanel controlPanel;
-    private final PopupWindow popupWindow;
     private Table table;
 
     public ReportPanel(ControlPanel controlPanel) {
         super(controlPanel);
-        this.controlPanel = controlPanel;
-        this.gameData = controlPanel.getScreen().getGameData();
-        this.player = controlPanel.getScreen().getMyself();
-        this.popupWindow = controlPanel.getPopup();
         create();
     }
 
@@ -35,14 +26,18 @@ public class ReportPanel extends Panel {
         table.add(valueLabel).grow().row();
     }
 
+    public Player getPlayer() {
+        return screen.getMyself();
+    }
+
     private void create() {
         table = new Table(game.skin);
         table.align(Align.center);
         add(table).grow();
-        addRow("Popularity", player.getPopularity());
-        addRow("Peasants", player.getPeasants());
-        for (String resource : player.getResources().keySet()) {
-            addRow(resource, player.getResources().get(resource));
+        addRow("Popularity", getPlayer().getPopularity());
+        addRow("Peasants", getPlayer().getPeasants());
+        for (String resource : getPlayer().getResources().keySet()) {
+            addRow(resource, getPlayer().getResources().get(resource));
         }
     }
 }

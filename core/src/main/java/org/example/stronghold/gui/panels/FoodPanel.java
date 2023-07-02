@@ -17,7 +17,6 @@ import org.example.stronghold.operator.Operators;
 
 public class FoodPanel extends Panel {
 
-    private final PopupWindow popupWindow;
     private Table table;
     private Slider rateSlider;
     private Label rateLabel;
@@ -25,8 +24,6 @@ public class FoodPanel extends Panel {
 
     public FoodPanel(ControlPanel controlPanel) {
         super(controlPanel);
-        this.controlPanel = controlPanel;
-        this.popupWindow = controlPanel.getPopup();
         create();
     }
 
@@ -60,9 +57,9 @@ public class FoodPanel extends Panel {
         try {
             Operators.game.setFoodRate(buildMap());
             rateLabel.setText(String.format("Food rate: %d", getPlayer().getFoodRate()));
-            popupWindow.success("Success");
+            controlPanel.popup.success("Success");
         } catch (Exception e) {
-            popupWindow.error(e.getMessage());
+            controlPanel.popup.error(e.getMessage());
         }
     }
 }

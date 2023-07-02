@@ -18,7 +18,6 @@ public class PopularityPanel extends Panel {
 
     public PopularityPanel(ControlPanel controlPanel) {
         super(controlPanel);
-        this.controlPanel = controlPanel;
         create();
     }
 

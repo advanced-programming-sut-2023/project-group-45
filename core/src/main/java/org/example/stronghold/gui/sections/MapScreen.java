@@ -40,6 +40,7 @@ import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Tile;
 import org.example.stronghold.model.Unit;
+import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.BuildingTemplate;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
@@ -68,7 +69,7 @@ public class MapScreen implements Screen {
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
 
-    public MapScreen(StrongholdGame game, GameData gameData) {
+    public MapScreen(StrongholdGame game, User user, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
         this.gameMap = gameData.getMap();

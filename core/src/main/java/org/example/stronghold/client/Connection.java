@@ -63,6 +63,7 @@ public class Connection {
             throw new Exception((String) response.get("message"));
         if (response.get("data") instanceof Exception exception)
             throw exception;
+        System.out.println(response);
         throw new Exception("unknown error");
     }
 

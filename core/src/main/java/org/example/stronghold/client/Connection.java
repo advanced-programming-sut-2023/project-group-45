@@ -18,22 +18,20 @@ public class Connection {
     private ObjectOutputStream output;
     private boolean enabled = false;
 
-    public synchronized void open() {
-        if (enabled)
+    private synchronized void open() throws IOException {
+        if (enabled) {
             return;
-        try {
-            socket = new Socket(host, port);
-            output = new ObjectOutputStream(socket.getOutputStream());
-            input = new ObjectInputStream(socket.getInputStream());
-            enabled = true;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+        socket = new Socket(host, port);
+        output = new ObjectOutputStream(socket.getOutputStream());
+        input = new ObjectInputStream(socket.getInputStream());
+        enabled = true;
     }
 
-    public synchronized void close() {
-        if (!enabled)
+    private synchronized void close() {
+        if (!enabled) {
             return;
+        }
         try {
             socket.close();
             output.close();
@@ -45,13 +43,14 @@ public class Connection {
     }
 
     public synchronized Map<String, Object> sendRequest(Map<String, Object> request) {
-        if (!enabled)
-            throw new RuntimeException("Connection is not enabled");
         try {
+            open();
             output.writeObject(new HashMap<>(request));
             return (Map<String, Object>) input.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
         }
     }
 }

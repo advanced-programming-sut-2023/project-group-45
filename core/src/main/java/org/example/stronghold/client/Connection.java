@@ -53,4 +53,32 @@ public class Connection {
             close();
         }
     }
+
+    public Map<String, Object> sendRequestOrThrow(Map<String, Object> request) throws Exception {
+        Map<String, Object> response = sendRequest(request);
+        if (!response.get("what").equals("error")) {
+            return response;
+        }
+        if (response.containsKey("message"))
+            throw new Exception((String) response.get("message"));
+        if (response.get("data") instanceof Exception exception)
+            throw exception;
+        throw new Exception("unknown error");
+    }
+
+    public Object sendObjectRequest(String type, Object id) throws Exception {
+        return sendRequestOrThrow(new HashMap<>() {{
+            put("what", "object");
+            put("type", type);
+            put("id", id);
+        }}).get("data");
+    }
+
+    public Object sendOperatorRequest(String operator, String method, Map<String, Object> request) throws Exception {
+        return sendRequestOrThrow(new HashMap<>() {{
+            put("what", operator);
+            put("method", method);
+            put("data", request);
+        }}).get("data");
+    }
 }

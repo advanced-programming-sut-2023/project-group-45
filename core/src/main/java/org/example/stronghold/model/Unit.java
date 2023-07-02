@@ -1,6 +1,8 @@
 package org.example.stronghold.model;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.TreeMap;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,8 +12,10 @@ import org.example.stronghold.context.IntPair;
 @Data
 public class Unit implements Serializable {
 
+    public static final Map<Long, Unit> OBJECTS = new TreeMap<>();
     public static final double DEFENSIVE_VISION_RATE = 0.5;
-
+    private static long NEXT_ID = 0;
+    private final long id = NEXT_ID++;
     private final String type;
     private final int maxHitPoints, speed, range, damage;
     private final boolean canClimb, canDig;
@@ -26,6 +30,10 @@ public class Unit implements Serializable {
     private Unit attackGoal = null;
     private String mode = "standing";
     private GuiSetting guiSetting;
+
+    {
+        OBJECTS.put(id, this);
+    }
 
     /* I couldn't find a way to use lombok-generated constructor.
      * It seems there is no way to initialize hitPoints (= maxHitPoints) both in the constructor

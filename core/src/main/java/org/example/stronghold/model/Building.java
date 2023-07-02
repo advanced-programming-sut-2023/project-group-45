@@ -2,6 +2,7 @@ package org.example.stronghold.model;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.TreeMap;
 import lombok.Builder;
 import lombok.Data;
 import org.example.stronghold.context.IntPair;
@@ -9,6 +10,9 @@ import org.example.stronghold.context.IntPair;
 @Data
 public class Building implements Serializable {
 
+    public static final Map<Long, Building> OBJECTS = new TreeMap<>();
+    private static long NEXT_ID = 0;
+    private final long id = NEXT_ID++;
     private final String type;
     private final int maxHitPoints;
     private final boolean isHollow;
@@ -24,6 +28,10 @@ public class Building implements Serializable {
     private int hitPoints;
     private int labors = 0;
     private GuiSetting guiSetting;
+
+    {
+        OBJECTS.put(id, this);
+    }
 
     @Builder(toBuilder = true)
     public Building(String type, int maxHitPoints, boolean isHollow, Player owner,

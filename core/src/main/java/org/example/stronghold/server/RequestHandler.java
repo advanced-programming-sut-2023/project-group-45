@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
+import org.example.stronghold.client.Encoder;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
@@ -71,15 +72,15 @@ public class RequestHandler implements Runnable {
         try {
             Decoder.decodeOperatorRequest(opReq);
         } catch (RuntimeException e) {
-            System.out.println(e);
             throw new RuntimeException("decoder failed");
         }
         try {
             Object operator = Operators.class.getField(what).get(Operators.class);
             Method method = operator.getClass().getMethod(methodName, Map.class);
-            method.invoke(operator, opReq);
+            Object result = Encoder.encodeIntoIdOrDefault(method.invoke(operator, opReq));
             sendResponse(new HashMap<>() {{
                 put("what", "ok");
+                put("data", result);
             }});
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("invalid operator");

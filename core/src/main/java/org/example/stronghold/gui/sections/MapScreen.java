@@ -342,7 +342,7 @@ public class MapScreen implements Screen {
                 new BuildingPanel(controlPanel, selectCol, selectRow, tile.getBuilding()));
             return;
         }
-        controlPanel.setPanel(new TilePanel(controlPanel, selectCol, selectRow, tile));
+        controlPanel.setPanel(new TilePanel(controlPanel, selectCol, selectRow));
     }
 
     private void drawOverMapLayer() {

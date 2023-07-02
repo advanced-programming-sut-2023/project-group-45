@@ -12,6 +12,7 @@ import org.example.stronghold.context.IntPair;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
+import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
@@ -29,9 +30,12 @@ public class UnitPanel extends Panel {
         create();
     }
 
+    public Player getPlayer() {
+        return screen.getMyself();
+    }
+
     private void toggleUnit(Unit unit) {
-        // equality of object is wrong, it comes from a bigger bug in the model
-        if (units.stream().anyMatch(u -> u == unit)) {
+        if (units.stream().anyMatch(u -> u.getId() == unit.getId())) {
             units.remove(unit);
         } else {
             units.add(unit);
@@ -40,7 +44,7 @@ public class UnitPanel extends Panel {
 
     public void toggleCell(int col, int row) {
         screen.gameData.getUnitsOnPosition(new IntPair(col, row))
-            .filter(u -> u.getOwner().equals(screen.myself))
+            .filter(u -> u.getOwner().equals(getPlayer()))
             .forEach(this::toggleUnit);
         updateInfo();
     }
@@ -160,7 +164,7 @@ public class UnitPanel extends Panel {
         try {
             Operators.game.attackUnit(new HashMap<>() {{
                 put("game", screen.gameData);
-                put("player", screen.myself);
+                put("player", getPlayer());
                 put("position", new IntPair(col, row));
                 put("units", units);
             }});

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
@@ -31,13 +32,14 @@ public class OptionPanel extends Panel {
         try {
             int count = Integer.parseInt(this.count.getText());
             for (int i = 0; i < count; i++) {
-                Operators.game.nextFrame(new HashMap<>() {{
+                game.conn.sendOperatorRequest("game", "nextFrame", new HashMap<>() {{
                     put("game", screen.gameData);
                 }});
             }
+            screen.gameData = (GameData) game.conn.sendObjectRequest("GameData", screen.gameData.getId());
         } catch (NumberFormatException e) {
             controlPanel.popup.error("Invalid number");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }

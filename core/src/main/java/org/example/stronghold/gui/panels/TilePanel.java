@@ -17,16 +17,18 @@ import org.example.stronghold.operator.Operators;
 public class TilePanel extends Panel {
 
     private final int column, row;
-    private final Tile tile;
     TextField equipmentType;
     TextButton buildEquipment;
 
-    public TilePanel(ControlPanel controlPanel, int column, int row, Tile tile) {
+    public TilePanel(ControlPanel controlPanel, int column, int row) {
         super(controlPanel);
         this.column = column;
         this.row = row;
-        this.tile = tile;
         create();
+    }
+
+    public Tile getTile() {
+        return screen.getMap().getAt(column, row);
     }
 
     private void addLabel(String text) {
@@ -34,7 +36,7 @@ public class TilePanel extends Panel {
     }
 
     private String getBuildingText() {
-        Building building = tile.getBuilding();
+        Building building = getTile().getBuilding();
         if (building == null) {
             return "No building";
         }
@@ -44,7 +46,7 @@ public class TilePanel extends Panel {
 
     private void create() {
         align(Align.left);
-        addLabel(String.format("(%d,%d) %s", column, row, tile.getType()));
+        addLabel(String.format("(%d,%d) %s", column, row, getTile().getType()));
         addLabel(getBuildingText());
         TextButton pasteBtn = new TextButton("Paste building", game.skin);
         add(pasteBtn).align(Align.left).row();
@@ -74,22 +76,22 @@ public class TilePanel extends Panel {
             return;
         }
         try {
-            Operators.game.dropBuilding(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "dropBuilding", new HashMap<>() {{
                 put("game", screen.gameData);
-                put("player", screen.myself);
+                put("player", screen.getMyself());
                 put("building", type);
                 put("position", new IntPair(column, row));
             }});
             controlPanel.popup.success("Pasted");
             controlPanel.setPanel(null);
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
 
     private boolean hasEngineers() {
         return screen.gameData.getUnitsOnPosition(new IntPair(column, row))
-            .anyMatch(u -> u.getOwner().equals(screen.myself) && u.getType().equals("Engineer"));
+            .anyMatch(u -> u.getOwner().equals(screen.getMyself()) && u.getType().equals("Engineer"));
     }
 
     private void buildTheEquipment() {
@@ -99,14 +101,14 @@ public class TilePanel extends Panel {
             return;
         }
         try {
-            Operators.game.buildEquipment(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "buildEquipment", new HashMap<>() {{
                 put("game", screen.gameData);
-                put("player", screen.myself);
+                put("player", screen.getMyself());
                 put("position", new IntPair(column, row));
                 put("type", type);
             }});
             controlPanel.popup.success("Equipment built");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }

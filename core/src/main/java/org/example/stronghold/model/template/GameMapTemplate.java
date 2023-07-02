@@ -1,5 +1,6 @@
 package org.example.stronghold.model.template;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,7 @@ import org.example.stronghold.model.Market;
  * Read notes for UnitTemplate
  */
 @Data
-public class GameMapTemplate {
+public class GameMapTemplate implements Serializable {
 
     private String name;
     private int width, height;

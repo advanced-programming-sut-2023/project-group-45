@@ -11,6 +11,8 @@ import org.example.stronghold.operator.sections.ProfileOperator;
 /* singleton interface for operators */
 public class Operators {
 
+    public static Database database;
+    public static TemplateDatabase templateDatabase;
     public static AuthOperator auth;
     public static EconomyOperator economy;
     public static MapEditorOperator mapEditor;
@@ -18,6 +20,8 @@ public class Operators {
     public static GameOperator game;
 
     public static void initDatabase(Database database, TemplateDatabase templateDatabase) {
+        Operators.database = database;
+        Operators.templateDatabase = templateDatabase;
         auth = new AuthOperator(database);
         economy = new EconomyOperator(database);
         mapEditor = new MapEditorOperator(database, templateDatabase);

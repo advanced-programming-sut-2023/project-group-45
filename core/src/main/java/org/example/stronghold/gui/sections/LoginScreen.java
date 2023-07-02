@@ -62,15 +62,15 @@ public class LoginScreen extends FormScreen {
     private void login() {
         String password = passwordField.getText();
         try {
-            User user = Operators.auth.login(new HashMap<>() {{
+            String username = (String) game.conn.sendOperatorRequest("auth", "login", new HashMap<>() {{
                 put("username", usernameField.getText());
                 put("password", HashedString.fromPlain(password).withMode(HashMode.SHA256));
                 put("stay-logged-in", stayLoggedIn.isChecked());
             }});
+            User user = (User) game.conn.sendObjectRequest("User", username);
             log("Logged in as %s", user);
             game.setScreen(new ProfileScreen(game, user));
-            // todo: switch to profile screen
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             popup.pop(e.getMessage());
         }
     }

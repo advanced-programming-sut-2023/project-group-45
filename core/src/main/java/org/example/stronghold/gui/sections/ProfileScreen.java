@@ -25,7 +25,7 @@ import org.example.stronghold.operator.Operators;
 
 public class ProfileScreen extends FormScreen {
 
-    private final User user;
+    private User user;
     Label usernameLabel, nicknameLabel, sloganLabel, emailLabel;
     TextField usernameField, passwordField, nicknameField, sloganField, emailField, currentPasswordField, avatarPath;
     TextButton applyButton, logoutButton, startGameButton;
@@ -63,16 +63,17 @@ public class ProfileScreen extends FormScreen {
         logoutButton = new TextButton("Logout", game.skin);
         startGameButton = new TextButton("Start game", game.skin);
 
-        scoreboardTable = new Table();
-        Operators.auth.getUsers().sort((x, y) -> Integer.compare(y.getScore(), x.getScore()));
-        int i = 0;
-        for (User user : Operators.auth.getUsers()) {
-            scoreboardTable.add(new Label(++i + ".", game.skin)).align(Align.left);
-            scoreboardTable.add(new Label(user.getUsername(), game.skin)).align(Align.left);
-            scoreboardTable.add(new Label(String.valueOf(user.getScore()), game.skin))
-                .align(Align.right).minWidth(200).row();
-        }
-        scrollPane = new ScrollPane(scoreboardTable);
+        // todo: add scoreboard methods in operator
+//        scoreboardTable = new Table();
+//        Operators.auth.getUsers().sort((x, y) -> Integer.compare(y.getScore(), x.getScore()));
+//        int i = 0;
+//        for (User user : Operators.auth.getUsers()) {
+//            scoreboardTable.add(new Label(++i + ".", game.skin)).align(Align.left);
+//            scoreboardTable.add(new Label(user.getUsername(), game.skin)).align(Align.left);
+//            scoreboardTable.add(new Label(String.valueOf(user.getScore()), game.skin))
+//                .align(Align.right).minWidth(200).row();
+//        }
+//        scrollPane = new ScrollPane(scoreboardTable);
 
         profileTable.pad(50);
         profileTable.defaults().spaceBottom(10).spaceRight(10);
@@ -93,7 +94,7 @@ public class ProfileScreen extends FormScreen {
         profileTable.add(applyButton).align(Align.center).minWidth(400);
         profileTable.add(startGameButton).align(Align.center).minWidth(400).row();
         table.add(profileTable).growX();
-        table.add(scrollPane).maxHeight(500).growX().padTop(20).align(Align.topLeft).row();
+//        table.add(scrollPane).maxHeight(500).growX().padTop(20).align(Align.topLeft).row();
 
         randomSlogan.addListener(new SimpleChangeListener(this::generateSlogan));
         logoutButton.addListener(
@@ -136,20 +137,21 @@ public class ProfileScreen extends FormScreen {
                 put("new-nickname", nicknameField.getText());
                 put("new-slogan", sloganField.getText());
             }};
-            Operators.profile.changePassword(req);
+            game.conn.sendOperatorRequest("profile", "changePassword", req);
             if (!req.get("new-username").equals(user.getUsername())) {
-                Operators.profile.changeUsername(req);
+                game.conn.sendOperatorRequest("profile", "changeUsername", req);
             }
             if (!req.get("new-email").equals(user.getEmail())) {
-                Operators.profile.changeEmail(req);
+                game.conn.sendOperatorRequest("profile", "changeEmail", req);
             }
-            Operators.profile.changeNickname(req);
-            Operators.profile.changeSlogan(req);
+            game.conn.sendOperatorRequest("profile", "changeNickname", req);
+            game.conn.sendOperatorRequest("profile", "changeSlogan", req);
             if (!avatarPath.getText().isEmpty()) {
                 Files.copy(new File(avatarPath.getText()).toPath(),
                     user.getAvatar().file().toPath());
                 avatarImage = new Image(new Texture(user.getAvatar()));
             }
+            user = (User) game.conn.sendObjectRequest("User", user.getUsername());
             popup.success("Done!");
         } catch (Exception e) {
             popup.error(e.getMessage());

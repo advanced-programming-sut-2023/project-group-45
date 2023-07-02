@@ -21,17 +21,9 @@ public class TradePanel extends Panel {
 
     TextButton userListButton, incomingTradesButton, outgoingTradesButton, tradeHistoryButton;
     Table tabsTable, contentTable;
-    private final GameData gameData;
-    private final Player player;
-    private final ControlPanel controlPanel;
-    private final PopupWindow popupWindow;
 
     public TradePanel(ControlPanel controlPanel) {
         super(controlPanel);
-        this.controlPanel = controlPanel;
-        this.gameData = controlPanel.getScreen().getGameData();
-        this.player = controlPanel.getScreen().getMyself();
-        this.popupWindow = controlPanel.getPopup();
         create();
     }
 
@@ -59,8 +51,8 @@ public class TradePanel extends Panel {
     private void showUserList() {
         contentTable.clearChildren();
         int i = 0;
-        for (Player player : gameData.getPlayers()) {
-            if (player != this.player) {
+        for (Player player : screen.gameData.getPlayers()) {
+            if (player.getId() != screen.getMyself().getId()) {
                 TextButton btn = new TextButton(player.getUser().getUsername(), game.skin);
                 btn.addListener(new SimpleChangeListener(() -> {
                     showNewTrade(player);
@@ -73,6 +65,10 @@ public class TradePanel extends Panel {
                 i = 0;
             }
         }
+    }
+
+    public Player getPlayer() {
+        return screen.getMyself();
     }
 
     private void showNewTrade(Player player) {
@@ -93,25 +89,25 @@ public class TradePanel extends Panel {
         acceptButton.addListener(new SimpleChangeListener(() -> {
             try {
                 Map<String, Object> req = ImmutableMap.of(
-                    "player", this.player,
-                    "game", gameData,
+                    "player", getPlayer(),
+                    "game", screen.gameData,
                     "amount", Integer.parseInt(amountField.getText()),
                     "item", itemField.getText().toLowerCase(),
                     "target", player,
                     "message", messageField.getText(),
                     "price", Integer.parseInt(priceField.getText())
                 );
-                Operators.economy.requestTrade(req);
-                popupWindow.success("Success");
+                game.conn.sendOperatorRequest("economy", "requestTrade", req);
+                controlPanel.popup.success("Success");
             } catch (Exception e) {
-                popupWindow.error(e.getMessage());
+                controlPanel.popup.error(e.getMessage());
             }
         }));
     }
 
     private void showIncomingTrades() {
         contentTable.clearChildren();
-        for (TradeRequest tradeRequest : player.getIncomingTradeRequests()) {
+        for (TradeRequest tradeRequest : getPlayer().getIncomingTradeRequests()) {
             Label playerName = new Label(tradeRequest.getSender().getUser().getUsername(),
                 game.skin);
             Label item = new Label(tradeRequest.getItem(), game.skin);
@@ -129,18 +125,20 @@ public class TradePanel extends Panel {
             contentTable.add(message).growX().row();
             accept.addListener(new SimpleChangeListener(() -> {
                 try {
-                    Operators.economy.acceptTrade(ImmutableMap.of("request", tradeRequest));
-                    popupWindow.success("Success");
-                } catch (OperatorException e) {
-                    popupWindow.error(e.getMessage());
+                    game.conn.sendOperatorRequest("economy", "acceptTrade",
+                        ImmutableMap.of("request", tradeRequest));
+                    controlPanel.popup.success("Success");
+                } catch (Exception e) {
+                    controlPanel.popup.error(e.getMessage());
                 }
             }));
             reject.addListener(new SimpleChangeListener(() -> {
                 try {
-                    Operators.economy.deleteTrade(ImmutableMap.of("request", tradeRequest));
-                    popupWindow.success("Success");
-                } catch (OperatorException e) {
-                    popupWindow.error(e.getMessage());
+                    game.conn.sendOperatorRequest("economy", "deleteTrade",
+                        ImmutableMap.of("request", tradeRequest));
+                    controlPanel.popup.success("Success");
+                } catch (Exception e) {
+                    controlPanel.popup.error(e.getMessage());
                 }
             }));
         }
@@ -148,7 +146,7 @@ public class TradePanel extends Panel {
 
     private void showOutgoingTrades() {
         contentTable.clearChildren();
-        for (TradeRequest tradeRequest : player.getActiveTradeRequests()) {
+        for (TradeRequest tradeRequest : getPlayer().getActiveTradeRequests()) {
             Label playerName = new Label(tradeRequest.getSender().getUser().getUsername(),
                 game.skin);
             Label item = new Label(tradeRequest.getItem(), game.skin);
@@ -164,10 +162,11 @@ public class TradePanel extends Panel {
             contentTable.add(message).growX().row();
             cancel.addListener(new SimpleChangeListener(() -> {
                 try {
-                    Operators.economy.deleteTrade(ImmutableMap.of("request", tradeRequest));
-                    popupWindow.success("Success");
-                } catch (OperatorException e) {
-                    popupWindow.error(e.getMessage());
+                    game.conn.sendOperatorRequest("economy", "deleteTrade",
+                        ImmutableMap.of("request", tradeRequest));
+                    controlPanel.popup.success("Success");
+                } catch (Exception e) {
+                    controlPanel.popup.error(e.getMessage());
                 }
             }));
         }
@@ -175,7 +174,7 @@ public class TradePanel extends Panel {
 
     private void showHistory() {
         contentTable.clearChildren();
-        for (TradeRequest tradeRequest : player.getSuccessfulTradeRequests()) {
+        for (TradeRequest tradeRequest : getPlayer().getSuccessfulTradeRequests()) {
             Label playerName = new Label(tradeRequest.getSender().getUser().getUsername(),
                 game.skin);
             Label item = new Label(tradeRequest.getItem(), game.skin);

@@ -24,21 +24,19 @@ public class MarketPanel extends Panel {
     TextField amountField;
     TextButton buyButton, sellButton;
     Label resourceInfo;
-    private final GameData gameData;
-    private final Market market;
-    private final Player player;
     private String resource;
 
     public MarketPanel(ControlPanel controlPanel) {
         super(controlPanel);
-        this.gameData = controlPanel.getScreen().getGameData();
-        this.market = gameData.getMarket();
-        this.player = controlPanel.getScreen().getMyself();
         create();
     }
 
+    public Market getMarket() {
+        return screen.gameData.getMarket();
+    }
+
     private void create() {
-        RESOURCES = market.getPrices().keySet().stream().toList();
+        RESOURCES = getMarket().getPrices().keySet().stream().toList();
         resourceTable = new Table(game.skin);
         economyTable = new Table(game.skin);
         resourceTable.align(Align.left);
@@ -64,7 +62,7 @@ public class MarketPanel extends Panel {
 
     private void changeResource(String resource) {
         this.resource = resource;
-        IntPair status = market.getPrices().get(resource);
+        IntPair status = getMarket().getPrices().get(resource);
         resourceInfo.setText(String.format(
             "Buy: %d, Sell %d",
             status.x(),
@@ -74,8 +72,8 @@ public class MarketPanel extends Panel {
 
     private Map<String, Object> buildMap() {
         return ImmutableMap.of(
-            "player", player,
-            "game", gameData,
+            "player", screen.getMyself(),
+            "game", screen.gameData,
             "amount", Integer.parseInt(amountField.getText()),
             "item", resource
         );
@@ -83,7 +81,7 @@ public class MarketPanel extends Panel {
 
     private void buy() {
         try {
-            Operators.economy.buyMarketItem(buildMap());
+            game.conn.sendOperatorRequest("economy", "buyMarketItem", buildMap());
             controlPanel.popup.success("Success");
         } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
@@ -92,7 +90,7 @@ public class MarketPanel extends Panel {
 
     private void sell() {
         try {
-            Operators.economy.sellMarketItem(buildMap());
+            game.conn.sendOperatorRequest("economy", "sellMarketItem", buildMap());
             controlPanel.popup.success("Success");
         } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());

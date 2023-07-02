@@ -1,5 +1,6 @@
 package org.example.stronghold.model.template;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
@@ -11,7 +12,7 @@ import org.example.stronghold.model.GuiSetting;
  * Read notes for UnitTemplate
  */
 @Data
-public class BuildingTemplate {
+public class BuildingTemplate implements Serializable {
 
     private String type;
     private int maxHitPoints;

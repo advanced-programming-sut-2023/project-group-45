@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 import lombok.Data;
 import org.example.stronghold.context.IntPair;
@@ -16,14 +18,20 @@ import org.example.stronghold.model.template.UnitTemplate;
 @Data
 public class GameData implements Serializable {
 
+    public static final Map<Long, GameData> OBJECTS = new TreeMap<>();
     public static final List<String> FOODS = ImmutableList.of("bread");
-
+    private static long NEXT_ID = 0;
+    private final long id = NEXT_ID++;
     private final List<Player> players = new ArrayList<>();
     private final GameMapTemplate mapTemplate;
     private final GameMap map;
     private final List<Building> buildings = new ArrayList<>();
     private final List<Unit> units = new ArrayList<>();
     private final Market market;
+
+    {
+        OBJECTS.put(id, this);
+    }
 
     public GameData(List<User> users, GameMapTemplate gameMapTemplate, UnitTemplate lordTemplate,
         BuildingTemplate baseTemplate) {
@@ -49,6 +57,27 @@ public class GameData implements Serializable {
             addIntMap(player.getResources(), gameMapTemplate.getInitialResources());
             player.setPeasants(gameMapTemplate.getInitialPopulation());
         }
+    }
+
+    public Player getPlayerById(long id) {
+        return players.stream()
+            .filter(player -> player.getId() == id)
+            .findFirst()
+            .orElse(null);
+    }
+
+    public Player getPlayerByUsername(String username) {
+        return players.stream()
+            .filter(player -> player.getUser().getUsername().equals(username))
+            .findFirst()
+            .orElse(null);
+    }
+
+    public Building getBuildingById(long id) {
+        return buildings.stream()
+            .filter(building -> building.getId() == id)
+            .findFirst()
+            .orElse(null);
     }
 
     public Stream<Unit> getUnitsOnPosition(IntPair position) {

@@ -1,5 +1,6 @@
 package org.example.stronghold.model.template;
 
+import java.io.Serializable;
 import lombok.Data;
 import org.example.stronghold.model.GuiSetting;
 import org.example.stronghold.model.Unit;
@@ -10,7 +11,7 @@ import org.example.stronghold.model.Unit;
  * Make sure all the fields are non-final, so lombok will generate a no-arg constructor
  */
 @Data
-public class UnitTemplate {
+public class UnitTemplate implements Serializable {
 
     private String type;
     private int maxHitPoints, speed, range, damage;

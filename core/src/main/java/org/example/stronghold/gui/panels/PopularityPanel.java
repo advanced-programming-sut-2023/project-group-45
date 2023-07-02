@@ -14,18 +14,10 @@ import org.example.stronghold.model.Player;
 
 public class PopularityPanel extends Panel {
 
-    private final GameData gameData;
-    private final Player player;
-    private final ControlPanel controlPanel;
-    private final PopupWindow popupWindow;
     private Table table;
 
     public PopularityPanel(ControlPanel controlPanel) {
         super(controlPanel);
-        this.controlPanel = controlPanel;
-        this.gameData = controlPanel.getScreen().getGameData();
-        this.player = controlPanel.getScreen().getMyself();
-        this.popupWindow = controlPanel.getPopup();
         create();
     }
 
@@ -50,23 +42,27 @@ public class PopularityPanel extends Panel {
         table.add(image).growX();
     }
 
+    public Player getPlayer() {
+        return screen.getMyself();
+    }
+
     private void create() {
         table = new Table(game.skin);
         table.align(Align.center);
         add(table).grow();
-        addLabel("Total Popularity", player.getPopularity());
-        addLabel("Delta Popularity", player.getDeltaPopularity());
-        addLabel("Food", player.getFoodDeltaPopularity());
-        addLabel("Tax", player.getTaxDeltaPopularity());
-        addLabel("Religion", gameData.getReligion(player));
-        addLabel("Happiness", gameData.getHappiness(player));
+        addLabel("Total Popularity", getPlayer().getPopularity());
+        addLabel("Delta Popularity", getPlayer().getDeltaPopularity());
+        addLabel("Food", getPlayer().getFoodDeltaPopularity());
+        addLabel("Tax", getPlayer().getTaxDeltaPopularity());
+        addLabel("Religion", screen.gameData.getReligion(getPlayer()));
+        addLabel("Happiness", screen.gameData.getHappiness(getPlayer()));
         table.row();
-        addImage(player.getPopularity());
-        addImage(player.getDeltaPopularity());
-        addImage(player.getFoodDeltaPopularity());
-        addImage(player.getTaxDeltaPopularity());
-        addImage(gameData.getReligion(player));
-        addImage(gameData.getHappiness(player));
+        addImage(getPlayer().getPopularity());
+        addImage(getPlayer().getDeltaPopularity());
+        addImage(getPlayer().getFoodDeltaPopularity());
+        addImage(getPlayer().getTaxDeltaPopularity());
+        addImage(screen.gameData.getReligion(getPlayer()));
+        addImage(screen.gameData.getHappiness(getPlayer()));
         table.row();
     }
 }

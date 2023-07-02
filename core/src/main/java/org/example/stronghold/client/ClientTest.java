@@ -12,7 +12,9 @@ public class ClientTest {
         Connection connection = new Connection("localhost", Server.PORT);
         connection.open();
         Map<String, Object> response = connection.sendRequest(new HashMap<>() {{
-            put("what", "test");
+            put("what", "object");
+            put("type", "User");
+            put("id", "parsa");
         }});
         System.out.println(response);
         connection.close();

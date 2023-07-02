@@ -17,9 +17,6 @@ import org.example.stronghold.operator.Operators;
 
 public class FoodPanel extends Panel {
 
-    private final GameData gameData;
-    private final Player player;
-    private final ControlPanel controlPanel;
     private final PopupWindow popupWindow;
     private Table table;
     private Slider rateSlider;
@@ -29,20 +26,21 @@ public class FoodPanel extends Panel {
     public FoodPanel(ControlPanel controlPanel) {
         super(controlPanel);
         this.controlPanel = controlPanel;
-        this.gameData = controlPanel.getScreen().getGameData();
-        this.player = controlPanel.getScreen().getMyself();
         this.popupWindow = controlPanel.getPopup();
         create();
     }
 
+    public Player getPlayer() {
+        return screen.getMyself();
+    }
 
     private void create() {
         table = new Table(game.skin);
         table.align(Align.left);
         add(table).grow();
         rateSlider = new Slider(-2, 2, 1, false, game.skin);
-        rateSlider.setValue(player.getFoodRate());
-        rateLabel = new Label(String.format("Food rate: %d", player.getFoodRate()), game.skin);
+        rateSlider.setValue(getPlayer().getFoodRate());
+        rateLabel = new Label(String.format("Food rate: %d", getPlayer().getFoodRate()), game.skin);
         rateLabel.setAlignment(Align.center);
         updateButton = new TextButton("Update", game.skin);
         table.add(rateSlider).growX().row();
@@ -53,7 +51,7 @@ public class FoodPanel extends Panel {
 
     private Map<String, Object> buildMap() {
         return ImmutableMap.of(
-            "player", player,
+            "player", getPlayer(),
             "rate", (int) rateSlider.getValue()
         );
     }
@@ -61,7 +59,7 @@ public class FoodPanel extends Panel {
     private void update() {
         try {
             Operators.game.setFoodRate(buildMap());
-            rateLabel.setText(String.format("Food rate: %d", player.getFoodRate()));
+            rateLabel.setText(String.format("Food rate: %d", getPlayer().getFoodRate()));
             popupWindow.success("Success");
         } catch (Exception e) {
             popupWindow.error(e.getMessage());

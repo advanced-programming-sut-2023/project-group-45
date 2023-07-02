@@ -1,5 +1,6 @@
 package org.example.stronghold.server;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.example.stronghold.context.MapUtils.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,6 +9,11 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
+import org.example.stronghold.model.Building;
+import org.example.stronghold.model.GameData;
+import org.example.stronghold.model.Player;
+import org.example.stronghold.model.Unit;
+import org.example.stronghold.operator.Operators;
 
 @Data
 public class RequestHandler implements Runnable {
@@ -33,14 +39,18 @@ public class RequestHandler implements Runnable {
         try {
             Map<String, Object> request = (Map<String, Object>) input.readObject();
             String what = getReqString(request, "what");
-            System.out.println(request);
-            sendResponse(new HashMap<>() {{
-                put("what", "response");
-                put("data", "ok");
-            }});
-        } catch (IllegalArgumentException e) {
+            if (what.equals("object")) {
+                handleObject(request);
+                return;
+            }
+            sendError("Unknown request: " + what);
+        } catch (RuntimeException e) {
             sendError(e.getMessage());
         }
+    }
+
+    private void handleObject(Map<String, Object> req) throws IOException, ClassNotFoundException {
+        sendError("not implemented");
     }
 
     private void sendResponse(Map<String, Object> response) throws IOException {

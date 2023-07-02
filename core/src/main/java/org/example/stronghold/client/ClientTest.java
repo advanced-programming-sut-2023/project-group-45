@@ -1,9 +1,7 @@
 package org.example.stronghold.client;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.server.Server;

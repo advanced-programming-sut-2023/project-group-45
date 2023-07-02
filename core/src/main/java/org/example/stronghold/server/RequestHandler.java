@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.client.Encoder;
-import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.Operators;
 
 @Data
@@ -42,11 +41,13 @@ public class RequestHandler implements Runnable {
         try {
             Map<String, Object> request = (Map<String, Object>) input.readObject();
             String what = getReqString(request, "what");
-            if (what.equals("object")) {
-                handleObject(request);
-                return;
+            synchronized (Operators.class) {
+                if (what.equals("object")) {
+                    handleObject(request);
+                    return;
+                }
+                handlerOperator(request);
             }
-            handlerOperator(request);
         } catch (RuntimeException e) {
             sendError(e.getMessage());
         }
@@ -67,8 +68,9 @@ public class RequestHandler implements Runnable {
         String what = getReqString(req, "what");
         String methodName = getReqString(req, "method");
         Map<String, Object> opReq = new HashMap<>(getReqAs(req, "data", Map.class));
-        if (what.matches("^.*[dD]atabase.*$"))
+        if (what.matches("^.*[dD]atabase.*$")) {
             throw new RuntimeException("invalid operator or method");
+        }
         try {
             Decoder.decodeOperatorRequest(opReq);
         } catch (RuntimeException e) {
@@ -89,10 +91,11 @@ public class RequestHandler implements Runnable {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("illegal access");
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof Exception exception)
+            if (e.getCause() instanceof Exception exception) {
                 sendError(exception);
-            else
+            } else {
                 sendError("unknown error");
+            }
         }
     }
 

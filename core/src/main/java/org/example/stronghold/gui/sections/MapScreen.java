@@ -65,6 +65,7 @@ public class MapScreen implements Screen {
     int selectCol = -1, selectRow = -1;
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
+    public boolean running = false;
 
     public MapScreen(StrongholdGame game, User user, GameData gameData) {
         this.game = game;

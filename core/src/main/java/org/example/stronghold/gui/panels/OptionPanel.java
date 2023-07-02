@@ -1,5 +1,6 @@
 package org.example.stronghold.gui.panels;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import java.util.HashMap;
@@ -12,8 +13,9 @@ import org.example.stronghold.operator.Operators;
 
 public class OptionPanel extends Panel {
 
+    Table playTable;
     TextField count;
-    TextButton nextFrame;
+    TextButton nextFrame, resumeButton, stopButton;
 
     public OptionPanel(ControlPanel controlPanel) {
         super(controlPanel);
@@ -24,9 +26,17 @@ public class OptionPanel extends Panel {
         count = new TextField("1", game.skin);
         nextFrame = new TextButton("Next frame", game.skin);
         nextFrame.addListener(new SimpleChangeListener(this::runNextFrame));
-        add("Game ID: " + screen.gameData.getId()).row();
+        add("Game ID: " + screen.gameData.getId()).colspan(2).row();
         add(count).width(200);
         add(nextFrame).row();
+
+        playTable = new Table(game.skin);
+        resumeButton = new TextButton("Resume", game.skin);
+        stopButton = new TextButton("Stop", game.skin);
+        resumeButton.addListener(new SimpleChangeListener(() -> screen.running = true));
+        stopButton.addListener(new SimpleChangeListener(() -> screen.running = false));
+        playTable.add(resumeButton, stopButton);
+        add(playTable).colspan(2).row();
     }
 
     private void runNextFrame() {

@@ -1,5 +1,6 @@
 package org.example.stronghold.gui.sections;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 import lombok.Getter;
 import org.example.stronghold.context.IntPair;
+import org.example.stronghold.gui.GameDataUpdater;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.panels.BuildingPanel;
@@ -65,11 +67,16 @@ public class MapScreen implements Screen {
     int selectCol = -1, selectRow = -1;
     ControlPanel controlPanel;
     ShapeRenderer shapeRenderer;
+    public boolean running = true;
+    public boolean stopped = false;
+    public Thread updater;
 
     public MapScreen(StrongholdGame game, User user, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
         this.myselfId = gameData.getPlayerByUsername(user.getUsername()).getId();
+        this.updater = new Thread(new GameDataUpdater(this));
+        this.updater.start();
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
@@ -204,7 +211,7 @@ public class MapScreen implements Screen {
     }
 
     @Override
-    public void render(float delta) {
+    public synchronized void render(float delta) {
         if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
             float scale = camera.zoom * 2;
             camera.translate(-Gdx.input.getDeltaX() * scale, Gdx.input.getDeltaY() * scale);
@@ -236,6 +243,22 @@ public class MapScreen implements Screen {
         camera.setToOrtho(false, width, height);
         renderer.setView(camera);
         controlPanel.resize(width, height);
+    }
+
+    public synchronized void updateGameData(int count) {
+        try {
+            // first player as admin
+            if (gameData.getPlayers().get(0).getId() == getMyself().getId()) {
+                for (int i = 0; i < count; i++) {
+                    game.conn.sendOperatorRequest("game", "nextFrame", new HashMap<>() {{
+                        put("game", gameData);
+                    }});
+                }
+            }
+            gameData = (GameData) game.conn.sendObjectRequest("GameData", gameData.getId());
+        } catch (Exception e) {
+            controlPanel.popup.error(e.getMessage());
+        }
     }
 
     private void focusCameraOn(float col, float row) {

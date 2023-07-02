@@ -42,6 +42,7 @@ public class StartGameScreen extends FormScreen {
         table.add(joinGameButton).colspan(2).minWidth(200).row();
 
         startGameButton.addListener(new SimpleChangeListener(this::startTheGame));
+        joinGameButton.addListener(new SimpleChangeListener(this::joinTheGame));
     }
 
     private void startTheGame() {
@@ -59,6 +60,16 @@ public class StartGameScreen extends FormScreen {
                     put("map", gameMapTemplate);
                     put("users", users);
                 }});
+            GameData gameData = (GameData) game.conn.sendObjectRequest("GameData", gameId);
+            game.setScreen(new MapScreen(game, user, gameData));
+        } catch (Exception e) {
+            popup.error(e.getMessage());
+        }
+    }
+
+    private void joinTheGame() {
+        try {
+            long gameId = Long.parseLong(gameIdField.getText());
             GameData gameData = (GameData) game.conn.sendObjectRequest("GameData", gameId);
             game.setScreen(new MapScreen(game, user, gameData));
         } catch (Exception e) {

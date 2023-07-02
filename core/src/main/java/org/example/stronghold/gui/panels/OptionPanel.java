@@ -24,17 +24,21 @@ public class OptionPanel extends Panel {
         count = new TextField("1", game.skin);
         nextFrame = new TextButton("Next frame", game.skin);
         nextFrame.addListener(new SimpleChangeListener(this::runNextFrame));
+        add("Game ID: " + screen.gameData.getId()).row();
         add(count).width(200);
         add(nextFrame).row();
     }
 
     private void runNextFrame() {
         try {
-            int count = Integer.parseInt(this.count.getText());
-            for (int i = 0; i < count; i++) {
-                game.conn.sendOperatorRequest("game", "nextFrame", new HashMap<>() {{
-                    put("game", screen.gameData);
-                }});
+            // first player as admin
+            if (screen.gameData.getPlayers().get(0).getId() == screen.getMyself().getId()) {
+                int count = Integer.parseInt(this.count.getText());
+                for (int i = 0; i < count; i++) {
+                    game.conn.sendOperatorRequest("game", "nextFrame", new HashMap<>() {{
+                        put("game", screen.gameData);
+                    }});
+                }
             }
             screen.gameData = (GameData) game.conn.sendObjectRequest("GameData", screen.gameData.getId());
         } catch (NumberFormatException e) {

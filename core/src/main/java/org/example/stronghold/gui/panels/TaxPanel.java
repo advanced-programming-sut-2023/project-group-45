@@ -55,7 +55,7 @@ public class TaxPanel extends Panel {
 
     private void update() {
         try {
-            Operators.game.setTaxRate(buildMap());
+            game.conn.sendOperatorRequest("game", "setTaxRate", buildMap());
             rateLabel.setText(String.format("Tax rate: %d", getPlayer().getTaxRate()));
             controlPanel.popup.success("Success");
         } catch (Exception e) {

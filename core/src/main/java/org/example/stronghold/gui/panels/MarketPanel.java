@@ -81,7 +81,7 @@ public class MarketPanel extends Panel {
 
     private void buy() {
         try {
-            Operators.economy.buyMarketItem(buildMap());
+            game.conn.sendOperatorRequest("economy", "buyMarketItem", buildMap());
             controlPanel.popup.success("Success");
         } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
@@ -90,7 +90,7 @@ public class MarketPanel extends Panel {
 
     private void sell() {
         try {
-            Operators.economy.sellMarketItem(buildMap());
+            game.conn.sendOperatorRequest("economy", "sellMarketItem", buildMap());
             controlPanel.popup.success("Success");
         } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());

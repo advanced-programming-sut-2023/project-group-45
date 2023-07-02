@@ -106,26 +106,26 @@ public class UnitPanel extends Panel {
 
     private void setMode(String mode) {
         try {
-            Operators.game.setUnitMode(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "setUnitMode", new HashMap<>() {{
                 put("units", units);
                 put("mode", mode);
             }});
             controlPanel.popup.success("Changed mode to " + mode);
             updateInfo();
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
 
     private void disbandUnits() {
         try {
-            Operators.game.disbandUnits(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "disbandUnits", new HashMap<>() {{
                 put("units", units);
                 put("game", screen.gameData);
             }});
             controlPanel.popup.success("Disbanded units");
             controlPanel.setPanel(null);
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
@@ -149,27 +149,27 @@ public class UnitPanel extends Panel {
 
     private void setNavigationGoal(int col, int row) {
         try {
-            Operators.game.setNavigationGoal(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "setNavigationGoal", new HashMap<>() {{
                 put("units", units);
                 put("game", screen.gameData);
                 put("position", new IntPair(col, row));
             }});
             controlPanel.popup.success("Set navigation goal");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
 
     private void setAttackGoal(int col, int row) {
         try {
-            Operators.game.attackUnit(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "attackUnit", new HashMap<>() {{
                 put("game", screen.gameData);
                 put("player", getPlayer());
                 put("position", new IntPair(col, row));
                 put("units", units);
             }});
             controlPanel.popup.success("Set attack goal");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }

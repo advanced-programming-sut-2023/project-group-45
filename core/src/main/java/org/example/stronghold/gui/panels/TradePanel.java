@@ -97,7 +97,7 @@ public class TradePanel extends Panel {
                     "message", messageField.getText(),
                     "price", Integer.parseInt(priceField.getText())
                 );
-                Operators.economy.requestTrade(req);
+                game.conn.sendOperatorRequest("economy", "requestTrade", req);
                 controlPanel.popup.success("Success");
             } catch (Exception e) {
                 controlPanel.popup.error(e.getMessage());
@@ -125,17 +125,19 @@ public class TradePanel extends Panel {
             contentTable.add(message).growX().row();
             accept.addListener(new SimpleChangeListener(() -> {
                 try {
-                    Operators.economy.acceptTrade(ImmutableMap.of("request", tradeRequest));
+                    game.conn.sendOperatorRequest("economy", "acceptTrade",
+                        ImmutableMap.of("request", tradeRequest));
                     controlPanel.popup.success("Success");
-                } catch (OperatorException e) {
+                } catch (Exception e) {
                     controlPanel.popup.error(e.getMessage());
                 }
             }));
             reject.addListener(new SimpleChangeListener(() -> {
                 try {
-                    Operators.economy.deleteTrade(ImmutableMap.of("request", tradeRequest));
+                    game.conn.sendOperatorRequest("economy", "deleteTrade",
+                        ImmutableMap.of("request", tradeRequest));
                     controlPanel.popup.success("Success");
-                } catch (OperatorException e) {
+                } catch (Exception e) {
                     controlPanel.popup.error(e.getMessage());
                 }
             }));
@@ -160,9 +162,10 @@ public class TradePanel extends Panel {
             contentTable.add(message).growX().row();
             cancel.addListener(new SimpleChangeListener(() -> {
                 try {
-                    Operators.economy.deleteTrade(ImmutableMap.of("request", tradeRequest));
+                    game.conn.sendOperatorRequest("economy", "deleteTrade",
+                        ImmutableMap.of("request", tradeRequest));
                     controlPanel.popup.success("Success");
-                } catch (OperatorException e) {
+                } catch (Exception e) {
                     controlPanel.popup.error(e.getMessage());
                 }
             }));

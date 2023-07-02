@@ -314,7 +314,7 @@ public class MapScreen implements Screen {
             return false;
         }
         try {
-            Operators.game.dropBuilding(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "dropBuilding", new HashMap<>() {{
                 put("game", gameData);
                 put("player", getMyself());
                 put("building", toBeBuiltType);
@@ -322,7 +322,7 @@ public class MapScreen implements Screen {
             }});
             toBeBuiltType = null;
             return false; // update panel
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
             return true; // keep trying
         } finally {

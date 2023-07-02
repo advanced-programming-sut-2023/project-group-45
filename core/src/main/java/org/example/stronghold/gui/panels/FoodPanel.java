@@ -55,7 +55,7 @@ public class FoodPanel extends Panel {
 
     private void update() {
         try {
-            Operators.game.setFoodRate(buildMap());
+            game.conn.sendOperatorRequest("game", "setFoodRate", buildMap());
             rateLabel.setText(String.format("Food rate: %d", getPlayer().getFoodRate()));
             controlPanel.popup.success("Success");
         } catch (Exception e) {

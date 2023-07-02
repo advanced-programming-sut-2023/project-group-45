@@ -110,42 +110,42 @@ public class BuildingPanel extends Panel {
 
     private void dropUnit(String unit) {
         try {
-            Operators.game.dropUnit(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "dropUnit", new HashMap<>() {{
                 put("game", screen.gameData);
                 put("player", screen.getMyself());
                 put("position", new IntPair(column, row));
                 put("type", unit);
             }});
             controlPanel.popup.success("Unit dropped");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
 
     private void destroyBuilding() {
         try {
-            Operators.game.destroyBuilding(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "destroyBuilding", new HashMap<>() {{
                 put("game", screen.gameData);
                 put("building", getBuilding());
                 put("player", screen.getMyself());
             }});
             controlPanel.popup.success("Destroyed");
             controlPanel.setPanel(null);
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
 
     private void repairBuilding() {
         try {
-            Operators.game.repairBuilding(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "repairBuilding", new HashMap<>() {{
                 put("game", screen.gameData);
                 put("player", screen.getMyself());
                 put("position", new IntPair(column, row));
-                controlPanel.popup.success("Building repaired");
-                controlPanel.setPanel(null);
             }});
-        } catch (OperatorException e) {
+            controlPanel.popup.success("Building repaired");
+            controlPanel.setPanel(null);
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }

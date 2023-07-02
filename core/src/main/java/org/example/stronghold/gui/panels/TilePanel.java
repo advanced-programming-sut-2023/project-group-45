@@ -76,7 +76,7 @@ public class TilePanel extends Panel {
             return;
         }
         try {
-            Operators.game.dropBuilding(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "dropBuilding", new HashMap<>() {{
                 put("game", screen.gameData);
                 put("player", screen.getMyself());
                 put("building", type);
@@ -84,7 +84,7 @@ public class TilePanel extends Panel {
             }});
             controlPanel.popup.success("Pasted");
             controlPanel.setPanel(null);
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }
@@ -101,14 +101,14 @@ public class TilePanel extends Panel {
             return;
         }
         try {
-            Operators.game.buildEquipment(new HashMap<>() {{
+            game.conn.sendOperatorRequest("game", "buildEquipment", new HashMap<>() {{
                 put("game", screen.gameData);
                 put("player", screen.getMyself());
                 put("position", new IntPair(column, row));
                 put("type", type);
             }});
             controlPanel.popup.success("Equipment built");
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
         }
     }

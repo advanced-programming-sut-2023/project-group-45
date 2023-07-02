@@ -59,6 +59,27 @@ public class GameData implements Serializable {
         }
     }
 
+    public Player getPlayerById(long id) {
+        return players.stream()
+            .filter(player -> player.getId() == id)
+            .findFirst()
+            .orElse(null);
+    }
+
+    public Player getPlayerByUsername(String username) {
+        return players.stream()
+            .filter(player -> player.getUser().getUsername().equals(username))
+            .findFirst()
+            .orElse(null);
+    }
+
+    public Building getBuildingById(long id) {
+        return buildings.stream()
+            .filter(building -> building.getId() == id)
+            .findFirst()
+            .orElse(null);
+    }
+
     public Stream<Unit> getUnitsOnPosition(IntPair position) {
         return units.stream()
             .filter(unit -> unit.getPosition().equals(position));

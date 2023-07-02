@@ -21,15 +21,19 @@ public class BuildingPanel extends Panel {
 
     final int column;
     final int row;
-    final Building building;
+    final long buildingId;
     Table control, menu;
 
     public BuildingPanel(ControlPanel controlPanel, int column, int row, Building building) {
         super(controlPanel);
         this.column = column;
         this.row = row;
-        this.building = building;
+        this.buildingId = building.getId();
         create();
+    }
+
+    public Building getBuilding() {
+        return screen.gameData.getBuildingById(buildingId);
     }
 
     private void create() {
@@ -39,17 +43,17 @@ public class BuildingPanel extends Panel {
         add(control).growY();
         add(menu).grow();
         control.add(getTitle()).row();
-        if (building.getOwner().equals(screen.myself)) {
+        if (getBuilding().getOwner().equals(screen.getMyself())) {
             createControlButtons();
         }
     }
 
     private String getTitle() {
         return String.format("%s's %s (%d HP) (%d/%d Labor)",
-            building.getOwner().getUser().getUsername(), building.getType(),
-            building.getHitPoints(),
-            building.getLabors(),
-            building.getMaxLabors()
+            getBuilding().getOwner().getUser().getUsername(), getBuilding().getType(),
+            getBuilding().getHitPoints(),
+            getBuilding().getLabors(),
+            getBuilding().getMaxLabors()
         );
     }
 
@@ -75,13 +79,13 @@ public class BuildingPanel extends Panel {
             new SimpleChangeListener(() -> controlPanel.popup.success("Undid successfully")));
         copy.addListener(new SimpleChangeListener(this::copyBuilding));
 
-        if (!building.getDropUnit().isEmpty()) {
+        if (!getBuilding().getDropUnit().isEmpty()) {
             createMenu();
         }
     }
 
     private void createMenu() {
-        for (String unit : building.getDropUnit().keySet()) {
+        for (String unit : getBuilding().getDropUnit().keySet()) {
             Drawable unitImage = getUnitDrawable(unit);
             if (unitImage == null) {
                 continue;
@@ -108,7 +112,7 @@ public class BuildingPanel extends Panel {
         try {
             Operators.game.dropUnit(new HashMap<>() {{
                 put("game", screen.gameData);
-                put("player", screen.myself);
+                put("player", screen.getMyself());
                 put("position", new IntPair(column, row));
                 put("type", unit);
             }});
@@ -122,8 +126,8 @@ public class BuildingPanel extends Panel {
         try {
             Operators.game.destroyBuilding(new HashMap<>() {{
                 put("game", screen.gameData);
-                put("building", building);
-                put("player", screen.myself);
+                put("building", getBuilding());
+                put("player", screen.getMyself());
             }});
             controlPanel.popup.success("Destroyed");
             controlPanel.setPanel(null);
@@ -136,7 +140,7 @@ public class BuildingPanel extends Panel {
         try {
             Operators.game.repairBuilding(new HashMap<>() {{
                 put("game", screen.gameData);
-                put("player", screen.myself);
+                put("player", screen.getMyself());
                 put("position", new IntPair(column, row));
                 controlPanel.popup.success("Building repaired");
                 controlPanel.setPanel(null);
@@ -147,7 +151,7 @@ public class BuildingPanel extends Panel {
     }
 
     private void copyBuilding() {
-        ClipboardUtils.copyToClipboard(building.getType());
+        ClipboardUtils.copyToClipboard(getBuilding().getType());
         controlPanel.popup.success("Copied");
     }
 }

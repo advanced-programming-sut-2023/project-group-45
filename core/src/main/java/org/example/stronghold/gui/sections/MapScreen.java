@@ -53,11 +53,8 @@ public class MapScreen implements Screen {
     final Random tileRandomizer = new Random(42);
     @Getter
     public GameData gameData;
-    @Getter
-    public GameMap gameMap;
+    public long myselfId;
     public String toBeBuiltType;
-    @Getter
-    public Player myself;
     public boolean toBeTargeted = false;
     TiledMap tiledMap;
     IsometricTiledMapRenderer renderer;
@@ -72,9 +69,7 @@ public class MapScreen implements Screen {
     public MapScreen(StrongholdGame game, User user, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
-        this.gameMap = gameData.getMap();
-        // todo: get user in constructor
-        this.myself = gameData.getPlayers().get(0);
+        this.myselfId = gameData.getPlayerByUsername(user.getUsername()).getId();
     }
 
     private static Vector3 vec3AtSubCell(int column, int row, int i, int j) {
@@ -162,7 +157,16 @@ public class MapScreen implements Screen {
         return 149; // total white as unknown tile
     }
 
+    public GameMap getMap() {
+        return gameData.getMap();
+    }
+
+    public Player getMyself() {
+        return gameData.getPlayerById(myselfId);
+    }
+
     private void setupTiles() {
+        GameMap gameMap = getMap();
         for (int col = 0; col < gameMap.getWidth(); col++) {
             for (int row = 0; row < gameMap.getHeight(); row++) {
                 Tile tile = gameMap.getAt(col, row);
@@ -242,7 +246,7 @@ public class MapScreen implements Screen {
 
     private void focusOnBase() {
         // move camera to center the base
-        Building base = gameData.getBuildingsByOwner(myself)
+        Building base = gameData.getBuildingsByOwner(getMyself())
             .filter(b -> b.getType().equals("Base"))
             .findFirst()
             .orElse(null);
@@ -312,7 +316,7 @@ public class MapScreen implements Screen {
         try {
             Operators.game.dropBuilding(new HashMap<>() {{
                 put("game", gameData);
-                put("player", myself);
+                put("player", getMyself());
                 put("building", toBeBuiltType);
                 put("position", new IntPair(selectCol, selectRow));
             }});
@@ -332,7 +336,7 @@ public class MapScreen implements Screen {
             controlPanel.setPanel(null);
             return;
         }
-        Tile tile = gameMap.getAt(selectCol, selectRow);
+        Tile tile = getMap().getAt(selectCol, selectRow);
         if (tile.getBuilding() != null) {
             controlPanel.setPanel(
                 new BuildingPanel(controlPanel, selectCol, selectRow, tile.getBuilding()));
@@ -352,6 +356,7 @@ public class MapScreen implements Screen {
     }
 
     private void drawEntities(Batch batch) {
+        GameMap gameMap = getMap();
         // building, tree
         for (int col = gameMap.getWidth() - 1; col >= 0; col--) { // back to front
             for (int row = 0; row < gameMap.getHeight(); row++) {
@@ -378,14 +383,14 @@ public class MapScreen implements Screen {
     }
 
     public boolean notInsideMap(int col, int row) {
-        return col < 0 || col >= gameMap.getWidth() || row < 0 || row >= gameMap.getHeight();
+        return col < 0 || col >= getMap().getWidth() || row < 0 || row >= getMap().getHeight();
     }
 
     private void drawHoverBuildingDetail(Batch batch) {
         if (notInsideMap(hoverCol, hoverRow)) {
             return; // out of map
         }
-        Tile tile = gameMap.getAt(hoverCol, hoverRow);
+        Tile tile = getMap().getAt(hoverCol, hoverRow);
         if (tile.getBuilding() == null) {
             return;
         }
@@ -412,7 +417,7 @@ public class MapScreen implements Screen {
         if (units.size() > 4) {
             n = (int) Math.ceil(Math.sqrt(units.size()));
         }
-        boolean hasBuilding = gameMap.getAt(column, row).getBuilding() != null;
+        boolean hasBuilding = getMap().getAt(column, row).getBuilding() != null;
         int x = 1, y = 1;
         for (Unit unit : units) {
             float uCol = column + (float) x / (n + 1);
@@ -458,7 +463,7 @@ public class MapScreen implements Screen {
         if (units.size() > 4) {
             n = (int) Math.ceil(Math.sqrt(units.size()));
         }
-        boolean hasBuilding = gameMap.getAt(column, row).getBuilding() != null;
+        boolean hasBuilding = getMap().getAt(column, row).getBuilding() != null;
         int x = 1, y = 1;
         for (GuiSetting unit : units) {
             float uCol = column + (float) x / (n + 1);

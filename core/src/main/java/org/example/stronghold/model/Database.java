@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Cleanup;
 import lombok.Data;
+import org.example.stronghold.model.template.Chat;
 
 @Data
 public class Database implements Serializable {
 
     private final List<User> users = new ArrayList<>();
+    private final List<Chat> chats = new ArrayList<>();
+    private final Chat publicChat = new Chat();
     private User stayLoggedInUser = null;
 
     public static Database fromFile(File file) throws IOException, ClassNotFoundException {
@@ -54,5 +57,10 @@ public class Database implements Serializable {
 
     public boolean isStayLoggedInUsername(String username) {
         return stayLoggedInUser != null && username.equals(stayLoggedInUser.getUsername());
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+        publicChat.addUsers(user);
     }
 }

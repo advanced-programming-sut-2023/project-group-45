@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
+import org.example.stronghold.model.Message;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
+import org.example.stronghold.model.template.Chat;
 import org.example.stronghold.operator.Operators;
 
 public class Decoder {
@@ -19,6 +21,8 @@ public class Decoder {
             case "Player" -> Player.OBJECTS.get(id);
             case "GameData" -> GameData.OBJECTS.get(id);
             case "TradeRequest" -> TradeRequest.OBJECTS.get(id);
+            case "Chat" -> Chat.OBJECTS.get(id);
+            case "Message" -> Message.OBJECTS.get(id);
             default -> null;
         };
     }
@@ -34,10 +38,12 @@ public class Decoder {
     }
 
     public static Object decodeWithId(String type, Object id) {
-        if (id instanceof Long longId)
+        if (id instanceof Long longId) {
             return decodeWithLongId(type, longId);
-        if (id instanceof String stringId)
+        }
+        if (id instanceof String stringId) {
             return decodeWithStringId(type, stringId);
+        }
         return null;
     }
 
@@ -51,12 +57,15 @@ public class Decoder {
         decodeBuilding(req);
         decodeSingle(req, "target", "Player");
         decodeSingle(req, "request", "TradeRequest");
+        decodeSingle(req, "chat", "Chat");
+        decodeSingle(req, "message", "Message");
     }
 
     private static void decodeSingle(Map<String, Object> req, String key, String type) {
         Object id = req.get(key);
-        if (id == null)
+        if (id == null) {
             return;
+        }
         Object obj = decodeWithId(type, id);
         if (obj == null) {
             req.remove(key);
@@ -66,10 +75,12 @@ public class Decoder {
     }
 
     private static void decodeList(Map<String, Object> req, String key, String type) {
-        if (!req.containsKey(key))
+        if (!req.containsKey(key)) {
             return;
-        if (!(req.get(key) instanceof List rawList))
+        }
+        if (!(req.get(key) instanceof List rawList)) {
             return;
+        }
         List list = new ArrayList<>(rawList);
         req.put(key, list);
         for (int i = 0; i < list.size(); i++) {
@@ -84,9 +95,11 @@ public class Decoder {
     }
 
     private static void decodeBuilding(Map<String, Object> req) {
-        if (!req.containsKey("building"))
+        if (!req.containsKey("building")) {
             return;
-        if (!(req.get("building") instanceof String))
+        }
+        if (!(req.get("building") instanceof String)) {
             decodeSingle(req, "building", "Building");
+        }
     }
 }

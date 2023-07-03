@@ -53,7 +53,7 @@ public class AuthOperator {
         } catch (IOException e) {
             throw new OperatorException(Type.IO_EXCEPTION);
         }
-        database.getUsers().add(user);
+        database.addUser(user);
         return user;
     }
 

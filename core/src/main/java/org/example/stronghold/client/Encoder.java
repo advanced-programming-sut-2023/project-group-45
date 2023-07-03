@@ -4,35 +4,52 @@ import java.util.List;
 import java.util.Map;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.GameData;
+import org.example.stronghold.model.Message;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.BuildingTemplate;
+import org.example.stronghold.model.template.Chat;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.UnitTemplate;
 
 public class Encoder {
 
     public static Object encodeIntoId(Object obj) {
-        if (obj instanceof Building x)
+        if (obj instanceof Building x) {
             return x.getId();
-        if (obj instanceof Unit x)
+        }
+        if (obj instanceof Unit x) {
             return x.getId();
-        if (obj instanceof Player x)
+        }
+        if (obj instanceof Player x) {
             return x.getId();
-        if (obj instanceof GameData x)
+        }
+        if (obj instanceof GameData x) {
             return x.getId();
-        if (obj instanceof TradeRequest x)
+        }
+        if (obj instanceof TradeRequest x) {
             return x.getId();
-        if (obj instanceof User x)
+        }
+        if (obj instanceof User x) {
             return x.getUsername();
-        if (obj instanceof BuildingTemplate x)
+        }
+        if (obj instanceof BuildingTemplate x) {
             return x.getType();
-        if (obj instanceof GameMapTemplate x)
+        }
+        if (obj instanceof GameMapTemplate x) {
             return x.getName();
-        if (obj instanceof UnitTemplate x)
+        }
+        if (obj instanceof UnitTemplate x) {
             return x.getType();
+        }
+        if (obj instanceof Chat x) {
+            return x.getId();
+        }
+        if (obj instanceof Message x) {
+            return x.getId();
+        }
         return null;
     }
 
@@ -51,17 +68,21 @@ public class Encoder {
         encodeSingle(req, "building");
         encodeSingle(req, "target");
         encodeSingle(req, "request");
+        encodeSingle(req, "chat");
+        encodeSingle(req, "message");
     }
 
     private static void encodeSingle(Map<String, Object> req, String key) {
-        if (!req.containsKey(key))
+        if (!req.containsKey(key)) {
             return;
+        }
         req.put(key, encodeIntoIdOrDefault(req.get(key)));
     }
 
     private static void encodeList(Map<String, Object> req, String key) {
-        if (!req.containsKey(key))
+        if (!req.containsKey(key)) {
             return;
+        }
         req.put(key, ((List<?>) req.get(key)).stream()
             .map(Encoder::encodeIntoIdOrDefault)
             .toList());

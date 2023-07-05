@@ -8,6 +8,6 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok:$lombokVersion"
   implementation "com.google.guava:guava:$guavaVersion"
   implementation "com.google.code.gson:gson:$gsonVersion"
-  testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
   implementation "org.xerial:sqlite-jdbc:$sqliteVersion"
+  testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
 }

@@ -1,5 +1,6 @@
 package org.example.stronghold.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,6 +37,12 @@ public class Database implements Serializable {
         } catch (IOException | ClassNotFoundException e) {
             return new Database();
         }
+    }
+
+    public static Database fromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+        @Cleanup ObjectInputStream objectStream = new ObjectInputStream(
+            new ByteArrayInputStream(bytes));
+        return (Database) objectStream.readObject();
     }
 
     public void toFile(File file) throws IOException {

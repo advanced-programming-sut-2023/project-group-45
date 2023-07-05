@@ -20,6 +20,7 @@ import java.util.Set;
 import lombok.Data;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.Building;
+import org.example.stronghold.model.Chat;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.Message;
@@ -30,7 +31,6 @@ import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.BuildingTemplate;
-import org.example.stronghold.model.Chat;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.model.template.UnitTemplate;
@@ -60,6 +60,7 @@ public class GameOperator {
         for (User user : users) {
             checkUserExists(database, user.getUsername());
         }
+        createChat(req);
         UnitTemplate lordTemplate = checkNotNull(templateDatabase.getUnitTemplates().get("Lord"),
             Type.UNIT_NOT_FOUND);
         BuildingTemplate baseTemplate = checkNotNull(templateDatabase.getBuildingTemplates()
@@ -525,7 +526,7 @@ public class GameOperator {
         return unit;
     }
 
-    public void createChat(Map<String, Object> req) throws OperatorException {
+    public void createChat(Map<String, Object> req) {
         Set<User> users = new HashSet<>(getReqAs(req, "users", List.class));
         for (Chat chat : database.getChats()) {
             if (chat.getUsers().equals(users)) {

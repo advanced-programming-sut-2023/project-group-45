@@ -7,15 +7,17 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 import org.example.stronghold.context.HashedString;
 
 @Data
 @Builder(toBuilder = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Serializable {
 
-    @NonNull
+    @NonNull @EqualsAndHashCode.Include
     private String username;
     @NonNull
     @ToString.Exclude // avoid long logs

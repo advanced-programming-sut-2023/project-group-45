@@ -8,11 +8,9 @@ import static org.example.stronghold.operator.OperatorPreconditions.checkTrue;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUserExists;
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
-import com.badlogic.gdx.Gdx;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -93,7 +91,7 @@ public class AuthOperator {
         user.setPassword(newPassword);
     }
 
-    public List<User> getUsers() {
+    public List<User> getUsers(Map<String, Object> req) {
         return database.getUsers();
     }
 }

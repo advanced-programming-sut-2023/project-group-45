@@ -16,7 +16,7 @@ import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
 import org.example.stronghold.model.Message;
 import org.example.stronghold.model.User;
-import org.example.stronghold.model.template.Chat;
+import org.example.stronghold.model.Chat;
 
 public class ChatPanel extends Panel {
 
@@ -46,16 +46,20 @@ public class ChatPanel extends Panel {
         tabsTable.add(privateChatButton).growX();
         tabsTable.add(roomsButton).growX();
         sendButton = new TextButton("Send", game.skin);
-        publicChatButton.addListener(new SimpleChangeListener(() -> {
-            try {
-                showChat(
-                    (Chat) game.conn.sendOperatorRequest("game", "getPublicChat", new HashMap<>()));
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }));
+        publicChatButton.addListener(new SimpleChangeListener(this::showPublicChat));
         privateChatButton.addListener(new SimpleChangeListener(this::showPrivateChats));
         roomsButton.addListener(new SimpleChangeListener(this::showRooms));
+    }
+
+    private void showPublicChat() {
+        try {
+            long chatId = (Long) game.conn.sendOperatorRequest("game", "getPublicChat", new HashMap<>());
+            Chat chat = (Chat) game.conn.sendObjectRequest("Chat", chatId);
+            showChat(chat);
+        } catch (Exception e) {
+            controlPanel.popup.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void showChat(Chat chat) {
@@ -63,7 +67,8 @@ public class ChatPanel extends Panel {
         try {
             chat = (Chat) game.conn.sendObjectRequest("Chat", chat.getId());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            controlPanel.popup.error(e.getMessage());
+            e.printStackTrace();
         }
         currentChat = chat;
         for (Message message : chat.getMessages()) {
@@ -85,29 +90,27 @@ public class ChatPanel extends Panel {
             Chat copyChat = chat;
             deleteButton.addListener(new SimpleChangeListener(() -> {
                 try {
-                    game.conn.sendOperatorRequest("game", "deleteMessage", new HashMap<>() {
-                        {
-                            put("chat", copyChat);
-                            put("message", message);
-                        }
-                    });
+                    game.conn.sendOperatorRequest("game", "deleteMessage", new HashMap<>() {{
+                        put("chat", copyChat);
+                        put("message", message);
+                    }});
                     showChat(copyChat);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    controlPanel.popup.error(e.getMessage());
+                    e.printStackTrace();
                 }
             }));
             editButton.addListener(new SimpleChangeListener(() -> {
                 try {
-                    game.conn.sendOperatorRequest("game", "editMessage", new HashMap<>() {
-                        {
-                            put("chat", copyChat);
-                            put("message", message);
-                            put("content", messageField.getText());
-                        }
-                    });
+                    game.conn.sendOperatorRequest("game", "editMessage", new HashMap<>() {{
+                        put("chat", copyChat);
+                        put("message", message);
+                        put("content", messageField.getText());
+                    }});
                     showChat(copyChat);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    controlPanel.popup.error(e.getMessage());
+                    e.printStackTrace();
                 }
             }));
         }
@@ -131,7 +134,8 @@ public class ChatPanel extends Panel {
                 messageField.setText("");
                 showChat(currentChat);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                controlPanel.popup.error(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -144,8 +148,8 @@ public class ChatPanel extends Panel {
         currentChat = null;
         contentTable.clearChildren();
         try {
-            List<User> users = (List<User>) game.conn
-                .sendOperatorRequest("auth", "getUsers", new HashMap<>());
+            List<User> users = (List<User>) game.conn.sendOperatorRequest("auth", "getUsers",
+                new HashMap<>());
             for (User user : users) {
                 if (!user.equals(getUser())) {
                     TextButton button = new TextButton(user.getUsername(), game.skin);
@@ -158,11 +162,10 @@ public class ChatPanel extends Panel {
                             });
                             Set<User> userSet = new HashSet<>(List.of(getUser(), user));
                             List<Chat> chats = (List<Chat>) game.conn.sendOperatorRequest("game",
-                                "getChats", new HashMap<>() {
-                                    {
-                                        put("user", getUser());
-                                    }
-                                });
+                                "getChats", new HashMap<>() {{
+                                    put("user", getUser());
+                                }}
+                            );
                             for (Chat chat : chats) {
                                 if (chat.getUsers().equals(userSet)) {
                                     showChat(chat);
@@ -170,14 +173,16 @@ public class ChatPanel extends Panel {
                                 }
                             }
                         } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                            controlPanel.popup.error(e.getMessage());
+                            e.printStackTrace();
                         }
                     }));
                     contentTable.add(button).growX().row();
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            controlPanel.popup.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -185,12 +190,10 @@ public class ChatPanel extends Panel {
         currentChat = null;
         contentTable.clearChildren();
         try {
-            List<Chat> chats = (List<Chat>) game.conn.sendOperatorRequest("game",
-                "getChats", new HashMap<>() {
-                    {
-                        put("user", getUser());
-                    }
-                });
+            List<Chat> chats = (List<Chat>) game.conn.sendOperatorRequest("game", "getChats",
+                new HashMap<>() {{
+                    put("user", getUser());
+                }});
             for (Chat chat : chats) {
                 if (chat.getUsers().size() > 2) {
                     TextButton button = new TextButton(chat.getName(), game.skin);
@@ -201,7 +204,8 @@ public class ChatPanel extends Panel {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            controlPanel.popup.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

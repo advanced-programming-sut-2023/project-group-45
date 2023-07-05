@@ -30,7 +30,7 @@ import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.BuildingTemplate;
-import org.example.stronghold.model.template.Chat;
+import org.example.stronghold.model.Chat;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.model.template.UnitTemplate;

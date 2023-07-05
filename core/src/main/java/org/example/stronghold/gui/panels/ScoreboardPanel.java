@@ -15,6 +15,7 @@ import java.util.*;
 public class ScoreboardPanel extends Panel {
 
     private Table table;
+    public Thread updateThread;
 
     public ScoreboardPanel(ControlPanel controlPanel) {
         super(controlPanel);
@@ -29,13 +30,19 @@ public class ScoreboardPanel extends Panel {
 
     private void create(){
         table = new Table(game.skin);
-        table.align(Align.center);
         add(table).grow();
-        addLabel("Avatar");
-        addLabel("Username");
-        addLabel("Score");
-        addLabel("Last Visit");
-        table.row();
+        updateThread = new Thread(() -> {
+            for (int i = 0; i < 12; i++){
+                table.reset();
+                updateScoreboard();
+                try {
+                    Thread.sleep(10 * 1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+//        updateThread.start();
         updateScoreboard();
     }
 
@@ -52,6 +59,12 @@ public class ScoreboardPanel extends Panel {
 
     private void updateScoreboard(){
         try {
+            table.align(Align.center);
+            addLabel("Avatar");
+            addLabel("Username");
+            addLabel("Score");
+            addLabel("Last Visit");
+            table.row();
             List<User> users = new ArrayList<>((List<User>) game.conn.sendOperatorRequest("auth", "getUsers",
                 new HashMap<>()));
             users.sort(Comparator.comparing(User::getScore).reversed());

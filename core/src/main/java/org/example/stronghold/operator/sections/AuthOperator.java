@@ -16,6 +16,7 @@ import java.util.Map;
 import lombok.Data;
 import org.example.stronghold.context.HashedString;
 import org.example.stronghold.model.Database;
+import org.example.stronghold.model.GameData;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.TemplateDatabase;
@@ -112,5 +113,9 @@ public class AuthOperator {
         GameMapTemplate map = getReqAs(req, "map-object", GameMapTemplate.class);
         checkTrue(!templateDatabase.getGameMapTemplates().containsKey(name), Type.NOT_UNIQUE_MAP_NAME);
         templateDatabase.getGameMapTemplates().put(name, map);
+    }
+
+    public List<GameData> getAllGameData(Map<String, Object> req) {
+        return GameData.OBJECTS.values().stream().toList();
     }
 }

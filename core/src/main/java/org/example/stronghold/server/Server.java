@@ -10,6 +10,7 @@ import lombok.Data;
 import org.example.stronghold.model.Chat;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.SQLExecutor;
+import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.operator.Operators;
 
@@ -84,6 +85,10 @@ public class Server {
 
     private static void shutdown() {
         try {
+            for(User user : database.getUsers()){
+                user.setOnline(false);
+                user.setLastVisit(System.currentTimeMillis() / 1000);
+            }
             database.toFile(databaseFile);
             templateDatabase.saveToPath(templateDatabaseRoot);
             saveDatabase();

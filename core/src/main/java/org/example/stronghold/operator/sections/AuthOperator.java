@@ -74,6 +74,8 @@ public class AuthOperator {
         HashedString password = getReqAs(req, "password", HashedString.class);
         User user = checkUserExists(database, username);
         checkTrue(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);
+        user.setLastVisit(System.currentTimeMillis() / 1000);
+        user.setOnline(true);
         return updateStayLoggedInUser(req, user);
     }
 

@@ -16,7 +16,7 @@ public class StartGameScreen extends FormScreen {
 
     private final User user;
     TextField mapNameField, opponentField, gameIdField;
-    TextButton startGameButton, joinGameButton;
+    TextButton startGameButton, joinGameButton, shareMapButton;
 
     public StartGameScreen(StrongholdGame game, User user) {
         super(game);
@@ -30,6 +30,7 @@ public class StartGameScreen extends FormScreen {
         gameIdField = new TextField("", game.skin);
         startGameButton = new TextButton("Start game", game.skin);
         joinGameButton = new TextButton("Join game", game.skin);
+        shareMapButton = new TextButton("Share map", game.skin);
 
         table.defaults().spaceBottom(10).spaceRight(10);
         table.add("Map").align(Align.left);
@@ -40,24 +41,20 @@ public class StartGameScreen extends FormScreen {
         table.add("Game ID").align(Align.left);
         table.add(gameIdField).minWidth(400).row();
         table.add(joinGameButton).colspan(2).minWidth(200).row();
+        table.add(shareMapButton).colspan(2).minWidth(200).row();
 
         startGameButton.addListener(new SimpleChangeListener(this::startTheGame));
         joinGameButton.addListener(new SimpleChangeListener(this::joinTheGame));
+        shareMapButton.addListener(new SimpleChangeListener(() -> game.setScreen(new ShareMapScreen(game, user))));
     }
 
     private void startTheGame() {
         try {
             User opponent = (User) game.conn.sendObjectRequest("User", opponentField.getText());
             List<User> users = List.of(user, opponent);
-            GameMapTemplate gameMapTemplate = game.templateDatabase.getGameMapTemplates()
-                .get(mapNameField.getText());
-            if (gameMapTemplate == null) {
-                popup.error("Map not found");
-                return;
-            }
             long gameId = (Long) game.conn.sendOperatorRequest("game", "startGame",
                 new HashMap<>() {{
-                    put("map", gameMapTemplate);
+                    put("map", mapNameField.getText());
                     put("users", users);
                 }});
             GameData gameData = (GameData) game.conn.sendObjectRequest("GameData", gameId);

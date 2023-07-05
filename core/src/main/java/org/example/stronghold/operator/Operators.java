@@ -22,7 +22,7 @@ public class Operators {
     public static void initDatabase(Database database, TemplateDatabase templateDatabase) {
         Operators.database = database;
         Operators.templateDatabase = templateDatabase;
-        auth = new AuthOperator(database);
+        auth = new AuthOperator(database, templateDatabase);
         economy = new EconomyOperator(database);
         mapEditor = new MapEditorOperator(database, templateDatabase);
         profile = new ProfileOperator(database);

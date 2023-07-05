@@ -24,7 +24,7 @@ public class TemplateDatabase {
     private final Map<String, BuildingTemplate> buildingTemplates = new HashMap<>();
     private final Map<String, GameMapTemplate> gameMapTemplates = new HashMap<>();
 
-    private static <T> T fromFile(File file, Class<T> clazz) throws IOException {
+    public static <T> T fromFile(File file, Class<T> clazz) throws IOException {
         @Cleanup FileReader fileReader = new FileReader(file);
         return GSON.fromJson(fileReader, clazz);
     }

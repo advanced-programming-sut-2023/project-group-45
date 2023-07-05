@@ -17,6 +17,8 @@ import lombok.Data;
 import org.example.stronghold.context.HashedString;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.User;
+import org.example.stronghold.model.template.GameMapTemplate;
+import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.operator.OperatorException;
 import org.example.stronghold.operator.OperatorException.Type;
 
@@ -24,6 +26,7 @@ import org.example.stronghold.operator.OperatorException.Type;
 public class AuthOperator {
 
     private final Database database;
+    private final TemplateDatabase templateDatabase;
 
     public User findUser(Map<String, Object> req) throws OperatorException {
         String username = getReqString(req, "username");
@@ -93,5 +96,16 @@ public class AuthOperator {
 
     public List<User> getUsers(Map<String, Object> req) {
         return database.getUsers();
+    }
+
+    public List<GameMapTemplate> getMaps(Map<String, Object> req) {
+        return templateDatabase.getGameMapTemplates().values().stream().toList();
+    }
+
+    public void addMap(Map<String, Object> req) throws OperatorException {
+        String name = getReqString(req, "name");
+        GameMapTemplate map = getReqAs(req, "map-object", GameMapTemplate.class);
+        checkTrue(!templateDatabase.getGameMapTemplates().containsKey(name), Type.NOT_UNIQUE_MAP_NAME);
+        templateDatabase.getGameMapTemplates().put(name, map);
     }
 }

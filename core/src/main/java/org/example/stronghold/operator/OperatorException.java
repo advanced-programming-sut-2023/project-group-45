@@ -32,6 +32,6 @@ public class OperatorException extends Exception {
         NOT_ENOUGH_ENGINEER,
         CANT_REPAIR,
         IO_EXCEPTION,
-        MESSAGE_NOT_FOUND,
+        MESSAGE_NOT_FOUND, NOT_UNIQUE_MAP_NAME,
     }
 }

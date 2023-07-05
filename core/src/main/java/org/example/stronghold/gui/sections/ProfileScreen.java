@@ -21,7 +21,6 @@ import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.components.FormScreen;
 import org.example.stronghold.model.User;
-import org.example.stronghold.operator.Operators;
 
 public class ProfileScreen extends FormScreen {
 

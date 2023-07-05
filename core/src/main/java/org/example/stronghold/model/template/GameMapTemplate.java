@@ -17,6 +17,7 @@ import org.example.stronghold.model.Market;
 public class GameMapTemplate implements Serializable {
 
     private String name;
+    private String author = "admin";
     private int width, height;
     private List<IntPair> bases = new ArrayList<>();
     private Map<String, Integer> initialResources = new HashMap<>();

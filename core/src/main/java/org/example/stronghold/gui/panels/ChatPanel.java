@@ -141,7 +141,7 @@ public class ChatPanel extends Panel {
     }
 
     private User getUser() {
-        return screen.getMyself().getUser();
+        return screen.getMyUser();
     }
 
     private void showPrivateChats() {

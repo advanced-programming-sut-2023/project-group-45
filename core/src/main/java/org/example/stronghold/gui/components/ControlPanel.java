@@ -91,15 +91,17 @@ public class ControlPanel implements Disposable {
         popup = new PopupWindow(game.craftacularSkin, game.skin, 300);
         stage.addActor(popup);
 
-        addPanelButton("Report", () -> new ReportPanel(this));
-        addPanelButton("Build", () -> new BuildPanel(this));
-        addPanelButton("Food", () -> new FoodPanel(this));
-        addPanelButton("Popularity", () -> new PopularityPanel(this));
-        finishSelectRow();
-        addPanelButton("Market", () -> new MarketPanel(this));
-        addPanelButton("Tax", () -> new TaxPanel(this));
-        addPanelButton("Trade", () -> new TradePanel(this));
-        finishSelectRow();
+        if (screen.getMyself() != null) {
+            addPanelButton("Report", () -> new ReportPanel(this));
+            addPanelButton("Build", () -> new BuildPanel(this));
+            addPanelButton("Food", () -> new FoodPanel(this));
+            addPanelButton("Popularity", () -> new PopularityPanel(this));
+            finishSelectRow();
+            addPanelButton("Market", () -> new MarketPanel(this));
+            addPanelButton("Tax", () -> new TaxPanel(this));
+            addPanelButton("Trade", () -> new TradePanel(this));
+            finishSelectRow();
+        }
         addPanelButton("Chat", () -> new ChatPanel(this));
         addPanelButton("Options", () -> new OptionPanel(this));
         finishSelectRow();

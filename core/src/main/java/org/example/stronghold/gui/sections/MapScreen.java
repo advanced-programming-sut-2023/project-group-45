@@ -55,6 +55,8 @@ public class MapScreen implements Screen {
     final Random tileRandomizer = new Random(42);
     @Getter
     public GameData gameData;
+    @Getter
+    public final User myUser;
     public long myselfId;
     public String toBeBuiltType;
     public boolean toBeTargeted = false;
@@ -74,7 +76,12 @@ public class MapScreen implements Screen {
     public MapScreen(StrongholdGame game, User user, GameData gameData) {
         this.game = game;
         this.gameData = gameData;
-        this.myselfId = gameData.getPlayerByUsername(user.getUsername()).getId();
+        this.myUser = user;
+        this.myselfId = gameData.getPlayers().stream()
+            .filter(p -> p.getUser().getUsername().equals(user.getUsername()))
+            .findFirst()
+            .map(Player::getId)
+            .orElse(-1L);
         this.updater = new Thread(new GameDataUpdater(this));
         this.updater.start();
     }
@@ -248,7 +255,7 @@ public class MapScreen implements Screen {
     public synchronized void updateGameData(int count) {
         try {
             // first player as admin
-            if (gameData.getPlayers().get(0).getId() == getMyself().getId()) {
+            if (gameData.getPlayers().get(0).getId() == myselfId) {
                 for (int i = 0; i < count; i++) {
                     game.conn.sendOperatorRequest("game", "nextFrame", new HashMap<>() {{
                         put("game", gameData);

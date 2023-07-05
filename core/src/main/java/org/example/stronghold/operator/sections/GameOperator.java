@@ -13,13 +13,16 @@ import static org.example.stronghold.operator.OperatorPreconditions.checkUserExi
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.Data;
 import org.example.stronghold.context.IntPair;
 import org.example.stronghold.model.Building;
 import org.example.stronghold.model.Database;
 import org.example.stronghold.model.GameData;
+import org.example.stronghold.model.Message;
 import org.example.stronghold.model.Navigation;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.Tile;
@@ -27,6 +30,7 @@ import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
 import org.example.stronghold.model.User;
 import org.example.stronghold.model.template.BuildingTemplate;
+import org.example.stronghold.model.template.Chat;
 import org.example.stronghold.model.template.GameMapTemplate;
 import org.example.stronghold.model.template.TemplateDatabase;
 import org.example.stronghold.model.template.UnitTemplate;
@@ -519,5 +523,53 @@ public class GameOperator {
         unit.setPosition(position);
         gameData.getUnits().add(unit);
         return unit;
+    }
+
+    public void createChat(Map<String, Object> req) throws OperatorException {
+        Set<User> users = new HashSet<>(getReqAs(req, "users", List.class));
+        for (Chat chat : database.getChats()) {
+            if (chat.getUsers().equals(users)) {
+                return;
+            }
+        }
+        Chat chat = new Chat(users);
+        database.getChats().add(chat);
+    }
+
+    public List<Chat> getChats(Map<String, Object> req) throws OperatorException {
+        User user = getReqAs(req, "user", User.class);
+        ArrayList<Chat> chats = new ArrayList<>();
+        for (Chat chat : database.getChats()) {
+            if (chat.getUsers().contains(user)) {
+                chats.add(chat);
+            }
+        }
+        return chats;
+    }
+
+    public void sendMessage(Map<String, Object> req) throws OperatorException {
+        Chat chat = getReqAs(req, "chat", Chat.class);
+        User user = getReqAs(req, "user", User.class);
+        String content = getReqString(req, "content");
+        chat.getMessages().add(new Message(user, content));
+    }
+
+    public void deleteMessage(Map<String, Object> req) throws OperatorException {
+        Chat chat = getReqAs(req, "chat", Chat.class);
+        Message message = getReqAs(req, "message", Message.class);
+        checkTrue(chat.getMessages().contains(message), Type.MESSAGE_NOT_FOUND);
+        chat.getMessages().remove(message);
+    }
+
+    public void editMessage(Map<String, Object> req) throws OperatorException {
+        Chat chat = getReqAs(req, "chat", Chat.class);
+        Message message = getReqAs(req, "message", Message.class);
+        String content = getReqString(req, "content");
+        checkTrue(chat.getMessages().contains(message), Type.MESSAGE_NOT_FOUND);
+        message.setContent(content);
+    }
+
+    public Chat getPublicChat(Map<String, Object> req) throws OperatorException {
+        return database.getPublicChat();
     }
 }

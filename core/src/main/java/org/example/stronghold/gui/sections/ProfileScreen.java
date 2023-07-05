@@ -42,7 +42,7 @@ public class ProfileScreen extends FormScreen {
     @Override
     public void formShow() {
         profileTable = new Table();
-        avatarImage = new Image(new Texture(user.getAvatar()));
+        avatarImage = new Image(new Texture(user.getAvatarFileHandle()));
         usernameLabel = new Label("Username:", game.skin);
         usernameField = new TextField(user.getUsername(), game.skin);
         passwordField = new TextField("", game.skin);
@@ -148,8 +148,8 @@ public class ProfileScreen extends FormScreen {
             game.conn.sendOperatorRequest("profile", "changeSlogan", req);
             if (!avatarPath.getText().isEmpty()) {
                 Files.copy(new File(avatarPath.getText()).toPath(),
-                    user.getAvatar().file().toPath());
-                avatarImage = new Image(new Texture(user.getAvatar()));
+                    user.getAvatar());
+                avatarImage = new Image(new Texture(user.getAvatarFileHandle()));
             }
             user = (User) game.conn.sendObjectRequest("User", user.getUsername());
             popup.success("Done!");

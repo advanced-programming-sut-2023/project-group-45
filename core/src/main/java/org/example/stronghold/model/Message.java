@@ -20,6 +20,17 @@ public class Message implements Serializable {
         OBJECTS.put(id, this);
     }
 
+    public static void fixObjects() {
+        NEXT_ID = Chat.OBJECTS.values().stream()
+            .flatMap(c -> c.getMessages().stream())
+            .mapToLong(m -> m.getId() + 1)
+            .max()
+            .orElse(0);
+        Chat.OBJECTS.values().stream()
+            .flatMap(c -> c.getMessages().stream())
+            .forEach(m -> OBJECTS.put(m.getId(), m));
+    }
+
     public Message(User sender, String content) {
         this.sender = sender;
         this.content = content;

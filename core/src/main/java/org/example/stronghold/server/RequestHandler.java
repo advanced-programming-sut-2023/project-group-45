@@ -56,7 +56,6 @@ public class RequestHandler implements Runnable {
     private void handleObject(Map<String, Object> req) throws IOException {
         String type = getReqString(req, "type");
         Object id = getReq(req, "id");
-        System.out.println(type + " / " + id);
         Object object = Decoder.decodeWithId(type, id);
         checkNotNull(object, "no such object");
         sendResponse(new HashMap<>() {{

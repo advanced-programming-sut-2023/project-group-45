@@ -22,6 +22,15 @@ public class Chat implements Serializable {
         OBJECTS.put(id, this);
     }
 
+    public static void fixObjects(Database database) {
+        NEXT_ID = database.getChats().stream()
+            .mapToLong(c -> c.getId() + 1)
+            .max()
+            .orElse(0);
+        database.getChats().forEach(c -> OBJECTS.put(c.getId(), c));
+        Message.fixObjects();
+    }
+
     public Chat() {
         messages = new ArrayList<>();
         users = new HashSet<>();

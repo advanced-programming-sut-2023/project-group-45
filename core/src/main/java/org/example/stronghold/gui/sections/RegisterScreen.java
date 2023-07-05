@@ -114,15 +114,14 @@ public class RegisterScreen extends FormScreen {
             return;
         }
         try {
-            User user = Operators.auth.register(new HashMap<>() {{
+            game.conn.sendOperatorRequest("auth", "register", new HashMap<>() {{
                 put("username", usernameField.getText());
                 put("password", HashedString.fromPlain(password).withMode(HashMode.SHA256));
                 put("email", emailField.getText());
                 put("nickname", nicknameField.getText());
             }});
-            log("registered as %s", user);
             game.setScreen(new LoginScreen(game));
-        } catch (OperatorException e) {
+        } catch (Exception e) {
             popup.pop(e.getMessage());
         }
     }

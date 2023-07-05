@@ -17,6 +17,7 @@ import lombok.Data;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
 import org.example.stronghold.gui.panels.BuildPanel;
+import org.example.stronghold.gui.panels.ChatPanel;
 import org.example.stronghold.gui.panels.FoodPanel;
 import org.example.stronghold.gui.panels.MarketPanel;
 import org.example.stronghold.gui.panels.OptionPanel;
@@ -99,6 +100,7 @@ public class ControlPanel implements Disposable {
         addPanelButton("Tax", () -> new TaxPanel(this));
         addPanelButton("Trade", () -> new TradePanel(this));
         finishSelectRow();
+        addPanelButton("Chat", () -> new ChatPanel(this));
         addPanelButton("Options", () -> new OptionPanel(this));
         finishSelectRow();
 

@@ -70,7 +70,7 @@ public class ChatPanel extends Panel {
             if (!getUser().equals(message.getSender())) {
                 message.setSeen(true);
             }
-            contentTable.add(new Image(new Texture(message.getSender().getAvatar())));
+            contentTable.add(new Image(new Texture(message.getSender().getAvatarFileHandle())));
             contentTable.add(
                 new Label(message.getSender().getUsername() + ": " + message.getContent(),
                     game.skin)).growX().row();

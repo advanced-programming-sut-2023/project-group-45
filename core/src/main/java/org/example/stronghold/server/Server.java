@@ -12,17 +12,29 @@ public class Server {
     public static final int PORT = 2222;
     private static final File databaseFile = new File("./assets/data/database.ser");
     private static final File templateDatabaseRoot = new File("./assets/data");
+    private static Database database;
+    private static TemplateDatabase templateDatabase;
 
     public static void main(String[] args) throws IOException {
-        Database database = Database.fromFileOrDefault(databaseFile);
-        TemplateDatabase templateDatabase = new TemplateDatabase();
+        database = Database.fromFileOrDefault(databaseFile);
+        templateDatabase = new TemplateDatabase();
         templateDatabase.updateFromPath(templateDatabaseRoot);
         Operators.initDatabase(database, templateDatabase);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(Server::shutdown));
 
         ConnectionHandler connectionHandler = new ConnectionHandler(PORT);
         connectionHandler.run();
 
-        database.toFile(databaseFile);
-        templateDatabase.saveToPath(templateDatabaseRoot);
+    }
+
+    private static void shutdown() {
+        try {
+            database.toFile(databaseFile);
+            templateDatabase.saveToPath(templateDatabaseRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

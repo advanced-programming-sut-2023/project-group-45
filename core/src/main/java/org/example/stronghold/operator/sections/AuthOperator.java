@@ -9,8 +9,10 @@ import static org.example.stronghold.operator.OperatorPreconditions.checkUserExi
 import static org.example.stronghold.operator.OperatorPreconditions.checkUsernameFormat;
 
 import com.badlogic.gdx.Gdx;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -32,6 +34,7 @@ public class AuthOperator {
 
     public User register(Map<String, Object> req) throws OperatorException {
         String username = getReqString(req, "username");
+        System.out.println(username);
         HashedString password = getReqAs(req, "password", HashedString.class);
         String nickname = getReqString(req, "nickname");
         String email = getReqString(req, "email");
@@ -47,10 +50,10 @@ public class AuthOperator {
             .score(0)
             .build();
         try {
-            Gdx.files.internal("avatars").file().mkdir();
-            Files.copy(Gdx.files.internal("data/default_avatar.jpg").file().toPath(),
-                user.getAvatar().file().toPath());
+            new File("assets/avatars").mkdir();
+            Files.copy(new File("assets/others/default_avatar.jpg").toPath(), user.getAvatar());
         } catch (IOException e) {
+            e.printStackTrace();
             throw new OperatorException(Type.IO_EXCEPTION);
         }
         database.addUser(user);

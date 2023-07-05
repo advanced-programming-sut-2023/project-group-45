@@ -16,15 +16,7 @@ import java.util.function.Supplier;
 import lombok.Data;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.StrongholdGame;
-import org.example.stronghold.gui.panels.BuildPanel;
-import org.example.stronghold.gui.panels.ChatPanel;
-import org.example.stronghold.gui.panels.FoodPanel;
-import org.example.stronghold.gui.panels.MarketPanel;
-import org.example.stronghold.gui.panels.OptionPanel;
-import org.example.stronghold.gui.panels.PopularityPanel;
-import org.example.stronghold.gui.panels.ReportPanel;
-import org.example.stronghold.gui.panels.TaxPanel;
-import org.example.stronghold.gui.panels.TradePanel;
+import org.example.stronghold.gui.panels.*;
 import org.example.stronghold.gui.sections.MapScreen;
 
 @Data
@@ -104,6 +96,7 @@ public class ControlPanel implements Disposable {
         }
         addPanelButton("Chat", () -> new ChatPanel(this));
         addPanelButton("Options", () -> new OptionPanel(this));
+        addPanelButton("Scoreboard", () -> new ScoreboardPanel(this));
         finishSelectRow();
 
         stage.setDebugAll(DEBUG);

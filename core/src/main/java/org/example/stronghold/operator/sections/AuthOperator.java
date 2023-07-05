@@ -72,11 +72,16 @@ public class AuthOperator {
     public User login(Map<String, Object> req) throws OperatorException {
         String username = getReqString(req, "username");
         if (database.isStayLoggedInUsername(username)) {
-            return updateStayLoggedInUser(req, database.getStayLoggedInUser());
+            User user = updateStayLoggedInUser(req, database.getStayLoggedInUser());
+            user.setLastVisit(System.currentTimeMillis() / 1000);
+            user.setOnline(true);
+            return user;
         }
         HashedString password = getReqAs(req, "password", HashedString.class);
         User user = checkUserExists(database, username);
         checkTrue(password.equals(user.getPassword()), Type.INCORRECT_PASSWORD);
+        user.setLastVisit(System.currentTimeMillis() / 1000);
+        user.setOnline(true);
         return updateStayLoggedInUser(req, user);
     }
 

@@ -28,6 +28,8 @@ public class User implements Serializable {
     private String securityQuestion;
     private String securityAnswer;
     private int score;
+    private long lastVisit;
+    private boolean isOnline;
 
     public Path getAvatar() {
         return new File("assets/avatars/" + username + ".jpg").toPath();

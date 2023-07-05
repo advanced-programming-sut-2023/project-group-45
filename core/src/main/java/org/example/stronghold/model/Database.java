@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Cleanup;
 import lombok.Data;
-import org.example.stronghold.model.template.Chat;
 
 @Data
 public class Database implements Serializable {
@@ -20,6 +19,10 @@ public class Database implements Serializable {
     private final List<Chat> chats = new ArrayList<>();
     private final Chat publicChat = new Chat();
     private User stayLoggedInUser = null;
+
+    {
+        chats.add(publicChat);
+    }
 
     public static Database fromFile(File file) throws IOException, ClassNotFoundException {
         @Cleanup FileInputStream inputStream = new FileInputStream(file);

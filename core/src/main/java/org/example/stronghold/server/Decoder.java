@@ -9,7 +9,7 @@ import org.example.stronghold.model.Message;
 import org.example.stronghold.model.Player;
 import org.example.stronghold.model.TradeRequest;
 import org.example.stronghold.model.Unit;
-import org.example.stronghold.model.template.Chat;
+import org.example.stronghold.model.Chat;
 import org.example.stronghold.operator.Operators;
 
 public class Decoder {

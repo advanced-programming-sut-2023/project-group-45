@@ -14,9 +14,9 @@ import java.util.Set;
 import org.example.stronghold.gui.SimpleChangeListener;
 import org.example.stronghold.gui.components.ControlPanel;
 import org.example.stronghold.gui.components.Panel;
+import org.example.stronghold.model.Chat;
 import org.example.stronghold.model.Message;
 import org.example.stronghold.model.User;
-import org.example.stronghold.model.Chat;
 
 public class ChatPanel extends Panel {
 
@@ -53,7 +53,8 @@ public class ChatPanel extends Panel {
 
     private void showPublicChat() {
         try {
-            long chatId = (Long) game.conn.sendOperatorRequest("game", "getPublicChat", new HashMap<>());
+            long chatId = (Long) game.conn.sendOperatorRequest("game", "getPublicChat",
+                new HashMap<>());
             Chat chat = (Chat) game.conn.sendObjectRequest("Chat", chatId);
             showChat(chat);
         } catch (Exception e) {
@@ -155,11 +156,10 @@ public class ChatPanel extends Panel {
                     TextButton button = new TextButton(user.getUsername(), game.skin);
                     button.addListener(new SimpleChangeListener(() -> {
                         try {
-                            game.conn.sendOperatorRequest("game", "createChat", new HashMap<>() {
-                                {
+                            game.conn.sendOperatorRequest("game", "createChat", new HashMap<>() {{
                                     put("users", List.of(getUser(), user));
-                                }
-                            });
+                                }}
+                            );
                             Set<User> userSet = new HashSet<>(List.of(getUser(), user));
                             List<Chat> chats = (List<Chat>) game.conn.sendOperatorRequest("game",
                                 "getChats", new HashMap<>() {{
@@ -193,15 +193,14 @@ public class ChatPanel extends Panel {
             List<Chat> chats = (List<Chat>) game.conn.sendOperatorRequest("game", "getChats",
                 new HashMap<>() {{
                     put("user", getUser());
-                }});
+                }}
+            );
             for (Chat chat : chats) {
-                if (chat.getUsers().size() > 2) {
-                    TextButton button = new TextButton(chat.getName(), game.skin);
-                    button.addListener(new SimpleChangeListener(() -> {
-                        showChat(chat);
-                    }));
-                    contentTable.add(button).growX().row();
-                }
+                TextButton button = new TextButton(chat.getName(), game.skin);
+                button.addListener(new SimpleChangeListener(() -> {
+                    showChat(chat);
+                }));
+                contentTable.add(button).growX().row();
             }
         } catch (Exception e) {
             controlPanel.popup.error(e.getMessage());
